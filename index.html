@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YasinG Downloader - Mobile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+
+    <div class="nav">
+        <div class="logo"><a href="/index.html">
+<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhIq-H1KojZc9YDQ8j6ll0MRXxJ_WXNrBnYwGV_ue1bBhUZL_-7Bhs-OyeyXkKvOFbtP5WhZ7VH8G1i4QM0l9UPzq83A_kj6Htbp9folKq0kwdueR6eUx-N6CHFF16J1YxkuIJF7yykaazHEQSsB2Earjk8_Go4dX7ujY6vKukiG6clWoq0zn2JrP4q_fo/w320-h50/20459.png" alt="Video Downloader" width="100%" height="23"></a>
+
+</div>
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="menu" id="menu">
+            <a href="#" onclick="openTab(event, 'tab-home')">Home</a>
+            <a href="#" onclick="openTab(event, 'tab-how')">How to Use</a>
+            <a href="#" onclick="openTab(event, 'tab-updates')">Updates</a>
+            <a href="#" onclick="openTab(event, 'tab-faq')">FAQ</a>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Facebook videi Downloader</h1>
+            <p>Fast • Free • HD Quality</p>
+
+            <form id="dlForm" class="search-area">
+                <input type="text" id="urlInput" placeholder="Paste Facebook link...">
+                <button type="submit" class="btn-dl" id="dlBtn">
+                    <i class="fas fa-download" id="dlBtnIcon"></i>
+                    <div class="spinner" id="btnLoader" style="display:none;"></div>
+                </button>
+            </form>
+
+            <div id="preview"></div>
+        </div>
+    </div>
+
+    <div class="tab-bar">
+        <button class="tab-link active" onclick="openTab(event, 'tab-home')" title="Home">
+            <i class="fas fa-home"></i>
+        </button>
+        <button class="tab-link" onclick="openTab(event, 'tab-how')" title="Steps">
+            <i class="fas fa-download"></i>
+        </button>
+        <button class="tab-link" onclick="openTab(event, 'tab-updates')" title="Updates">
+            <i class="fas fa-bell"></i>
+        </button>
+        <button class="tab-link" onclick="openTab(event, 'tab-faq')" title="FAQ">
+            <i class="fas fa-question-circle"></i>
+        </button>
+        <button class="tab-link" onclick="openTab(event, 'tab-apps')" title="Other Apps">
+            <i class="fas fa-th-large"></i>
+        </button>
+    </div>
+   
+    <div class="tab-container">
+        <div id="tab-home" class="tab-content active">
+        <h3 class="section-title">Most Downloaded</h3>
+        <div class="video-grid">
+            <div class="video-card">
+                <div class="video-thumb"><i class="fas fa-play"></i></div>
+                <p>Trending Video #1</p>
+            </div>
+            <div class="video-card">
+                <div class="video-thumb"><i class="fas fa-play"></i></div>
+                <p>Trending Video #2</p>
+            </div>
+            <div class="video-card">
+                <div class="video-thumb"><i class="fas fa-play"></i></div>
+                <p>Trending Video #3</p>
+            </div>
+        </div>
+    </div>
+
+        <div id="tab-how" class="tab-content">
+            <div class="step-card">
+                <div class="step-num">1</div>
+                <p>Copy FB Video Link</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">2</div>
+                <p>Paste in the box</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">3</div>
+                <p>Tap Download</p>
+            </div>
+        </div>
+
+        <div id="tab-updates" class="tab-content">
+            <div class="update-item">
+                <span class="badge">Live</span>
+                <h4>Server Update</h4>
+                <p>Download speed increased by 50%.</p>
+            </div>
+        </div>
+
+        <div id="tab-faq" class="tab-content">
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-header">Is it safe? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Yes, we don't store your personal data.</div>
+            </div>
+        </div>
+
+        <div id="tab-apps" class="tab-content">
+            <div class="apps-grid">
+                <div class="app-card">
+                    <i class="fab fa-instagram"></i>
+                    <span>IG Saver</span>
+                </div>
+                <div class="app-card">
+                    <i class="fab fa-tiktok"></i>
+                    <span>TT Downloader</span>
+                </div>
+                <div class="app-card">
+                    <i class="fab fa-youtube"></i>
+                    <span>YT Converter</span>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <footer class="app-footer">
+        <div class="social-links">
+            <a href="fb.com/yasingel
+            a" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+            <a href="t.me/anayasing" class="social-btn"><i class="fab fa-telegram-plane"></i></a>
+            <a href="https://api.whatsapp.com/send?phone=251934646971" class="social-btn"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <p class="copyright">2026 &copy; Ardi Mobile inc. Made in<strong style="color:red"> Ethiopia</strong></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
