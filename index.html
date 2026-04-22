@@ -1,282 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YasinG Downloader - Mobile</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="#">
-    <style>:root {
-    --blue: #1877f2;
-    --dark: #0b0d11;
-    --light: #f5f7fa;
-    --green: #00c853;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FB Downloader</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+:root {
+    --blue:#1877f2;
+    --light:#f5f7fa;
 }
 
-body { 
-    margin:0; 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    background: var(--light); 
-    overflow-x: hidden;
+/* RESET */
+body{
+    margin:0;
+    font-family:Arial;
+    background:var(--light);
 }
 
 /* NAV */
-.nav {
-    display:flex; justify-content:space-between; align-items:center;
-    padding:15px 5%; background:black; box-shadow:0 2px 10px rgba(0,0,0,0.05);
-    position: relative; z-index: 1001;
+.nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 15px;
+    background:#000;
+    color:#fff;
 }
-.logo { font-weight:800; font-size:23px; color:var(--blue);}
-.menu-toggle { font-size:22px; cursor:pointer;color:#1877f2; }
+.logo img{ height:22px; }
 
-.menu { 
-    display:none; 
-    flex-direction:column; 
-    background:#fff; 
-    position:absolute; 
-    top:60px; right:20px; 
-    padding:15px; 
-    border-radius:10px; 
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+.menu-toggle{ font-size:20px; cursor:pointer; }
+
+.menu{
+    display:none;
+    flex-direction:column;
+    position:absolute;
+    top:55px;
+    right:10px;
+    background:#fff;
+    padding:10px;
+    border-radius:8px;
 }
-.menu.show { display:flex; }
-.menu a { text-decoration:none; color:#555; padding:10px 0; font-weight:600; border-bottom: 1px solid #eee; }
+.menu a{
+    text-decoration:none;
+    padding:8px;
+    color:#333;
+}
+.menu.show{ display:flex; }
 
 /* HERO */
-.hero {
-    background: linear-gradient(135deg, #1877f2, #2d6df6);
-    color: white; text-align: center; padding: 40px 20px;
+.hero{
+    background:linear-gradient(135deg,#1877f2,#2d6df6);
+    color:#fff;
+    text-align:center;
+    padding:30px 15px;
 }
-.hero h1 { font-size: 28px; margin-bottom: 5px; }
+.hero h1{ font-size:22px; }
 
-/* SEARCH AREA */
-.search-area {
-    background: white; display: flex; padding: 5px;
-    border-radius: 50px; max-width: 600px; margin: 20px auto;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+/* SEARCH */
+.search-area{
+    display:flex;
+    background:#fff;
+    border-radius:30px;
+    overflow:hidden;
+    margin:15px auto;
+    max-width:500px;
 }
-.search-area input { flex: 1; border: none; padding: 12px 20px; outline: none; border-radius: 50px; }
-.btn-dl { 
-    background: var(--blue); color: white; border: none; 
-    width: 45px; height: 45px; border-radius: 50%; 
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
+.search-area input{
+    flex:1;
+    padding:10px;
+    border:none;
 }
-
-/* LOADER ANIMATION */
-.spinner {
-    width: 20px; height: 20px;
-    border: 3px solid rgba(255,255,255,0.3);
-    border-radius: 50%; border-top-color: #fff;
-    animation: spin 0.8s infinite linear;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* TABS */
-.tab-bar {
-    display: flex; background: #fff; border-bottom: 1px solid #eee;
-    position: sticky; top: 0; z-index: 1000;
-}
-.tab-link {
-    flex: 1; padding: 15px 5px; border: none; background: none;
-    font-size: 13px; font-weight: 700; color: #888; border-bottom: 3px solid transparent;
-}
-.tab-link.active { color: var(--blue); border-bottom: 3px solid var(--blue); }
-
-.tab-container { min-height: 400px; }
-.tab-content { display: none; padding: 20px; animation: fadeInUp 0.4s ease; }
-.tab-content.active { display: block; }
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
+.btn-dl{
+    background:var(--blue);
+    color:#fff;
+    border:none;
+    width:50px;
 }
 
-/* CONTENT CARDS */
-.card, .step-card, .update-item {
-    background: white; padding: 20px; border-radius: 12px;
-    margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+/* TAB BAR */
+.tab-bar{
+    display:flex;
+    background:#fff;
+    border-bottom:1px solid #ddd;
+    position:sticky;
+    top:0;
 }
-.step-card { display: flex; align-items: center; }
-.step-num { 
-    background: var(--blue); color: #fff; width: 30px; height: 30px; 
-    border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-    font-weight: bold; margin-right: 15px; flex-shrink: 0;
+.tab-link{
+    flex:1;
+    padding:12px;
+    border:none;
+    background:none;
+    font-size:12px;
 }
-/* Video Grid on Home */
-.video-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 15px;
-    padding: 10px 0;
+.tab-link.active{
+    color:var(--blue);
+    border-bottom:2px solid var(--blue);
 }
-.video-card {
-    background: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+
+/* CONTENT */
+.tab-content{
+    display:none;
+    padding:15px;
 }
-.video-thumb {
-    height: 90px;
-    background: #eee;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--blue);
+.tab-content.active{
+    display:block;
 }
-.video-card p { font-size: 12px; padding: 8px; margin: 0; }
-/* APPS GRID */
-.apps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-.app-card { background: #fff; padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.app-card i { font-size: 30px; display: block; margin-bottom: 8px; color: var(--blue); }
-.app-card span { font-size: 11px; font-weight: 600; color: #555; }
-.badge { background: var(--green); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; }
-.ad-banner { background: #e0e6ed; padding: 15px; text-align: center; color: #777; border-radius: 8px; margin-bottom: 15px; font-size: 12px; border: 1px dashed #abb8c9; }
+
+/* GRID */
+.video-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+.video-card{
+    background:#fff;
+    border-radius:8px;
+    padding:10px;
+    text-align:center;
+}
+.video-thumb{
+    height:70px;
+    background:#eee;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* STEPS */
+.step-card{
+    display:flex;
+    align-items:center;
+    background:#fff;
+    margin-bottom:10px;
+    padding:10px;
+    border-radius:8px;
+}
+.step-num{
+    background:var(--blue);
+    color:#fff;
+    width:25px;
+    height:25px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-right:10px;
+}
 
 /* FAQ */
-.faq-item { background: white; margin-bottom: 10px; border-radius: 8px; overflow: hidden; }
-.faq-header { padding: 15px; display: flex; justify-content: space-between; font-weight: 600; cursor: pointer; }
-.faq-answer { padding: 0 15px; max-height: 0; overflow: hidden; transition: 0.3s ease; color: #666; font-size: 14px; }
-.faq-item.active .faq-answer { padding: 0 15px 15px 15px; max-height: 100px; }
+.faq-item{
+    background:#fff;
+    margin-bottom:10px;
+    border-radius:8px;
+}
+.faq-header{
+    padding:10px;
+    cursor:pointer;
+}
+.faq-answer{
+    display:none;
+    padding:10px;
+}
+.faq-item.active .faq-answer{
+    display:block;
+}
+
+/* APPS */
+.apps-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+.app-card{
+    background:#fff;
+    padding:10px;
+    border-radius:8px;
+    text-align:center;
+}
 
 /* FOOTER */
-.app-footer { background: black; padding: 30px 20px; text-align: center; border-top: 1px solid #eee; margin-top: 20px; }
-.social-links { margin-bottom: 15px; }
-.social-btn { color: #555; font-size: 20px; margin: 0 15px; text-decoration: none; }
-.copyright { font-size: 12px; color: #999; }
+.app-footer{
+    background:#000;
+    color:#fff;
+    text-align:center;
+    padding:20px;
+}
 </style>
 </head>
+
 <body>
-  
 
-    <div class="nav">
-        <div class="logo"><a href="/index.html">
-<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhIq-H1KojZc9YDQ8j6ll0MRXxJ_WXNrBnYwGV_ue1bBhUZL_-7Bhs-OyeyXkKvOFbtP5WhZ7VH8G1i4QM0l9UPzq83A_kj6Htbp9folKq0kwdueR6eUx-N6CHFF16J1YxkuIJF7yykaazHEQSsB2Earjk8_Go4dX7ujY6vKukiG6clWoq0zn2JrP4q_fo/w320-h50/20459.png" alt="Video Downloader" width="100%" height="23"></a>
+<!-- NAV -->
+<div class="nav">
+    <div class="logo">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhIq-H1KojZc9YDQ8j6ll0MRXxJ_WXNrBnYwGV_ue1bBhUZL_-7Bhs-OyeyXkKvOFbtP5WhZ7VH8G1i4QM0l9UPzq83A_kj6Htbp9folKq0kwdueR6eUx-N6CHFF16J1YxkuIJF7yykaazHEQSsB2Earjk8_Go4dX7ujY6vKukiG6clWoq0zn2JrP4q_fo/w320-h50/20459.png">
+    </div>
 
+    <div class="menu-toggle" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <div class="menu" id="menu">
+        <a onclick="openTab(event,'tab-home')">Home</a>
+        <a onclick="openTab(event,'tab-how')">How</a>
+        <a onclick="openTab(event,'tab-updates')">Updates</a>
+        <a onclick="openTab(event,'tab-faq')">FAQ</a>
+    </div>
 </div>
-        <div class="menu-toggle" onclick="toggleMenu()">
-            <i class="fas fa-bars"></i>
-        </div>
-        <div class="menu" id="menu">
-            <a href="#" onclick="openTab(event, 'tab-home')">Home</a>
-            <a href="#" onclick="openTab(event, 'tab-how')">How to Use</a>
-            <a href="#" onclick="openTab(event, 'tab-updates')">Updates</a>
-            <a href="#" onclick="openTab(event, 'tab-faq')">FAQ</a>
-        </div>
+
+<!-- HERO -->
+<div class="hero">
+    <h1>Facebook Video Downloader</h1>
+    <p>Fast • Free • HD</p>
+
+    <form class="search-area">
+        <input placeholder="Paste Facebook link...">
+        <button class="btn-dl"><i class="fas fa-download"></i></button>
+    </form>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+    <button class="tab-link active" onclick="openTab(event,'tab-home')"><i class="fas fa-home"></i></button>
+    <button class="tab-link" onclick="openTab(event,'tab-how')"><i class="fas fa-download"></i></button>
+    <button class="tab-link" onclick="openTab(event,'tab-updates')"><i class="fas fa-bell"></i></button>
+    <button class="tab-link" onclick="openTab(event,'tab-faq')"><i class="fas fa-question"></i></button>
+    <button class="tab-link" onclick="openTab(event,'tab-apps')"><i class="fas fa-th"></i></button>
+</div>
+
+<!-- CONTENT -->
+<div class="tab-content active" id="tab-home">
+    <div class="video-grid">
+        <div class="video-card"><div class="video-thumb"><i class="fas fa-play"></i></div>Video 1</div>
+        <div class="video-card"><div class="video-thumb"><i class="fas fa-play"></i></div>Video 2</div>
+        <div class="video-card"><div class="video-thumb"><i class="fas fa-play"></i></div>Video 3</div>
     </div>
+</div>
 
-    <div class="hero">
-        <div class="hero-content">
-            <h1>Facebook videi Downloader</h1>
-            <p>Fast • Free • HD Quality</p>
+<div class="tab-content" id="tab-how">
+    <div class="step-card"><div class="step-num">1</div>Copy Link</div>
+    <div class="step-card"><div class="step-num">2</div>Paste</div>
+    <div class="step-card"><div class="step-num">3</div>Download</div>
+</div>
 
-            <form id="dlForm" class="search-area">
-                <input type="text" id="urlInput" placeholder="Paste Facebook link...">
-                <button type="submit" class="btn-dl" id="dlBtn">
-                    <i class="fas fa-download" id="dlBtnIcon"></i>
-                    <div class="spinner" id="btnLoader" style="display:none;"></div>
-                </button>
-            </form>
+<div class="tab-content" id="tab-updates">
+    <div class="step-card">Server improved 🚀</div>
+</div>
 
-            <div id="preview"></div>
-        </div>
+<div class="tab-content" id="tab-faq">
+    <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-header">Is safe?</div>
+        <div class="faq-answer">Yes 100%</div>
     </div>
+</div>
 
-    <div class="tab-bar">
-        <button class="tab-link active" onclick="openTab(event, 'tab-home')" title="Home">
-            <i class="fas fa-home"></i>
-        </button>
-        <button class="tab-link" onclick="openTab(event, 'tab-how')" title="Steps">
-            <i class="fas fa-download"></i>
-        </button>
-        <button class="tab-link" onclick="openTab(event, 'tab-updates')" title="Updates">
-            <i class="fas fa-bell"></i>
-        </button>
-        <button class="tab-link" onclick="openTab(event, 'tab-faq')" title="FAQ">
-            <i class="fas fa-question-circle"></i>
-        </button>
-        <button class="tab-link" onclick="openTab(event, 'tab-apps')" title="Other Apps">
-            <i class="fas fa-th-large"></i>
-        </button>
+<div class="tab-content" id="tab-apps">
+    <div class="apps-grid">
+        <div class="app-card">IG</div>
+        <div class="app-card">TT</div>
+        <div class="app-card">YT</div>
     </div>
-   
-    <div class="tab-container">
-        <div id="tab-home" class="tab-content active">
-        <h3 class="section-title">Most Downloaded</h3>
-        <div class="video-grid">
-            <div class="video-card">
-                <div class="video-thumb"><i class="fas fa-play"></i></div>
-                <p>Trending Video #1</p>
-            </div>
-            <div class="video-card">
-                <div class="video-thumb"><i class="fas fa-play"></i></div>
-                <p>Trending Video #2</p>
-            </div>
-            <div class="video-card">
-                <div class="video-thumb"><i class="fas fa-play"></i></div>
-                <p>Trending Video #3</p>
-            </div>
-        </div>
-    </div>
+</div>
 
-        <div id="tab-how" class="tab-content">
-            <div class="step-card">
-                <div class="step-num">1</div>
-                <p>Copy FB Video Link</p>
-            </div>
-            <div class="step-card">
-                <div class="step-num">2</div>
-                <p>Paste in the box</p>
-            </div>
-            <div class="step-card">
-                <div class="step-num">3</div>
-                <p>Tap Download</p>
-            </div>
-        </div>
+<!-- FOOTER -->
+<div class="app-footer">© 2026</div>
 
-        <div id="tab-updates" class="tab-content">
-            <div class="update-item">
-                <span class="badge">Live</span>
-                <h4>Server Update</h4>
-                <p>Download speed increased by 50%.</p>
-            </div>
-        </div>
+<script>
+function toggleMenu(){
+    document.getElementById("menu").classList.toggle("show");
+}
 
-        <div id="tab-faq" class="tab-content">
-            <div class="faq-item" onclick="toggleFaq(this)">
-                <div class="faq-header">Is it safe? <i class="fas fa-chevron-down"></i></div>
-                <div class="faq-answer">Yes, we don't store your personal data.</div>
-            </div>
-        </div>
+function openTab(evt, id){
+    document.querySelectorAll(".tab-content").forEach(t=>t.classList.remove("active"));
+    document.querySelectorAll(".tab-link").forEach(t=>t.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    if(evt) evt.currentTarget.classList.add("active");
+}
 
-        <div id="tab-apps" class="tab-content">
-            <div class="apps-grid">
-                <div class="app-card">
-                    <i class="fab fa-instagram"></i>
-                    <span>IG Saver</span>
-                </div>
-                <div class="app-card">
-                    <i class="fab fa-tiktok"></i>
-                    <span>TT Downloader</span>
-                </div>
-                <div class="app-card">
-                    <i class="fab fa-youtube"></i>
-                    <span>YT Converter</span>
-                </div>
-            </div>
-        </div>
-    </div> 
+function toggleFaq(el){
+    el.classList.toggle("active");
+}
+</script>
 
-    <footer class="app-footer">
-        <div class="social-links">
-            <a href="fb.com/yasingel
-            a" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-            <a href="t.me/anayasing" class="social-btn"><i class="fab fa-telegram-plane"></i></a>
-            <a href="https://api.whatsapp.com/send?phone=251934646971" class="social-btn"><i class="fab fa-whatsapp"></i></a>
-        </div>
-        <p class="copyright">2026 &copy; Ardi Mobile inc. Made in<strong style="color:red"> Ethiopia</strong></p>
-    </footer>
-
-    <script src="script.js"></script>
 </body>
 </html>
