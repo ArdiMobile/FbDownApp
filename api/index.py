@@ -14,21 +14,44 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
 
         if not facebook_url:
-            self.wfile.write(json.dumps({"status":"error","message":"No URL"}).encode())
+            self.wfile.write(json.dumps({"status": "error", "message": "No URL"}).encode())
             return
 
         try:
-            with yt_dlp.YoutubeDL({'quiet': True}) as ydl:
+            # ✅ Force mobile Facebook version
+            if "facebook.com" in facebook_url and "m.facebook.com" not in facebook_url:
+                facebook_url = facebook_url.replace("www.facebook.com", "m.facebook.com")
+
+            ydl_opts = {
+                'quiet': True,
+                'noplaylist': True,
+                'extractor_args': {
+                    'facebook': {
+                        'format': 'sd',
+                    }
+                }
+            }
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(facebook_url, download=False)
 
+                # ✅ Handle formats safely
                 formats = []
-                for f in info.get("formats", []):
-                    if f.get("url") and f.get("height"):
-                        formats.append({
-                            "quality": f"{f.get('height')}p",
-                            "url": f.get("url")
-                        })
 
+                if not info.get("formats") and info.get("url"):
+                    formats.append({
+                        "quality": "default",
+                        "url": info.get("url")
+                    })
+                else:
+                    for f in info.get("formats", []):
+                        if f.get("url") and f.get("height"):
+                            formats.append({
+                                "quality": f"{f.get('height')}p",
+                                "url": f.get("url")
+                            })
+
+                # ✅ Remove duplicate qualities
                 seen = set()
                 unique_formats = []
                 for f in formats:
@@ -46,6 +69,9 @@ class handler(BaseHTTPRequestHandler):
                 }
 
         except Exception as e:
-            response_data = {"status":"error","message":str(e)}
+            response_data = {
+                "status": "error",
+                "message": str(e)
+            }
 
         self.wfile.write(json.dumps(response_data).encode())
