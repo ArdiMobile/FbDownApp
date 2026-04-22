@@ -6,6 +6,146 @@
     <title>YasinG Downloader - Mobile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://github.com/ArdiMobile/FbDownApp/blob/main/style.css">
+<style>
+:root {
+    --blue: #1877f2;
+    --dark: #0b0d11;
+    --light: #f5f7fa;
+    --green: #00c853;
+}
+
+body { 
+    margin:0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background: var(--light); 
+    overflow-x: hidden;
+}
+
+/* NAV */
+.nav {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:15px 5%; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.05);
+    position: relative; z-index: 1001;
+}
+.logo { font-weight:800; font-size:22px; color:var(--blue); }
+.menu-toggle { font-size:22px; cursor:pointer; }
+
+.menu { 
+    display:none; 
+    flex-direction:column; 
+    background:#fff; 
+    position:absolute; 
+    top:60px; right:20px; 
+    padding:15px; 
+    border-radius:10px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.menu.show { display:flex; }
+.menu a { text-decoration:none; color:#555; padding:10px 0; font-weight:600; border-bottom: 1px solid #eee; }
+
+/* HERO */
+.hero {
+    background: linear-gradient(135deg, #1877f2, #2d6df6);
+    color: white; text-align: center; padding: 40px 20px;
+}
+.hero h1 { font-size: 28px; margin-bottom: 5px; }
+
+/* SEARCH AREA */
+.search-area {
+    background: white; display: flex; padding: 5px;
+    border-radius: 50px; max-width: 600px; margin: 20px auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.search-area input { flex: 1; border: none; padding: 12px 20px; outline: none; border-radius: 50px; }
+.btn-dl { 
+    background: var(--blue); color: white; border: none; 
+    width: 45px; height: 45px; border-radius: 50%; 
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+
+/* LOADER ANIMATION */
+.spinner {
+    width: 20px; height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%; border-top-color: #fff;
+    animation: spin 0.8s infinite linear;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* TABS */
+.tab-bar {
+    display: flex; background: #fff; border-bottom: 1px solid #eee;
+    position: sticky; top: 0; z-index: 1000;
+}
+.tab-link {
+    flex: 1; padding: 15px 5px; border: none; background: none;
+    font-size: 13px; font-weight: 700; color: #888; border-bottom: 3px solid transparent;
+}
+.tab-link.active { color: var(--blue); border-bottom: 3px solid var(--blue); }
+
+.tab-container { min-height: 400px; }
+.tab-content { display: none; padding: 20px; animation: fadeInUp 0.4s ease; }
+.tab-content.active { display: block; }
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* CONTENT CARDS */
+.card, .step-card, .update-item {
+    background: white; padding: 20px; border-radius: 12px;
+    margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.step-card { display: flex; align-items: center; }
+.step-num { 
+    background: var(--blue); color: #fff; width: 30px; height: 30px; 
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+    font-weight: bold; margin-right: 15px; flex-shrink: 0;
+}
+/* Video Grid on Home */
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    padding: 10px 0;
+}
+.video-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.video-thumb {
+    height: 90px;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--blue);
+}
+.video-card p { font-size: 12px; padding: 8px; margin: 0; }
+/* APPS GRID */
+.apps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+.app-card { background: #fff; padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.app-card i { font-size: 30px; display: block; margin-bottom: 8px; color: var(--blue); }
+.app-card span { font-size: 11px; font-weight: 600; color: #555; }
+.badge { background: var(--green); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; }
+.ad-banner { background: #e0e6ed; padding: 15px; text-align: center; color: #777; border-radius: 8px; margin-bottom: 15px; font-size: 12px; border: 1px dashed #abb8c9; }
+
+/* FAQ */
+.faq-item { background: white; margin-bottom: 10px; border-radius: 8px; overflow: hidden; }
+.faq-header { padding: 15px; display: flex; justify-content: space-between; font-weight: 600; cursor: pointer; }
+.faq-answer { padding: 0 15px; max-height: 0; overflow: hidden; transition: 0.3s ease; color: #666; font-size: 14px; }
+.faq-item.active .faq-answer { padding: 0 15px 15px 15px; max-height: 100px; }
+
+/* FOOTER */
+.app-footer { background: #fff; padding: 30px 20px; text-align: center; border-top: 1px solid #eee; margin-top: 20px; }
+.social-links { margin-bottom: 15px; }
+.social-btn { color: #555; font-size: 20px; margin: 0 15px; text-decoration: none; }
+.copyright { font-size: 12px; color: #999; }
+</style>
 </head>
 <body>
 
