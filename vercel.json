@@ -5,8 +5,9 @@
     { "src": "script.js", "use": "@vercel/static" },
     { "src": "style.css", "use": "@vercel/static" }
   ],
+  "installCommand": "pip install -r requirements.txt",
   "rewrites": [
     { "source": "/api/info", "destination": "/api/index.py" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/", "destination": "/index.html" }
   ]
 }
