@@ -16,11 +16,8 @@ function toggleMenu() {
 function openTab(evt, tabId) {
     document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
     document.querySelectorAll(".tab-link").forEach(t => t.classList.remove("active"));
-
     document.getElementById(tabId).classList.add("active");
-
     if (evt) evt.currentTarget.classList.add("active");
-
     document.getElementById("menu").classList.remove("show");
 }
 
@@ -40,7 +37,7 @@ urlInput.addEventListener('focus', async () => {
     }
 });
 
-// Drawer toggle for new design
+// Drawer toggle
 function toggleDrawer() {
     const drawer = document.getElementById('drawer');
     const overlay = document.getElementById('drawerOverlay');
@@ -50,38 +47,30 @@ function toggleDrawer() {
     }
 }
 
-// Tab switching for new design
+// Tab switching
 function switchTab(event, tabId) {
     if (event) event.preventDefault();
-
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.drawer-menu a').forEach(a => a.classList.remove('active'));
-
     const panel = document.getElementById(tabId);
     if (panel) panel.classList.add('active');
-
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabIds = ['tab-home', 'tab-how', 'tab-updates', 'tab-faq', 'tab-apps'];
     const index = tabIds.indexOf(tabId);
     if (index >= 0 && tabBtns[index]) {
         tabBtns[index].classList.add('active');
     }
-
     const drawerLinks = document.querySelectorAll('.drawer-menu a');
     drawerLinks.forEach(link => {
         if (link.getAttribute('onclick') && link.getAttribute('onclick').includes(tabId)) {
             link.classList.add('active');
         }
     });
-
-    // Close drawer
     const drawer = document.getElementById('drawer');
     const overlay = document.getElementById('drawerOverlay');
     if (drawer) drawer.classList.remove('show');
     if (overlay) overlay.classList.remove('show');
-
-    // Scroll to tabs
     const tabBar = document.getElementById('tabBar');
     if (tabBar) tabBar.scrollIntoView({ behavior: 'smooth' });
 }
@@ -93,15 +82,17 @@ dlForm.addEventListener('submit', async (e) => {
     const url = urlInput.value.trim();
     if (!url) return alert("Paste a link");
 
-    // Show GIF spinner on button
+    // Show HD transparent spinner on button
     dlBtnIcon.style.display = "none";
     btnLoader.style.display = "block";
-    btnLoader.innerHTML = `<img src="https://www.vhv.rs/dpng/d/72-726459_rotating-circle-gif-png-transparent-png.png" style="width:30px;height:30px;">`;
+    btnLoader.innerHTML = `<div class="btn-spinner"></div>`;
 
     preview.innerHTML = `
-        <div style="text-align:center;padding:20px;">
-            <img src="https://en1.savefrom.net/img/busy.gif" style="width:100%;height:40px;">
-            <p style="color:white;margin-top:10px;">Fetching video... please wait</p>
+        <div style="text-align:center;padding:30px 20px;">
+            <div class="spinner-container">
+                <div class="custom-spinner"></div>
+            </div>
+            <p class="loading-text">Fetching video...</p>
         </div>
     `;
 
@@ -114,7 +105,12 @@ dlForm.addEventListener('submit', async (e) => {
         btnLoader.style.display = "none";
 
         if (data.status !== "success") {
-            preview.innerHTML = `<p style="color:red;text-align:center;padding:20px;">${data.message}</p>`;
+            preview.innerHTML = `
+                <div style="text-align:center;padding:30px;">
+                    <i class="fas fa-exclamation-circle" style="font-size:40px;color:#e74c3c;display:block;margin-bottom:10px;"></i>
+                    <p style="color:#e74c3c;font-weight:500;">${data.message}</p>
+                </div>
+            `;
             return;
         }
 
@@ -123,82 +119,87 @@ dlForm.addEventListener('submit', async (e) => {
 
         const firstVideo = data.formats[0]?.url;
 
-        // Different colors and icons for different qualities
+        // Quality styles
         const qualityStyles = {
-            '1080p': { bg: '#e74c3c', icon: 'fa-crown', label: 'Full HD' },
-            '720p': { bg: '#f39c12', icon: 'fa-star', label: 'HD' },
-            '480p': { bg: '#1877f2', icon: 'fa-video', label: 'SD' },
-            '360p': { bg: '#2ecc71', icon: 'fa-play', label: 'Low' },
-            '240p': { bg: '#95a5a6', icon: 'fa-download', label: 'Low' }
+            '1080p': { bg: 'linear-gradient(135deg, #e74c3c, #c0392b)', icon: 'fa-crown', label: 'Full HD' },
+            '720p': { bg: 'linear-gradient(135deg, #f39c12, #e67e22)', icon: 'fa-star', label: 'HD' },
+            '480p': { bg: 'linear-gradient(135deg, #1877f2, #1565c0)', icon: 'fa-video', label: 'SD' },
+            '360p': { bg: 'linear-gradient(135deg, #2ecc71, #27ae60)', icon: 'fa-play', label: 'Low' },
+            '240p': { bg: 'linear-gradient(135deg, #95a5a6, #7f8c8d)', icon: 'fa-download', label: 'Low' }
         };
 
-        let formatButtons = data.formats.map(f => {
-            const quality = f.quality.replace('p', '');
-            const style = qualityStyles[f.quality] || { bg: '#1877f2', icon: 'fa-download', label: f.quality };
+        let formatButtons = data.formats.map((f, index) => {
+            const style = qualityStyles[f.quality] || { bg: 'linear-gradient(135deg, #1877f2, #1565c0)', icon: 'fa-download', label: f.quality };
+            const isBest = index === 0;
             
             return `
                 <a href="${f.url}" target="_blank"
                    style="display:flex;align-items:center;justify-content:center;gap:10px;
-                   margin:8px 0;padding:12px 15px;
-                   background:${style.bg};color:#fff;border-radius:10px;
-                   text-decoration:none;font-weight:bold;font-size:14px;
-                   box-shadow:0 3px 10px rgba(0,0,0,0.2);
-                   transition:transform 0.2s ease;"
-                   onmouseover="this.style.transform='scale(1.03)'"
-                   onmouseout="this.style.transform='scale(1)'">
+                   margin:8px 0;padding:14px 15px;
+                   background:${style.bg};color:#fff;border-radius:12px;
+                   text-decoration:none;font-weight:600;font-size:14px;
+                   box-shadow:0 4px 12px rgba(0,0,0,0.2);
+                   transition:all 0.2s ease;
+                   position:relative;overflow:hidden;"
+                   onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3)'"
+                   onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)'">
+                   ${isBest ? '<span style="position:absolute;top:5px;right:5px;background:#fff;color:#333;font-size:9px;padding:2px 8px;border-radius:10px;font-weight:700;">BEST</span>' : ''}
                    <i class="fas ${style.icon}" style="font-size:16px;"></i>
-                   Download ${f.quality} ${style.label !== f.quality ? '(' + style.label + ')' : ''}
+                   Download ${f.quality} (${style.label})
                 </a>
             `;
         }).join("");
 
         preview.innerHTML = `
-        <div style="background:#fff;padding:20px;border-radius:15px;color:#111;margin-top:20px;">
+        <div style="background:#fff;padding:20px;border-radius:16px;color:#111;margin-top:20px;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
 
-            <video controls playsinline style="width:100%;border-radius:10px;background:#000;">
+            <video controls playsinline style="width:100%;border-radius:12px;background:#000;max-height:400px;">
                 <source src="${firstVideo}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
 
-            <h3 style="margin-top:15px;font-size:18px;">${data.title}</h3>
+            <h3 style="margin-top:15px;font-size:17px;font-weight:700;">${data.title}</h3>
 
             ${data.uploader ? `
-            <p style="color:#555;display:flex;align-items:center;gap:8px;">
-                <i class="fas fa-user-circle" style="color:#1877f2;"></i>
+            <p style="color:#555;display:flex;align-items:center;gap:8px;font-size:13px;">
+                <i class="fas fa-user-circle" style="color:#1877f2;font-size:18px;"></i>
                 ${data.uploader}
             </p>` : ""}
 
             ${data.uploader_url ? `
             <a href="${data.uploader_url}" target="_blank" 
-            style="display:inline-flex;align-items:center;gap:5px;
-            margin-bottom:10px;padding:8px 15px;
+            style="display:inline-flex;align-items:center;gap:6px;
+            margin:8px 0;padding:8px 16px;
             color:#1877f2;background:#e8f0fe;border-radius:20px;
-            text-decoration:none;font-size:13px;font-weight:600;">
+            text-decoration:none;font-size:13px;font-weight:600;
+            transition:all 0.2s ease;"
+            onmouseover="this.style.background='#d0e1fd'"
+            onmouseout="this.style.background='#e8f0fe'">
             <i class="fas fa-external-link-alt"></i> View more from uploader
             </a>` : ""}
 
-            <!-- AD1 -->
-            <div style="margin:15px 0;border-radius:10px;overflow:hidden;">
+            <!-- AD -->
+            <div style="margin:15px 0;border-radius:12px;overflow:hidden;border:1px solid #e4e6eb;">
                 <a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgK6iDLBJrJkvsyqRw7GiZuy6A0pI7Apb3iJ5jWUxwHaUq_GK1R9doWYd9jrnRPbEFNEde1OjOM3lpD_HvcMnMIodYtmYy5iDvk80Q2kpifHMJYg35r0raHWAzT9L7EXzncINcZ-6Dlp2P4raDG7XAM4m4oHhhFX2PV_LHRTd9mPv4QB9VZHHNBIcnRwbM/s2320/20494.jpg" target="_blank">
                     <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgK6iDLBJrJkvsyqRw7GiZuy6A0pI7Apb3iJ5jWUxwHaUq_GK1R9doWYd9jrnRPbEFNEde1OjOM3lpD_HvcMnMIodYtmYy5iDvk80Q2kpifHMJYg35r0raHWAzT9L7EXzncINcZ-6Dlp2P4raDG7XAM4m4oHhhFX2PV_LHRTd9mPv4QB9VZHHNBIcnRwbM/s2320/20494.jpg" style="width:100%;display:block;" alt="Ad">
                 </a>
             </div>
 
             <div style="margin:15px 0;">
-                <p style="font-weight:bold;color:#333;margin-bottom:10px;">
+                <p style="font-weight:700;color:#333;margin-bottom:12px;font-size:15px;">
                     <i class="fas fa-arrow-down" style="color:#1877f2;"></i> Available Downloads:
                 </p>
                 ${formatButtons}
             </div>
 
             <button onclick="resetDownloader()" 
-                style="margin-top:15px;padding:12px 20px;width:100%;
-                border:none;background:#333;color:#fff;border-radius:10px;
+                style="margin-top:10px;padding:14px 20px;width:100%;
+                border:2px solid #e4e6eb;background:#f8f9fa;color:#333;border-radius:12px;
                 font-size:14px;font-weight:600;cursor:pointer;
                 display:flex;align-items:center;justify-content:center;gap:8px;
-                transition:background 0.3s ease;"
-                onmouseover="this.style.background='#555'"
-                onmouseout="this.style.background='#333'">
+                transition:all 0.2s ease;"
+                onmouseover="this.style.background='#e9ecef';this.style.borderColor='#ccc'"
+                onmouseout="this.style.background='#f8f9fa';this.style.borderColor='#e4e6eb'">
                 <i class="fas fa-redo"></i> Download Another Video
             </button>
         </div>
@@ -209,9 +210,9 @@ dlForm.addEventListener('submit', async (e) => {
 
     } catch (err) {
         preview.innerHTML = `
-            <div style="text-align:center;padding:30px;color:red;">
-                <i class="fas fa-exclamation-triangle" style="font-size:40px;display:block;margin-bottom:10px;"></i>
-                <p>Connection error, Check url and try again</p>
+            <div style="text-align:center;padding:30px;">
+                <i class="fas fa-exclamation-triangle" style="font-size:45px;color:#e74c3c;display:block;margin-bottom:12px;"></i>
+                <p style="color:#e74c3c;font-weight:500;">Connection error, Check url and try again</p>
             </div>
         `;
         dlBtnIcon.style.display = "block";
@@ -238,23 +239,35 @@ async function loadDownloadHistory() {
         const data = await res.json();
 
         if (data.status === 'success' && data.history.length > 0) {
-            let html = data.history.slice(0, 6).map(item => `
-                <div class="video-thumb-card" onclick="window.open('${item.url}', '_blank')" style="cursor:pointer;">
+            let html = data.history.slice(0, 6).map((item, index) => `
+                <div class="video-thumb-card" onclick="window.open('${item.url}', '_blank')" title="${item.title}">
                     <div class="video-thumb-img" style="background-image:url('${item.thumbnail || ''}');background-size:cover;background-position:center;">
-                        ${!item.thumbnail ? '<i class="fas fa-play-circle"></i>' : ''}
+                        ${!item.thumbnail ? '<i class="fas fa-video" style="font-size:32px;color:#1877f2;"></i>' : ''}
+                        <div class="video-thumb-play"></div>
                     </div>
-                    <p title="${item.title}">${item.title ? item.title.substring(0, 25) + '...' : 'Video'}</p>
-                    <span style="font-size:10px;color:#888;display:block;text-align:center;padding-bottom:8px;">${item.quality || 'HD'}</span>
+                    <p>${item.title ? item.title.substring(0, 28) : 'Facebook Video'}</p>
+                    <div style="text-align:center;">
+                        <span class="thumb-quality">${item.quality || 'HD'}</span>
+                    </div>
                 </div>
             `).join('');
 
             historyContainer.innerHTML = html;
         } else {
-            historyContainer.innerHTML = '<p style="text-align:center;color:#888;font-size:13px;padding:20px;">No downloads yet. Be the first!</p>';
+            historyContainer.innerHTML = `
+                <div style="grid-column:1/-1;text-align:center;padding:30px;">
+                    <i class="fas fa-history" style="font-size:40px;color:#ccc;display:block;margin-bottom:10px;"></i>
+                    <p style="color:#888;font-size:13px;">No downloads yet. Be the first!</p>
+                </div>
+            `;
         }
     } catch (err) {
         console.log('History load error:', err);
-        historyContainer.innerHTML = '<p style="text-align:center;color:#888;font-size:13px;padding:20px;">History loading...</p>';
+        historyContainer.innerHTML = `
+            <div style="grid-column:1/-1;text-align:center;padding:20px;">
+                <p style="color:#888;font-size:13px;">Loading history...</p>
+            </div>
+        `;
     }
 }
 
