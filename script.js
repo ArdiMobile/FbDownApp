@@ -1,7 +1,25 @@
 const dlForm = document.getElementById('dlForm');
 const urlInput = document.getElementById('urlInput');
 const preview = document.getElementById('preview');
+const dlBtnIcon = document.getElementById('dlBtnIcon');
+const btnLoader = document.getElementById('btnLoader');
+function toggleMenu() {
+    document.getElementById("menu").classList.toggle("show");
+}
+function openTab(evt, tabId) {
+    document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-link").forEach(t => t.classList.remove("active"));
 
+    document.getElementById(tabId).classList.add("active");
+
+    if (evt) evt.currentTarget.classList.add("active");
+
+    document.getElementById("menu").classList.remove("show");
+}
+
+function toggleFaq(el) {
+    el.classList.toggle("active");
+}
 // AUTO PASTE
 urlInput.addEventListener('focus', async () => {
     try {
@@ -19,9 +37,12 @@ dlForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const url = urlInput.value.trim();
-    if (!url) return alert("Paste a link");
+    if (!url) return alert("Paste link");
 
-    preview.innerHTML = "Loading...";
+    dlBtnIcon.style.display = "none";
+    btnLoader.style.display = "block";
+
+    preview.innerHTML = `<div class="spinner" style="margin:20px auto;"></div>`;
 
     try {
         const res = await fetch(`/api/info?url=${encodeURIComponent(url)}`);
@@ -63,7 +84,7 @@ dlForm.addEventListener('submit', async (e) => {
 
             <!-- AD -->
          <div style="height: 60px;">
-<a href="https://www.yasing.com.et">
+<a href="t.me/anayasingg">
   <img src=" https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi3emvbxUKCk0RWnwHkvZsa-R9GSRca9bmPcokzxCElc7TPFnoErZcE9dlU9X3mCwXxUJdRB0qMWLRu3HcKpbMjPMBbvQ4KjGNCZGq658mW-2KaHHbSwcWD2JcbqjDhXrUJV9QyXeXwLtX7jgEEc6ZcGyE0WxTxwDKFgoovhQbl4I2wYQtFVMjqXoSzfCw/s320/20250.png " alt="Buy now">
 </a>
 </div>
@@ -74,14 +95,14 @@ dlForm.addEventListener('submit', async (e) => {
             <button onclick="resetDownloader()" 
                 style="margin-top:15px;padding:10px 20px;
                 border:none;background:#333;color:#fff;border-radius:8px;">
-                Download Another Video
+                <i class="fab fa-ban">CLEAR
             </button>
 
         </div>
         `;
 
     } catch (err) {
-        preview.innerHTML = `<p style="color:red">Connection error</p>`;
+        preview.innerHTML = `<p style="color:red">Connection error, Check the url. again</p>`;
     }
 });
 
