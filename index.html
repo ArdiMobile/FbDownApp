@@ -40,16 +40,15 @@ body {
 
 /* HEADER */
 .header {
-    background: black;
+    background: #fff;
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
     z-index: 1000;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    background: black;
+    background: rgba(255,255,255,0.95);
 }
-
 .header-inner {
     max-width: 680px;
     margin: 0 auto;
@@ -62,13 +61,12 @@ body {
 .logo {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 8px;font-size:25;font-style:bold;
     text-decoration: none;
 }
 
-.logo img {
-    height: 50px;
-    width: auto;
+.logo span {
+    color: black;
 }
 
 .menu-btn {
@@ -790,9 +788,7 @@ video {
     <!-- HEADER -->
     <header class="header">
         <div class="header-inner">
-            <a href="/" class="logo">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgZHGYOy9WtPI7otRfeW3D65LQBUJUG9er6FNq_EesvoL-5cA5_IGkOR-5ZGCF4i8zIUHHLEcAeOdDT_MS76cmNlYavFLa2Lww2iVDLaNrHVBtgSR0iWnUaALzZ-iazdB_ThujL-CnLt2MyhNTzbTQ10aH1fQcRBR20gGVeeFK3dVPoo522r-82DsyNTCc/s320/1000001022.png" alt="YasinG Downloader">
-            </a>
+            <a href="/" class="logo"> <i class="fas fa-chevron-down"></i> VIDEO <span> DOWNLOADER</span></a>
             <button class="menu-btn" onclick="toggleDrawer()" aria-label="Menu">
                 <i class="fas fa-bars"></i>
             </button>
