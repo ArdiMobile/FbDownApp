@@ -5,7 +5,8 @@
       "use": "@vercel/python",
       "config": {
         "pythonVersion": "3.12",
-        "installCommand": "pip install --no-cache-dir -r requirements.txt"
+        "installCommand": "pip install --no-cache-dir -r requirements.txt",
+        "maxDuration": 30
       }
     },
     { "src": "index.html", "use": "@vercel/static" },
