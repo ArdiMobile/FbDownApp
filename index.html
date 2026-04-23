@@ -6,27 +6,6 @@
     <title>YasinG Downloader - Mobile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="#">
-<style>
-/* Download Type Toggle Buttons */
-.type-toggle {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 15px 0;
-}
-.type-btn {
-    padding: 10px 25px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-.type-btn i {
-    margin-right: 5px;
-}
-</style>
     <style>:root {
     --blue: #1877f2;
     --dark: #0b0d11;
@@ -198,18 +177,6 @@ body {
                     <div class="spinner" id="btnLoader" style="display:none;"></div>
                 </button>
             </form>
-
-!-- Download Type Toggle -->
-<div class="type-toggle">
-    <button id="videoBtn" class="type-btn" onclick="setDownloadType('video')" 
-    style="background:#1877f2;color:#fff;">
-        <i class="fas fa-video"></i> Video
-    </button>
-    <button id="audioBtn" class="type-btn" onclick="setDownloadType('audio')" 
-    style="background:#e0e0e0;color:#333;">
-        <i class="fas fa-music"></i> MP3
-    </button>
-</div>
             <div id="preview"></div>
         </div>
     </div>
