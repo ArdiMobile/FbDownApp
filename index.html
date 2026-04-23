@@ -190,7 +190,16 @@ body {
         <div class="hero-content">
             <h1>Facebook videi Downloader</h1>
             <p>Fast • Free • HD Quality</p>
-<!-- Download Type Toggle -->
+
+            <form id="dlForm" class="search-area">
+                <input type="text" id="urlInput" placeholder="Paste Facebook link...">
+                <button type="submit" class="btn-dl" id="dlBtn">
+                    <i class="fas fa-download" id="dlBtnIcon"></i>
+                    <div class="spinner" id="btnLoader" style="display:none;"></div>
+                </button>
+            </form>
+
+!-- Download Type Toggle -->
 <div class="type-toggle">
     <button id="videoBtn" class="type-btn" onclick="setDownloadType('video')" 
     style="background:#1877f2;color:#fff;">
@@ -201,14 +210,6 @@ body {
         <i class="fas fa-music"></i> MP3
     </button>
 </div>
-            <form id="dlForm" class="search-area">
-                <input type="text" id="urlInput" placeholder="Paste Facebook link...">
-                <button type="submit" class="btn-dl" id="dlBtn">
-                    <i class="fas fa-download" id="dlBtnIcon"></i>
-                    <div class="spinner" id="btnLoader" style="display:none;"></div>
-                </button>
-            </form>
-
             <div id="preview"></div>
         </div>
     </div>
