@@ -88,6 +88,12 @@ dlForm.addEventListener('submit', async (e) => {
 
 
             <div>${formatButtons}</div>
+                        <!-- AD1 -->
+         <div style="height: 300px;">
+<a href="https://www.yasing.com.et">
+  <img src=" https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi3emvbxUKCk0RWnwHkvZsa-R9GSRca9bmPcokzxCElc7TPFnoErZcE9dlU9X3mCwXxUJdRB0qMWLRu3HcKpbMjPMBbvQ4KjGNCZGq658mW-2KaHHbSwcWD2JcbqjDhXrUJV9QyXeXwLtX7jgEEc6ZcGyE0WxTxwDKFgoovhQbl4I2wYQtFVMjqXoSzfCw/s320/20250.png " alt="Buy now">
+</a>
+</div>
 
             <button onclick="resetDownloader()" 
                 style="margin-top:15px;padding:10px 20px;
@@ -97,14 +103,9 @@ dlForm.addEventListener('submit', async (e) => {
 
         </div>
         `;
-            <!-- AD1 -->
-         <div style="height: 60px;">
-<a href="https://www.yasing.com.et">
-  <img src=" https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi3emvbxUKCk0RWnwHkvZsa-R9GSRca9bmPcokzxCElc7TPFnoErZcE9dlU9X3mCwXxUJdRB0qMWLRu3HcKpbMjPMBbvQ4KjGNCZGq658mW-2KaHHbSwcWD2JcbqjDhXrUJV9QyXeXwLtX7jgEEc6ZcGyE0WxTxwDKFgoovhQbl4I2wYQtFVMjqXoSzfCw/s320/20250.png " alt="Buy now">
-</a>
-</div>
+
     } catch (err) {
-        preview.innerHTML = `<p style="color:red">Connection error, Check the url again</p>`;
+        preview.innerHTML = `<p style="color:red">Connection error, Check url and try again</p>`;
     }
 });
 
