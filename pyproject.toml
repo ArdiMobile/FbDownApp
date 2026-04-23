@@ -1,0 +1,10 @@
+[project]
+name = "app"
+version = "0.1.0"
+dependencies = [
+    "requests",
+    "yt-dlp",
+]
+
+[tool.uv.sources]
+yt-dlp = { git = "https://github.com/yt-dlp/yt-dlp.git" }
