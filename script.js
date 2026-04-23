@@ -37,12 +37,9 @@ dlForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const url = urlInput.value.trim();
-    if (!url) return alert("Paste link");
+    if (!url) return alert("Paste a link");
 
-    dlBtnIcon.style.display = "none";
-    btnLoader.style.display = "block";
-
-    preview.innerHTML = `<div class="spinner" style="margin:20px auto;"></div>`;
+    preview.innerHTML = "<img src="https://cdn.pikwy.com/r/bs4/gif/load_gif.gif" alt="Video Downloader" width="100%" height="23">";
 
     try {
         const res = await fetch(`/api/info?url=${encodeURIComponent(url)}`);
@@ -78,14 +75,13 @@ dlForm.addEventListener('submit', async (e) => {
 
             ${data.uploader_url ? `
             <a href="${data.uploader_url}" target="_blank" 
-            style="display:inline-block;margin-bottom:10px;color:#1877f2;">
+            style="display:inline-block;margin-bottom:10px;color:#1877f2;background:gray;border-radius:20px;border: solid black 1px">
             View more from uploader
             </a>` : ""}
 
-            <!-- AD -->
+            <!-- AD1 -->
          <div style="height: 60px;">
-<a href="t.me/anayasingg">
-  <img src=" https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi3emvbxUKCk0RWnwHkvZsa-R9GSRca9bmPcokzxCElc7TPFnoErZcE9dlU9X3mCwXxUJdRB0qMWLRu3HcKpbMjPMBbvQ4KjGNCZGq658mW-2KaHHbSwcWD2JcbqjDhXrUJV9QyXeXwLtX7jgEEc6ZcGyE0WxTxwDKFgoovhQbl4I2wYQtFVMjqXoSzfCw/s320/20250.png " alt="Buy now">
+<a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgK6iDLBJrJkvsyqRw7GiZuy6A0pI7Apb3iJ5jWUxwHaUq_GK1R9doWYd9jrnRPbEFNEde1OjOM3lpD_HvcMnMIodYtmYy5iDvk80Q2kpifHMJYg35r0raHWAzT9L7EXzncINcZ-6Dlp2P4raDG7XAM4m4oHhhFX2PV_LHRTd9mPv4QB9VZHHNBIcnRwbM/s2320/20494.jpg" alt="Buy now">
 </a>
 </div>
 
@@ -95,14 +91,20 @@ dlForm.addEventListener('submit', async (e) => {
             <button onclick="resetDownloader()" 
                 style="margin-top:15px;padding:10px 20px;
                 border:none;background:#333;color:#fff;border-radius:8px;">
-                <i class="fab fa-ban">CLEAR
+                Download another video
             </button>
 
         </div>
         `;
 
-    } catch (err) {
-        preview.innerHTML = `<p style="color:red">Connection error, Check the url. again</p>`;
+    } 
+                <!-- AD2 -->
+         <div style="height: 60px;">
+<a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhEYVd0X7fpF5433IIfmgb7UWjljRaTSIJ7FB1kqc3RMF4Q_KnN6jfCOGTUNPRX9JNxEXNiXdGTNvkjv_OGDe2C32hMf2WsqF7GHLLKdlYoX3pTbkygmelzYBVnMDAePCHjvmefopzSXOjMFRAyRbG8KK3Mv6azrO8gyg8i_HsfMa_9qVpI2p-DN0q8g-s/s320/20493.jpg" alt="Buy now">
+</a>
+</div>
+    catch (err) {
+        preview.innerHTML = `<p style="color:red">Connection error, Check the url again</p>`;
     }
 });
 
