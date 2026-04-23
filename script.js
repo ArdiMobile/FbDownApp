@@ -39,21 +39,17 @@ dlForm.addEventListener('submit', async (e) => {
     const url = urlInput.value.trim();
     if (!url) return alert("Paste a link");
 
-    dlBtnIcon.style.display = "none";
-    btnLoader.style.display = "block";
-    preview.innerHTML = "Loading.... please wait";
+    preview.innerHTML = "Loading...";
 
     try {
-        const res = await fetch(`/api/info?url=${encodeURIComponent(url)}&type=${downloadType}`);
+        const res = await fetch(`/api/info?url=${encodeURIComponent(url)}`);
         const data = await res.json();
-
-        dlBtnIcon.style.display = "block";
-        btnLoader.style.display = "none";
 
         if (data.status !== "success") {
             preview.innerHTML = `<p style="color:red">${data.message}</p>`;
             return;
         }
+
         const firstVideo = data.formats[0]?.url;
 
         let formatButtons = data.formats.map(f => `
