@@ -146,20 +146,14 @@ dlForm.addEventListener('submit', async (e) => {
                 </a>` : ""}
 
                 <!-- AD1 -->
-                <div style="height: 60px;">
-                <a href="https://www.yasing.com.et">
-                  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgK6iDLBJrJkvsyqRw7GiZuy6A0pI7Apb3iJ5jWUxwHaUq_GK1R9doWYd9jrnRPbEFNEde1OjOM3lpD_HvcMnMIodYtmYy5iDvk80Q2kpifHMJYg35r0raHWAzT9L7EXzncINcZ-6Dlp2P4raDG7XAM4m4oHhhFX2PV_LHRTd9mPv4QB9VZHHNBIcnRwbM/s2320/20494.jpg" alt="Buy now">
-                </a>
-                </div>
-
-                <div>${formatButtons}</div>
-
-                <!-- AD2 -->
                 <div style="height: 300px;">
                 <a href="https://www.yasing.com.et">
                   <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhEYVd0X7fpF5433IIfmgb7UWjljRaTSIJ7FB1kqc3RMF4Q_KnN6jfCOGTUNPRX9JNxEXNiXdGTNvkjv_OGDe2C32hMf2WsqF7GHLLKdlYoX3pTbkygmelzYBVnMDAePCHjvmefopzSXOjMFRAyRbG8KK3Mv6azrO8gyg8i_HsfMa_9qVpI2p-DN0q8g-s/s320/20493.jpg" alt="Buy now">
                 </a>
                 </div>
+
+                <div>${formatButtons}</div>
+
 
                 <button onclick="resetDownloader()" 
                     style="margin-top:15px;padding:10px 20px;
