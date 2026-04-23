@@ -39,7 +39,7 @@ dlForm.addEventListener('submit', async (e) => {
     const url = urlInput.value.trim();
     if (!url) return alert("Paste a link");
 
-    preview.innerHTML = "<img src="https://cdn.pikwy.com/r/bs4/gif/load_gif.gif" alt="Video Downloader" width="100%" height="23">";
+    preview.innerHTML = "Loading.... please wait";
 
     try {
         const res = await fetch(`/api/info?url=${encodeURIComponent(url)}`);
@@ -81,7 +81,8 @@ dlForm.addEventListener('submit', async (e) => {
 
             <!-- AD1 -->
          <div style="height: 60px;">
-<a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgK6iDLBJrJkvsyqRw7GiZuy6A0pI7Apb3iJ5jWUxwHaUq_GK1R9doWYd9jrnRPbEFNEde1OjOM3lpD_HvcMnMIodYtmYy5iDvk80Q2kpifHMJYg35r0raHWAzT9L7EXzncINcZ-6Dlp2P4raDG7XAM4m4oHhhFX2PV_LHRTd9mPv4QB9VZHHNBIcnRwbM/s2320/20494.jpg" alt="Buy now">
+<a href="https://www.yasing.com.et">
+  <img src=" https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi3emvbxUKCk0RWnwHkvZsa-R9GSRca9bmPcokzxCElc7TPFnoErZcE9dlU9X3mCwXxUJdRB0qMWLRu3HcKpbMjPMBbvQ4KjGNCZGq658mW-2KaHHbSwcWD2JcbqjDhXrUJV9QyXeXwLtX7jgEEc6ZcGyE0WxTxwDKFgoovhQbl4I2wYQtFVMjqXoSzfCw/s320/20250.png " alt="Buy now">
 </a>
 </div>
 
@@ -96,14 +97,13 @@ dlForm.addEventListener('submit', async (e) => {
 
         </div>
         `;
-
-    } 
-                <!-- AD2 -->
+            <!-- AD1 -->
          <div style="height: 60px;">
-<a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhEYVd0X7fpF5433IIfmgb7UWjljRaTSIJ7FB1kqc3RMF4Q_KnN6jfCOGTUNPRX9JNxEXNiXdGTNvkjv_OGDe2C32hMf2WsqF7GHLLKdlYoX3pTbkygmelzYBVnMDAePCHjvmefopzSXOjMFRAyRbG8KK3Mv6azrO8gyg8i_HsfMa_9qVpI2p-DN0q8g-s/s320/20493.jpg" alt="Buy now">
+<a href="https://www.yasing.com.et">
+  <img src=" https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi3emvbxUKCk0RWnwHkvZsa-R9GSRca9bmPcokzxCElc7TPFnoErZcE9dlU9X3mCwXxUJdRB0qMWLRu3HcKpbMjPMBbvQ4KjGNCZGq658mW-2KaHHbSwcWD2JcbqjDhXrUJV9QyXeXwLtX7jgEEc6ZcGyE0WxTxwDKFgoovhQbl4I2wYQtFVMjqXoSzfCw/s320/20250.png " alt="Buy now">
 </a>
 </div>
-    catch (err) {
+    } catch (err) {
         preview.innerHTML = `<p style="color:red">Connection error, Check the url again</p>`;
     }
 });
