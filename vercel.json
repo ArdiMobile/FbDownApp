@@ -9,10 +9,20 @@
         "maxDuration": 30
       }
     },
+    { 
+      "src": "api/history.py", 
+      "use": "@vercel/python",
+      "config": {
+        "pythonVersion": "3.12",
+        "installCommand": "pip install --no-cache-dir -r requirements.txt",
+        "maxDuration": 10
+      }
+    },
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "script.js", "use": "@vercel/static" }
   ],
   "rewrites": [
-    { "source": "/api/info", "destination": "/api/index.py" }
+    { "source": "/api/info", "destination": "/api/index.py" },
+    { "source": "/api/history", "destination": "/api/history.py" }
   ]
 }
