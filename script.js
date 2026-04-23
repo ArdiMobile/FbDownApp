@@ -119,7 +119,7 @@ dlForm.addEventListener('submit', async (e) => {
 
         const firstVideo = data.formats[0]?.url;
 
-        // Quality styles
+        // Quality styles with gradients
         const qualityStyles = {
             '1080p': { bg: 'linear-gradient(135deg, #e74c3c, #c0392b)', icon: 'fa-crown', label: 'Full HD' },
             '720p': { bg: 'linear-gradient(135deg, #f39c12, #e67e22)', icon: 'fa-star', label: 'HD' },
@@ -133,7 +133,7 @@ dlForm.addEventListener('submit', async (e) => {
             const isBest = index === 0;
             
             return `
-                <a href="${f.url}" target="_blank"
+                <a href="${f.url}" target="_blank" download
                    style="display:flex;align-items:center;justify-content:center;gap:10px;
                    margin:8px 0;padding:14px 15px;
                    background:${style.bg};color:#fff;border-radius:12px;
@@ -143,7 +143,7 @@ dlForm.addEventListener('submit', async (e) => {
                    position:relative;overflow:hidden;"
                    onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3)'"
                    onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)'">
-                   ${isBest ? '<span style="position:absolute;top:5px;right:5px;background:#fff;color:#333;font-size:9px;padding:2px 8px;border-radius:10px;font-weight:700;">BEST</span>' : ''}
+                   ${isBest ? '<span style="position:absolute;top:8px;right:8px;background:#fff;color:#333;font-size:9px;padding:3px 10px;border-radius:10px;font-weight:700;letter-spacing:0.5px;">BEST</span>' : ''}
                    <i class="fas ${style.icon}" style="font-size:16px;"></i>
                    Download ${f.quality} (${style.label})
                 </a>
@@ -158,18 +158,18 @@ dlForm.addEventListener('submit', async (e) => {
                 Your browser does not support the video tag.
             </video>
 
-            <h3 style="margin-top:15px;font-size:17px;font-weight:700;">${data.title}</h3>
+            <h3 style="margin-top:15px;font-size:17px;font-weight:700;line-height:1.4;">${data.title}</h3>
 
             ${data.uploader ? `
-            <p style="color:#555;display:flex;align-items:center;gap:8px;font-size:13px;">
-                <i class="fas fa-user-circle" style="color:#1877f2;font-size:18px;"></i>
-                ${data.uploader}
-            </p>` : ""}
+            <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+                <i class="fas fa-user-circle" style="color:#1877f2;font-size:20px;"></i>
+                <span style="color:#555;font-size:13px;font-weight:500;">${data.uploader}</span>
+            </div>` : ""}
 
             ${data.uploader_url ? `
             <a href="${data.uploader_url}" target="_blank" 
             style="display:inline-flex;align-items:center;gap:6px;
-            margin:8px 0;padding:8px 16px;
+            margin:10px 0;padding:8px 16px;
             color:#1877f2;background:#e8f0fe;border-radius:20px;
             text-decoration:none;font-size:13px;font-weight:600;
             transition:all 0.2s ease;"
@@ -209,6 +209,7 @@ dlForm.addEventListener('submit', async (e) => {
         setTimeout(loadDownloadHistory, 1500);
 
     } catch (err) {
+        console.log('Download error:', err);
         preview.innerHTML = `
             <div style="text-align:center;padding:30px;">
                 <i class="fas fa-exclamation-triangle" style="font-size:45px;color:#e74c3c;display:block;margin-bottom:12px;"></i>
@@ -257,7 +258,7 @@ async function loadDownloadHistory() {
             historyContainer.innerHTML = `
                 <div style="grid-column:1/-1;text-align:center;padding:30px;">
                     <i class="fas fa-history" style="font-size:40px;color:#ccc;display:block;margin-bottom:10px;"></i>
-                    <p style="color:#888;font-size:13px;">No downloads yet. Be the first!</p>
+                    <p style="color:#888;font-size:13px;">No downloads yet. Be the first to download!</p>
                 </div>
             `;
         }
