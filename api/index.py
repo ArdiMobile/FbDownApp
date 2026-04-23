@@ -44,6 +44,7 @@ class handler(BaseHTTPRequestHandler):
                 'no_warnings': True,
                 'extract_flat': False,
                 'force_generic_extractor': False,
+                'format': 'bestvideo+bestaudio/best',
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -80,6 +81,9 @@ class handler(BaseHTTPRequestHandler):
                     "status": "success",
                     "title": info.get("title", "Facebook Video"),
                     "thumbnail": info.get("thumbnail", ""),
+                    "uploader": info.get("uploader", ""),
+                    "uploader_url": info.get("uploader_url", ""),
+                    "duration": info.get("duration", 0),
                     "formats": unique[:5]
                 }
 
