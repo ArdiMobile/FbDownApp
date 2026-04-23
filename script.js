@@ -3,11 +3,20 @@ const urlInput = document.getElementById('urlInput');
 const preview = document.getElementById('preview');
 const dlBtnIcon = document.getElementById('dlBtnIcon');
 const btnLoader = document.getElementById('btnLoader');
-
+// AUTO PASTE
+urlInput.addEventListener('focus', async () => {
+    try {
+        const text = await navigator.clipboard.readText();
+        if (text.includes("facebook.com")) {
+            urlInput.value = text;
+        }
+    } catch (e) {
+        console.log("Clipboard blocked");
+    }
+});
 function toggleMenu() {
     document.getElementById("menu").classList.toggle("show");
 }
-
 function openTab(evt, tabId) {
     document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
     document.querySelectorAll(".tab-link").forEach(t => t.classList.remove("active"));
@@ -33,20 +42,7 @@ dlForm.addEventListener('submit', async (e) => {
     btnLoader.style.display = "block";
 
     preview.innerHTML = `<div class="spinner" style="margin:20px auto;"></div>`;
-
-    try {
-        const res = await fetch(`/api/info?url=${encodeURIComponent(url)}`);
-        const data = await res.json();
-
-        dlBtnIcon.style.display = "block";
-        btnLoader.style.display = "none";
-
-        if (data.status !== "success") {
-            preview.innerHTML = `<p style="color:red">${data.message}</p>`;
-            return;
-        }
-
-        renderPreview(data);
+            renderPreview(data);
 
     } catch {
         preview.innerHTML = `<p style="color:red">Error</p>`;
@@ -69,4 +65,10 @@ function renderPreview(data) {
             ${buttons}
         </div>
     `;
+}
+// RESET
+function resetDownloader() {
+    preview.innerHTML = "";
+    urlInput.value = "";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
