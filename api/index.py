@@ -38,13 +38,16 @@ class handler(BaseHTTPRequestHandler):
                 if not facebook_url.startswith("http"):
                     facebook_url = "https://" + facebook_url
 
+            # CRITICAL FIX: Merge best video + best audio for sound
             ydl_opts = {
                 'quiet': True,
                 'noplaylist': True,
                 'no_warnings': True,
                 'extract_flat': False,
                 'force_generic_extractor': False,
+                # This is the key fix - merge video+audio streams
                 'format': 'bestvideo+bestaudio/best',
+                'merge_output_format': 'mp4',
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -54,19 +57,30 @@ class handler(BaseHTTPRequestHandler):
                     raise Exception("Failed to extract video information")
 
                 formats = []
+                
+                # Get formats that have BOTH video AND audio (merged)
                 for f in info.get("formats", []):
-                    if f.get("url") and f.get("height"):
+                    # Check if format has video codec and resolution
+                    has_video = f.get("vcodec") and f.get("vcodec") != "none" and f.get("height")
+                    # Check if format has audio
+                    has_audio = f.get("acodec") and f.get("acodec") != "none"
+                    
+                    if has_video and f.get("url"):
                         formats.append({
                             "quality": f"{f.get('height')}p",
                             "height": f.get("height"),
-                            "url": f.get("url")
+                            "url": f.get("url"),
+                            "has_audio": has_audio,
+                            "format_id": f.get("format_id", "")
                         })
 
                 if not formats:
                     raise Exception("No downloadable formats found")
 
+                # Sort by height (highest first)
                 formats = sorted(formats, key=lambda x: x["height"], reverse=True)
 
+                # Remove duplicates, prefer formats with audio
                 seen = set()
                 unique = []
                 for f in formats:
@@ -76,6 +90,20 @@ class handler(BaseHTTPRequestHandler):
                             "quality": f["quality"],
                             "url": f["url"]
                         })
+
+                # If no formats have audio, try getting best format with audio
+                if not any(f.get("has_audio") for f in formats):
+                    # Fallback: get any format that has audio
+                    for f in info.get("formats", []):
+                        if f.get("acodec") and f.get("acodec") != "none" and f.get("url") and f.get("height"):
+                            # Add this audio-capable format
+                            quality = f"{f.get('height')}p"
+                            if quality not in seen:
+                                seen.add(quality)
+                                unique.append({
+                                    "quality": quality,
+                                    "url": f.get("url")
+                                })
 
                 response_data = {
                     "status": "success",
