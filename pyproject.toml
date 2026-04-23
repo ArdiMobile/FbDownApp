@@ -1,7 +1,0 @@
-[project]
-name = "app"
-version = "0.1.0"
-dynamic = ["dependencies"]
-
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
