@@ -1,2 +1,2 @@
-git+https://github.com/yt-dlp/yt-dlp.git
+yt-dlp>=2024.12.13
 requests
