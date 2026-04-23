@@ -96,12 +96,12 @@ dlForm.addEventListener('submit', async (e) => {
     // Show GIF spinner on button
     dlBtnIcon.style.display = "none";
     btnLoader.style.display = "block";
-    btnLoader.innerHTML = `<img src="https://en1.savefrom.net/img/busy.gif" style="width:30px;height:30px;">`;
+    btnLoader.innerHTML = `<img src="https://icons8.com/preloaders/preloaders/764/preview.gif" style="width:30px;height:30px;">`;
 
     preview.innerHTML = `
         <div style="text-align:center;padding:20px;">
-            <img src="https://en1.savefrom.net/img/busy.gif" style="width:40px;height:40px;">
-            <p style="color:#666;margin-top:10px;">Fetching video...</p>
+            <img src="https://en1.savefrom.net/img/busy.gif" style="width:100%;height:100%;">
+            <p style="color:white;margin-top:10px;">Fetching video... please wait</p>
         </div>
     `;
 
