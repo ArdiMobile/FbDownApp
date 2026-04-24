@@ -1,0 +1,23 @@
+{
+  "name": "YasinG Downloader - Facebook Video Downloader",
+  "short_name": "YasinG DL",
+  "description": "Free Facebook video downloader in HD quality",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f0f2f5",
+  "theme_color": "#1877f2",
+  "icons": [
+    {
+      "src": "/yasing192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/yasing512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["utilities", "entertainment", "social"]
+}
