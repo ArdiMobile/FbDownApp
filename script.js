@@ -21,6 +21,14 @@ const randomAds = [
     {
         desktop: 'https://picsum.photos/600/400?random=4',
         mobile: 'https://picsum.photos/400/300?random=4'
+    },
+    {
+        desktop: 'https://picsum.photos/600/400?random=5',
+        mobile: 'https://picsum.photos/400/300?random=5'
+    },
+    {
+        desktop: 'https://picsum.photos/600/400?random=6',
+        mobile: 'https://picsum.photos/400/300?random=6'
     }
 ];
 
@@ -99,19 +107,19 @@ dlForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const url = urlInput.value.trim();
-    if (!url) return alert("Paste a link");
+    if (!url) return alert("Please paste a Facebook video link");
 
     // Show spinner on button
     dlBtnIcon.style.display = "none";
     btnLoader.style.display = "block";
-    btnLoader.innerHTML = `<div class="btn-spinner" style="width: 22px; height: 22px; border: 2px solid transparent; border-top: 2px solid #fff; border-right: 2px solid rgba(255,255,255,0.6); border-radius: 50%; animation: spin 0.6s linear infinite;"></div>`;
+    btnLoader.innerHTML = `<div style="width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #fff; border-radius: 50%; animation: spin 0.7s linear infinite;"></div>`;
 
     preview.innerHTML = `
-        <div style="text-align:center;padding:40px 20px;">
+        <div style="text-align:center;padding:50px 20px;">
             <div style="display:flex;align-items:center;justify-content:center;flex-direction:column;">
-                <div style="width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid #fff; border-radius: 50%; animation: spin 0.7s linear infinite;"></div>
+                <div style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid #fff; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
             </div>
-            <p style="color:rgba(255,255,255,0.9);margin-top:16px;font-size:14px;font-weight:500;">Fetching video...</p>
+            <p style="color:rgba(255,255,255,0.95);margin-top:18px;font-size:15px;font-weight:500;">Fetching your video...</p>
         </div>
     `;
 
@@ -126,8 +134,8 @@ dlForm.addEventListener('submit', async (e) => {
         if (data.status !== "success") {
             preview.innerHTML = `
                 <div style="text-align:center;padding:30px;">
-                    <i class="fas fa-exclamation-circle" style="font-size:48px;color:#e74c3c;display:block;margin-bottom:12px;"></i>
-                    <p style="color:#e74c3c;font-weight:600;">${data.message}</p>
+                    <i class="fas fa-exclamation-circle" style="font-size:52px;color:#e74c3c;display:block;margin-bottom:14px;"></i>
+                    <p style="color:#e74c3c;font-weight:600;font-size:15px;">${data.message}</p>
                 </div>
             `;
             return;
@@ -141,29 +149,30 @@ dlForm.addEventListener('submit', async (e) => {
 
         // Quality styles with gradients
         const qualityStyles = {
-            '1080p': { bg: 'linear-gradient(135deg, #e74c3c, #c0392b)', icon: 'fa-crown', label: 'Full HD' },
-            '720p': { bg: 'linear-gradient(135deg, #f39c12, #e67e22)', icon: 'fa-star', label: 'HD' },
-            '480p': { bg: 'linear-gradient(135deg, #1877f2, #1565c0)', icon: 'fa-video', label: 'SD' },
-            '360p': { bg: 'linear-gradient(135deg, #2ecc71, #27ae60)', icon: 'fa-play', label: 'Low' },
-            '240p': { bg: 'linear-gradient(135deg, #95a5a6, #7f8c8d)', icon: 'fa-download', label: 'Low' }
+            '1080p': { bg: 'linear-gradient(135deg, #e74c3c, #c0392b)', icon: 'fa-crown', label: 'Full HD', emoji: '👑' },
+            '720p': { bg: 'linear-gradient(135deg, #f39c12, #e67e22)', icon: 'fa-star', label: 'HD', emoji: '⭐' },
+            '480p': { bg: 'linear-gradient(135deg, #1877f2, #1565c0)', icon: 'fa-video', label: 'SD', emoji: '📹' },
+            '360p': { bg: 'linear-gradient(135deg, #2ecc71, #27ae60)', icon: 'fa-play', label: 'Low', emoji: '▶️' },
+            '240p': { bg: 'linear-gradient(135deg, #95a5a6, #7f8c8d)', icon: 'fa-download', label: 'Low', emoji: '⬇️' }
         };
 
         let formatButtons = data.formats.map((f, index) => {
-            const style = qualityStyles[f.quality] || { bg: 'linear-gradient(135deg, #1877f2, #1565c0)', icon: 'fa-download', label: f.quality };
+            const style = qualityStyles[f.quality] || { bg: 'linear-gradient(135deg, #1877f2, #1565c0)', icon: 'fa-download', label: f.quality, emoji: '📥' };
             const isBest = index === 0;
             
             return `
                 <a href="${f.url}" target="_blank" download
-                   style="display:flex;align-items:center;justify-content:center;gap:10px;
-                   margin:8px 0;padding:14px 15px;
-                   background:${style.bg};color:#fff;border-radius:12px;
-                   text-decoration:none;font-weight:600;font-size:14px;
-                   box-shadow:0 4px 12px rgba(0,0,0,0.2);
-                   transition:all 0.2s ease;
+                   style="display:flex;align-items:center;justify-content:center;gap:12px;
+                   margin:10px 0;padding:16px 20px;
+                   background:${style.bg};color:#fff;border-radius:14px;
+                   text-decoration:none;font-weight:600;font-size:15px;
+                   box-shadow:0 6px 18px rgba(0,0,0,0.25);
+                   transition:all 0.3s ease;
                    position:relative;overflow:hidden;"
-                   onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3)'"
+                   onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 25px rgba(0,0,0,0.35)'"
                    onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)'">
-                   ${isBest ? '<span style="position:absolute;top:8px;right:8px;background:#fff;color:#333;font-size:9px;padding:3px 10px;border-radius:10px;font-weight:700;letter-spacing:0.5px;">BEST</span>' : ''}
+                   ${isBest ? '<span style="position:absolute;top:10px;right:10px;background:#fff;color:#333;font-size:10px;padding:4px 12px;border-radius:12px;font-weight:700;letter-spacing:0.5px;box-shadow:0 2px 8px rgba(0,0,0,0.2);">BEST</span>' : ''}
+                   <span style="font-size:18px;">${style.emoji}</span>
                    <i class="fas ${style.icon}" style="font-size:16px;"></i>
                    Download ${f.quality} (${style.label})
                 </a>
@@ -180,8 +189,8 @@ dlForm.addEventListener('submit', async (e) => {
         console.log('Download error:', err);
         preview.innerHTML = `
             <div style="text-align:center;padding:30px;">
-                <i class="fas fa-exclamation-triangle" style="font-size:48px;color:#e74c3c;display:block;margin-bottom:12px;"></i>
-                <p style="color:#e74c3c;font-weight:600;">Connection error, Check url and try again</p>
+                <i class="fas fa-exclamation-triangle" style="font-size:52px;color:#e74c3c;display:block;margin-bottom:14px;"></i>
+                <p style="color:#e74c3c;font-weight:600;font-size:15px;">Connection error, please check the URL and try again</p>
             </div>
         `;
         dlBtnIcon.style.display = "block";
@@ -214,11 +223,11 @@ async function loadDownloadHistory() {
             let html = data.history.slice(0, 6).map((item, index) => `
                 <div class="video-thumb-card" onclick="window.open('${item.url}', '_blank')" title="${item.title}">
                     <div class="video-thumb-img" style="background-image:url('${item.thumbnail || ''}');background-size:cover;background-position:center;">
-                        ${!item.thumbnail ? '<i class="fas fa-video" style="font-size:32px;color:#1877f2;"></i>' : ''}
+                        ${!item.thumbnail ? '<i class="fas fa-video" style="font-size:36px;color:#1877f2;"></i>' : ''}
                         <div class="video-thumb-play"></div>
                     </div>
-                    <p style="font-size:12px;padding:10px 8px 4px;text-align:center;font-weight:600;color:var(--text);">${item.title ? item.title.substring(0, 28) : 'Facebook Video'}</p>
-                    <div style="text-align:center;">
+                    <div class="thumb-info">
+                        <p class="thumb-title">${item.title ? item.title.substring(0, 30) : 'Facebook Video'}</p>
                         <span class="thumb-quality">${item.quality || 'HD'}</span>
                     </div>
                 </div>
@@ -227,17 +236,17 @@ async function loadDownloadHistory() {
             historyContainer.innerHTML = html;
         } else {
             historyContainer.innerHTML = `
-                <div style="grid-column:1/-1;text-align:center;padding:40px;">
-                    <i class="fas fa-history" style="font-size:48px;color:#ccc;display:block;margin-bottom:12px;"></i>
-                    <p style="color:#888;font-size:14px;">No downloads yet. Be the first!</p>
+                <div style="grid-column:1/-1;text-align:center;padding:50px;">
+                    <i class="fas fa-history" style="font-size:52px;color:#ccc;display:block;margin-bottom:14px;"></i>
+                    <p style="color:#888;font-size:15px;">No downloads yet. Be the first!</p>
                 </div>
             `;
         }
     } catch (err) {
         console.log('History load error:', err);
         historyContainer.innerHTML = `
-            <div style="grid-column:1/-1;text-align:center;padding:20px;">
-                <p style="color:#888;font-size:13px;">Loading history...</p>
+            <div style="grid-column:1/-1;text-align:center;padding:30px;">
+                <p style="color:#888;font-size:14px;">Loading history...</p>
             </div>
         `;
     }
@@ -272,8 +281,8 @@ function renderSidebar() {
     return `
         <!-- Random Ad Card -->
         <div class="sidebar-card sidebar-ad">
-            <a href="/purchase.html" target="_blank" title="Purchase this tool">
-                <img src="${randomAd.desktop}" alt="Advertisement">
+            <a href="/purchase.html" target="_blank" title="Purchase this tool - YasinG Downloader">
+                <img src="${randomAd.desktop}" alt="Advertisement - YasinG Downloader">
             </a>
         </div>
 
@@ -285,22 +294,22 @@ function renderSidebar() {
             <a href="#" class="related-post" onclick="document.getElementById('urlInput').value='https://www.facebook.com/reel/example1';document.getElementById('dlForm').requestSubmit();return false;">
                 <div class="related-thumb"><i class="fas fa-play"></i></div>
                 <div class="related-info">
-                    <h4 style="font-size:13px;font-weight:600;margin-bottom:4px;">How to Download Facebook Videos in HD</h4>
-                    <span style="font-size:11px;color:var(--text-secondary);"><i class="fas fa-eye"></i> 12.5K views</span>
+                    <h4>How to Download Facebook Videos in HD</h4>
+                    <span><i class="fas fa-eye"></i> 12.5K views</span>
                 </div>
             </a>
             <a href="#" class="related-post" onclick="document.getElementById('urlInput').value='https://www.facebook.com/reel/example2';document.getElementById('dlForm').requestSubmit();return false;">
                 <div class="related-thumb"><i class="fas fa-play"></i></div>
                 <div class="related-info">
-                    <h4 style="font-size:13px;font-weight:600;margin-bottom:4px;">Top 5 Video Downloader Tools 2026</h4>
-                    <span style="font-size:11px;color:var(--text-secondary);"><i class="fas fa-eye"></i> 8.2K views</span>
+                    <h4>Top 5 Video Downloader Tools 2026</h4>
+                    <span><i class="fas fa-eye"></i> 8.2K views</span>
                 </div>
             </a>
             <a href="#" class="related-post" onclick="document.getElementById('urlInput').value='https://www.facebook.com/reel/example3';document.getElementById('dlForm').requestSubmit();return false;">
                 <div class="related-thumb"><i class="fas fa-play"></i></div>
                 <div class="related-info">
-                    <h4 style="font-size:13px;font-weight:600;margin-bottom:4px;">Save Facebook Videos Without App</h4>
-                    <span style="font-size:11px;color:var(--text-secondary);"><i class="fas fa-eye"></i> 5.1K views</span>
+                    <h4>Save Facebook Videos Without App</h4>
+                    <span><i class="fas fa-eye"></i> 5.1K views</span>
                 </div>
             </a>
         </div>
@@ -322,8 +331,8 @@ function renderSidebar() {
 
         <!-- Another Random Ad -->
         <div class="sidebar-card sidebar-ad">
-            <a href="/purchase.html" target="_blank" title="Purchase this tool">
-                <img src="${getRandomAd().desktop}" alt="Advertisement">
+            <a href="/purchase.html" target="_blank" title="Get your own video downloader - YasinG">
+                <img src="${getRandomAd().desktop}" alt="Advertisement - Get YasinG Downloader">
             </a>
         </div>
     `;
@@ -331,71 +340,71 @@ function renderSidebar() {
 
 function renderVideoContent(data, firstVideo, formatButtons, randomAd) {
     return `
-    <div style="background:#fff;padding:24px;border-radius:16px;color:#111;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+    <div style="background:#fff;padding:28px;border-radius:18px;color:#111;box-shadow:0 8px 30px rgba(0,0,0,0.12);border:2px solid #e4e6eb;">
 
-        <video controls playsinline style="width:100%;border-radius:12px;background:#000;max-height:400px;">
+        <video controls playsinline style="width:100%;border-radius:14px;background:#000;max-height:450px;box-shadow:0 4px 15px rgba(0,0,0,0.2);">
             <source src="${firstVideo}" type="video/mp4">
             Your browser does not support the video tag.
         </video>
 
-        <h3 style="margin-top:20px;font-size:18px;font-weight:700;line-height:1.4;">${data.title}</h3>
-
-        ${data.uploader ? `
-        <div style="display:flex;align-items:center;gap:8px;margin-top:10px;">
-            <i class="fas fa-user-circle" style="color:#1877f2;font-size:22px;"></i>
-            <span style="color:#555;font-size:14px;font-weight:500;">${data.uploader}</span>
-        </div>` : ""}
-
-        ${data.uploader_url ? `
-        <a href="${data.uploader_url}" target="_blank" 
-        style="display:inline-flex;align-items:center;gap:6px;
-        margin:12px 0;padding:10px 18px;
-        color:#1877f2;background:#e8f0fe;border-radius:20px;
-        text-decoration:none;font-size:13px;font-weight:600;
-        transition:all 0.2s ease;"
-        onmouseover="this.style.background='#d0e1fd'"
-        onmouseout="this.style.background='#e8f0fe'">
-        <i class="fas fa-external-link-alt"></i> View more from uploader
-        </a>` : ""}
+        <!-- Video Info Card with Stylish Border -->
+        <div class="video-info-card">
+            <h3 class="video-title">${data.title || 'Facebook Video'}</h3>
+            
+            ${data.uploader ? `
+            <div class="uploader-info">
+                <div class="uploader-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="uploader-details">
+                    <div class="uploader-name">${data.uploader}</div>
+                    <div style="font-size:12px;color:var(--text-secondary);">Content Creator</div>
+                </div>
+                ${data.uploader_url ? `
+                <a href="${data.uploader_url}" target="_blank" class="uploader-link">
+                    <i class="fas fa-external-link-alt"></i> Visit Profile
+                </a>` : ''}
+            </div>` : ''}
+        </div>
 
         <!-- Random Ad -->
-        <div style="margin:20px 0;border-radius:12px;overflow:hidden;border:1px solid #e4e6eb;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-            <a href="/purchase.html" target="_blank">
+        <div style="margin:24px 0;border-radius:14px;overflow:hidden;border:2px solid #e4e6eb;box-shadow:0 4px 15px rgba(0,0,0,0.1);">
+            <a href="/purchase.html" target="_blank" title="Get your own video downloader">
                 <img src="${randomAd.desktop}" style="width:100%;display:block;" alt="Advertisement">
             </a>
         </div>
 
-        <div style="margin:20px 0;">
-            <p style="font-weight:700;color:#333;margin-bottom:12px;font-size:16px;">
-                <i class="fas fa-arrow-down" style="color:#1877f2;"></i> Available Downloads:
+        <div style="margin:24px 0;">
+            <p style="font-weight:700;color:#333;margin-bottom:16px;font-size:17px;display:flex;align-items:center;gap:8px;">
+                <i class="fas fa-arrow-down" style="color:#1877f2;font-size:18px;"></i> Available Downloads:
             </p>
             ${formatButtons}
         </div>
 
         <button onclick="resetDownloader()" 
-            style="margin-top:10px;padding:14px 20px;width:100%;
-            border:2px solid #e4e6eb;background:#f8f9fa;color:#333;border-radius:12px;
-            font-size:14px;font-weight:600;cursor:pointer;
-            display:flex;align-items:center;justify-content:center;gap:8px;
-            transition:all 0.2s ease;"
-            onmouseover="this.style.background='#e9ecef';this.style.borderColor='#ccc'"
-            onmouseout="this.style.background='#f8f9fa';this.style.borderColor='#e4e6eb'">
+            style="margin-top:16px;padding:16px 24px;width:100%;
+            border:2px solid #e4e6eb;background:#f8f9fa;color:#333;border-radius:14px;
+            font-size:15px;font-weight:600;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;gap:10px;
+            transition:all 0.3s ease;"
+            onmouseover="this.style.background='#e9ecef';this.style.borderColor='#1877f2';this.style.transform='translateY(-2px)'"
+            onmouseout="this.style.background='#f8f9fa';this.style.borderColor='#e4e6eb';this.style.transform='translateY(0)'">
             <i class="fas fa-redo"></i> Download Another Video
         </button>
         
         <button onclick="window.location.href='/purchase.html'" 
-            style="margin-top:10px;padding:14px 20px;width:100%;
-            border:2px solid #e74c3c;background:#e74c3c;color:#fff;border-radius:12px;
-            font-size:14px;font-weight:600;cursor:pointer;
-            display:flex;align-items:center;justify-content:center;gap:8px;
-            transition:all 0.2s ease;"
-            onmouseover="this.style.background='#c0392b';this.style.transform='translateY(-2px)'"
-            onmouseout="this.style.background='#e74c3c';this.style.transform='translateY(0)'">
+            style="margin-top:12px;padding:16px 24px;width:100%;
+            border:2px solid #e74c3c;background:#e74c3c;color:#fff;border-radius:14px;
+            font-size:15px;font-weight:600;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;gap:10px;
+            transition:all 0.3s ease;"
+            onmouseover="this.style.background='#c0392b';this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(231,76,60,0.3)'"
+            onmouseout="this.style.background='#e74c3c';this.style.transform='translateY(0)';this.style.boxShadow='none'">
             <i class="fas fa-dollar"></i> BUY THIS TOOL
         </button>
         
-        <p style="text-align:center;margin-top:12px;color:var(--text-secondary);font-size:13px;">
-            Ardi Mobile Inc | Developed by <strong>Yasin Gelma</strong> - @anayasingg
+        <p style="text-align:center;margin-top:16px;color:var(--text-secondary);font-size:13px;padding-top:16px;border-top:2px solid #e4e6eb;">
+            Ardi Mobile Inc | Developed by <strong style="color:#1877f2;">Yasin Gelma</strong> - @anayasingg
         </p>
     </div>
     `;
