@@ -10,24 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Sekuya&display=swap" rel="stylesheet">
     <style>
         :root {
-            --blue: #1877f2;
-            --blue-dark: #166fe5;
-            --blue-light: #e8f0fe;
-            --light: #f0f2f5;
-            --green: #00c853;
-            --red: #e74c3c;
-            --orange: #f39c12;
-            --card: #ffffff;
-            --text: #1c1e21;
-            --text-secondary: #65676b;
-            --text-light: #8a8d91;
-            --border: #e4e6eb;
-            --shadow: 0 1px 2px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
-            --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
-            --radius-sm: 8px;
-            --radius: 12px;
-            --radius-full: 50px;
+            --blue: #1877f2; --blue-dark: #166fe5; --blue-light: #e8f0fe;
+            --light: #f0f2f5; --card: #ffffff; --text: #1c1e21;
+            --text-secondary: #65676b; --border: #e4e6eb;
+            --shadow: 0 1px 2px rgba(0,0,0,0.1); --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.15); --radius-sm: 8px; --radius: 12px;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -35,418 +22,90 @@
 
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--light); 
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
+            background: var(--light); color: var(--text); line-height: 1.6; min-height: 100vh;
         }
 
         a { text-decoration: none; color: inherit; }
         a:hover { text-decoration: none; }
-        ul, ol { list-style: none; }
         button { cursor: pointer; font-family: inherit; }
-        input, textarea { font-family: inherit; }
 
-        /* Header */
-        .header {
-            background: #fff;
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 10px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--text);
-        }
-
+        .header { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+        .logo { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 800; color: var(--text); }
         .logo i { color: #1877f2; font-size: 24px; }
         .logo span { color: #1877f2; font-family: "Bricolage Grotesque", sans-serif; }
+        .menu-btn { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--border); background: #fff; color: var(--blue); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
-        .menu-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
-            background: #fff;
-            color: var(--blue);
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        /* Drawer */
-        .drawer-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 2000;
-        }
+        .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; }
         .drawer-overlay.show { display: block; }
-
-        .drawer {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 300px;
-            max-width: 85vw;
-            height: 100vh;
-            height: 100dvh;
-            background: #fff;
-            z-index: 2001;
-            transition: right 0.3s ease;
-            overflow-y: auto;
-            box-shadow: -4px 0 24px rgba(0,0,0,0.15);
-        }
+        .drawer { position: fixed; top: 0; right: -320px; width: 300px; max-width: 85vw; height: 100vh; background: #fff; z-index: 2001; transition: right 0.3s ease; overflow-y: auto; box-shadow: -4px 0 24px rgba(0,0,0,0.15); }
         .drawer.show { right: 0; }
-
-        .drawer-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 18px;
-            border-bottom: 2px solid var(--blue-light);
-            position: sticky;
-            top: 0;
-            background: #fff;
-            z-index: 10;
-        }
-
+        .drawer-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; border-bottom: 2px solid var(--blue-light); position: sticky; top: 0; background: #fff; z-index: 10; }
         .drawer-header h3 { font-size: 16px; display: flex; align-items: center; gap: 8px; }
         .drawer-header h3 i { color: var(--blue); }
-
-        .drawer-close {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            border: none;
-            background: var(--light);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: var(--text);
-            flex-shrink: 0;
-        }
+        .drawer-close { width: 34px; height: 34px; border-radius: 50%; border: none; background: var(--light); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text); flex-shrink: 0; }
         .drawer-close:hover { background: #e74c3c; color: #fff; }
-
         .drawer-menu { padding: 8px 12px; }
-
-        .drawer-menu a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 14px;
-            color: var(--text);
-            border-radius: var(--radius-sm);
-            font-weight: 500;
-            font-size: 14px;
-            margin-bottom: 2px;
-            border: 2px solid transparent;
-            transition: all 0.15s ease;
-        }
-
-        .drawer-menu a:hover,
-        .drawer-menu a.active {
-            background: var(--blue-light);
-            color: var(--blue);
-            border-color: var(--blue);
-        }
-
+        .drawer-menu a { display: flex; align-items: center; gap: 10px; padding: 12px 14px; color: var(--text); border-radius: var(--radius-sm); font-weight: 500; font-size: 14px; margin-bottom: 2px; border: 2px solid transparent; transition: all 0.15s ease; }
+        .drawer-menu a:hover, .drawer-menu a.active { background: var(--blue-light); color: var(--blue); border-color: var(--blue); }
         .drawer-menu a i { width: 20px; text-align: center; }
 
-        /* Main */
-        .main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 16px;
-        }
-
-        .main-layout {
-            display: flex;
-            gap: 24px;
-            align-items: flex-start;
-        }
-
+        .main { max-width: 1200px; margin: 0 auto; padding: 16px; }
+        .main-layout { display: flex; gap: 24px; align-items: flex-start; }
         .main-content { flex: 1; min-width: 0; }
 
-        /* Blog Cards */
-        .blog-card {
-            background: #fff;
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: var(--shadow);
-            border: 2px solid var(--border);
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
+        .page-header { background: linear-gradient(135deg, #1877f2, #0d5bbd); border-radius: var(--radius); padding: 28px 20px; text-align: center; color: #fff; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(24,119,242,0.3); }
+        .page-header h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+        .page-header p { font-size: 14px; opacity: 0.9; }
 
-        .blog-card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-            border-color: var(--blue);
-        }
-
-        .blog-card h2 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text);
-            line-height: 1.4;
-        }
-
-        .blog-card h2 a { color: var(--text); }
-        .blog-card h2 a:hover { color: var(--blue); }
-
-        .blog-meta {
-            display: flex;
-            gap: 14px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
-
-        .blog-meta span {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
+        .blog-card { background: #fff; border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; box-shadow: var(--shadow); border: 2px solid var(--border); transition: all 0.2s ease; cursor: pointer; }
+        .blog-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); border-color: var(--blue); }
+        .blog-thumbnail { width: 100%; height: 200px; object-fit: cover; display: block; background: var(--blue-light); }
+        .blog-card-body { padding: 20px; }
+        .blog-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text); line-height: 1.4; }
+        .blog-card h2:hover { color: var(--blue); }
+        .blog-meta { display: flex; gap: 14px; font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; flex-wrap: wrap; }
+        .blog-meta span { display: flex; align-items: center; gap: 4px; }
         .blog-meta i { font-size: 13px; color: var(--blue); }
+        .blog-excerpt { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 12px; }
+        .blog-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .tag { padding: 4px 12px; background: var(--blue-light); color: var(--blue); border-radius: 50px; font-size: 11px; font-weight: 600; }
+        .read-more { display: inline-flex; align-items: center; gap: 6px; color: var(--blue); font-weight: 600; font-size: 14px; padding: 8px 16px; background: var(--blue-light); border-radius: 50px; transition: all 0.2s ease; }
+        .read-more:hover { background: var(--blue); color: #fff; }
 
-        .blog-excerpt {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 12px;
-        }
-
-        .blog-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .tag {
-            padding: 4px 12px;
-            background: var(--blue-light);
-            color: var(--blue);
-            border-radius: var(--radius-full);
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .read-more {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--blue);
-            font-weight: 600;
-            font-size: 14px;
-            margin-top: 8px;
-        }
-
-        .read-more:hover { text-decoration: underline; }
-
-        /* Sidebar */
-        .sidebar {
-            width: 320px;
-            flex-shrink: 0;
-            display: none;
-        }
-
+        .sidebar { width: 320px; flex-shrink: 0; }
         .sidebar-sticky { position: sticky; top: 80px; }
-
-        .sidebar-card {
-            background: #fff;
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: var(--shadow);
-            border: 2px solid var(--border);
-        }
-
-        .sidebar-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid var(--blue-light);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
+        .sidebar-card { background: #fff; border-radius: var(--radius); padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow); border: 2px solid var(--border); }
+        .sidebar-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--blue-light); display: flex; align-items: center; gap: 8px; }
         .sidebar-title i { color: var(--blue); }
-
-        .related-post {
-            display: flex;
-            gap: 10px;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-        }
+        .related-post { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
         .related-post:last-child { border-bottom: none; }
-
-        .related-post:hover {
-            background: #f8f9fa;
-            margin: 0 -10px;
-            padding: 10px;
-            border-radius: var(--radius-sm);
-        }
-
-        .related-thumb {
-            width: 70px;
-            height: 50px;
-            border-radius: 6px;
-            background: var(--blue-light);
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--blue);
-            font-size: 18px;
-        }
-
-        .related-info h4 {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            line-height: 1.4;
-        }
-
-        .related-info span {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        .sidebar-ad {
-            text-align: center;
-            overflow: hidden;
-            border-radius: var(--radius);
-        }
+        .related-post:hover { background: #f8f9fa; margin: 0 -10px; padding: 10px; border-radius: var(--radius-sm); }
+        .related-thumb { width: 70px; height: 50px; border-radius: 6px; overflow: hidden; flex-shrink: 0; background: var(--blue-light); }
+        .related-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .related-info h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; line-height: 1.4; }
+        .related-info span { font-size: 11px; color: var(--text-secondary); }
+        .sidebar-ad { text-align: center; overflow: hidden; border-radius: var(--radius); }
         .sidebar-ad img { width: 100%; border-radius: var(--radius); display: block; }
-
-        .tag-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .tag-item {
-            padding: 6px 12px;
-            background: var(--blue-light);
-            color: var(--blue);
-            border-radius: var(--radius-full);
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-        }
+        .tag-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag-item { padding: 6px 12px; background: var(--blue-light); color: var(--blue); border-radius: 50px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .tag-item:hover { background: var(--blue); color: #fff; }
 
-        /* Page Header */
-        .page-header {
-            background: linear-gradient(135deg, #1877f2, #0d5bbd);
-            border-radius: var(--radius);
-            padding: 28px 20px;
-            text-align: center;
-            color: #fff;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(24,119,242,0.3);
-        }
-
-        .page-header h1 {
-            font-size: 22px;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .page-header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        /* Footer */
-        .footer {
-            background: #fff;
-            border-top: 2px solid var(--border);
-            padding: 24px 16px;
-            text-align: center;
-            margin-top: 32px;
-        }
-
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .social-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--light);
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            border: 2px solid var(--border);
-        }
-
+        .footer { background: #fff; border-top: 2px solid var(--border); padding: 24px 16px; text-align: center; margin-top: 32px; }
+        .social-icons { display: flex; justify-content: center; gap: 16px; margin-bottom: 16px; }
+        .social-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--light); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; font-size: 18px; border: 2px solid var(--border); }
         .social-icon.fb:hover { background: #1877f2; color: #fff; border-color: #1877f2; }
         .social-icon.telegram:hover { background: #0088cc; color: #fff; border-color: #0088cc; }
         .social-icon.whatsapp:hover { background: #25D366; color: #fff; border-color: #25D366; }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-        }
-
-        .footer-links a {
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
+        .footer-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+        .footer-links a { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
         .footer-links a:hover { color: var(--blue); }
-
-        .copyright {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px solid var(--border);
-        }
+        .copyright { font-size: 12px; color: var(--text-secondary); margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
         .copyright strong { color: var(--blue); }
 
-        @media (max-width: 480px) {
-            .blog-card { padding: 16px; }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .blog-thumbnail { height: 160px; }
             .blog-card h2 { font-size: 18px; }
             .page-header { padding: 22px 16px; }
             .page-header h1 { font-size: 20px; }
@@ -454,21 +113,17 @@
 
         @media (min-width: 1025px) {
             .main { padding: 24px 32px; }
-            .sidebar { display: block; }
             .page-header { padding: 40px 32px; }
             .page-header h1 { font-size: 28px; }
+            .blog-thumbnail { height: 220px; }
         }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-inner">
-            <a href="/" class="logo">
-                <i class="fab fa-facebook-square"></i> VIDEO <span>DOWNLOADER</span>
-            </a>
-            <button class="menu-btn" onclick="toggleDrawer()" aria-label="Menu">
-                <i class="fas fa-bars"></i>
-            </button>
+            <a href="/" class="logo"><i class="fab fa-facebook-square"></i> VIDEO <span>DOWNLOADER</span></a>
+            <button class="menu-btn" onclick="toggleDrawer()"><i class="fas fa-bars"></i></button>
         </div>
     </header>
 
@@ -481,13 +136,13 @@
         <div class="drawer-menu">
             <a href="index.html"><i class="fas fa-home"></i> Home</a>
             <a href="blog.html" class="active"><i class="fas fa-rss"></i> Blog</a>
-            <a href="/purchase.html"><i class="fa-solid fa-dollar"></i> Purchase this tool</a>
-            <a href="page/about.html"><i class="fa-solid fa-user"></i> About us</a>
+            <a href="purchase.html"><i class="fa-solid fa-dollar"></i> Purchase</a>
+            <a href="page/about.html"><i class="fa-solid fa-user"></i> About</a>
             <a href="page/copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a>
             <a href="page/disclaimers.html"><i class="fa-solid fa-hand"></i> Disclaimers</a>
-            <a href="page/privacy.html"><i class="fa-solid fa-user-secret"></i> Privacy Policy</a>
-            <a href="page/terms-of-service.html"><i class="fa-solid fa-file-contract"></i> Terms of service</a>
-            <a href="page/bug-report.html"><i class="fa-solid fa-bug"></i> Report issue</a>
+            <a href="page/privacy.html"><i class="fa-solid fa-user-secret"></i> Privacy</a>
+            <a href="page/terms-of-service.html"><i class="fa-solid fa-file-contract"></i> Terms</a>
+            <a href="page/bug-report.html"><i class="fa-solid fa-bug"></i> Report</a>
         </div>
     </nav>
 
@@ -498,105 +153,23 @@
         </div>
 
         <div class="main-layout">
-            <div class="main-content">
-                <!-- Blog Post 1 -->
-                <div class="blog-card" onclick="window.location.href='blog/how-to-download-facebook-videos.html'">
-                    <h2><a href="blog/how-to-download-facebook-videos.html">How to Download Facebook Videos in HD Quality</a></h2>
-                    <div class="blog-meta">
-                        <span><i class="fas fa-calendar"></i> June 15, 2026</span>
-                        <span><i class="fas fa-user"></i> Yasin Gelma</span>
-                        <span><i class="fas fa-eye"></i> 12.5K views</span>
-                    </div>
-                    <p class="blog-excerpt">Learn the easiest way to download Facebook videos in Full HD quality. Step-by-step guide with screenshots...</p>
-                    <div class="blog-tags">
-                        <span class="tag">Facebook</span>
-                        <span class="tag">HD Video</span>
-                        <span class="tag">Tutorial</span>
-                    </div>
-                    <a href="blog/how-to-download-facebook-videos.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <!-- Blog Post 2 -->
-                <div class="blog-card" onclick="window.location.href='blog/facebook-downloader-tools.html'">
-                    <h2><a href="blog/facebook-downloader-tools.html">Top 5 Facebook Video Downloader Tools in 2026</a></h2>
-                    <div class="blog-meta">
-                        <span><i class="fas fa-calendar"></i> June 10, 2026</span>
-                        <span><i class="fas fa-user"></i> Yasin Gelma</span>
-                        <span><i class="fas fa-eye"></i> 8.2K views</span>
-                    </div>
-                    <p class="blog-excerpt">Compare the best Facebook video downloader tools available this year. Features, pros, and cons...</p>
-                    <div class="blog-tags">
-                        <span class="tag">Tools</span>
-                        <span class="tag">Comparison</span>
-                        <span class="tag">2026</span>
-                    </div>
-                    <a href="blog/facebook-downloader-tools.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <!-- Blog Post 3 -->
-                <div class="blog-card" onclick="window.location.href='blog/save-facebook-vodeos-without-any-apps.html'">
-                    <h2><a href="blog/save-facebook-vodeos-without-any-apps.html">Save Facebook Videos Without Installing Any App</a></h2>
-                    <div class="blog-meta">
-                        <span><i class="fas fa-calendar"></i> June 5, 2026</span>
-                        <span><i class="fas fa-user"></i> Yasin Gelma</span>
-                        <span><i class="fas fa-eye"></i> 5.1K views</span>
-                    </div>
-                    <p class="blog-excerpt">No app needed! Use our online tool to save Facebook videos directly to your device...</p>
-                    <div class="blog-tags">
-                        <span class="tag">Online</span>
-                        <span class="tag">No App</span>
-                        <span class="tag">Free</span>
-                    </div>
-                    <a href="blog/save-facebook-vodeos-without-any-apps.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
+            <div class="main-content" id="blogPostsContainer"></div>
 
             <aside class="sidebar">
                 <div class="sidebar-sticky">
                     <div class="sidebar-card sidebar-ad">
-                        <a href="/purchase.html" target="_blank">
-                            <img src="https://picsum.photos/600/400?random=10" alt="Ad" loading="lazy">
-                        </a>
+                        <a href="purchase.html"><img src="https://picsum.photos/600/400?random=10" alt="Ad" loading="lazy"></a>
                     </div>
                     <div class="sidebar-card">
-                        <div class="sidebar-title"><i class="fas fa-fire"></i> Popular Posts</div>
-                        <a href="blog/how-to-download-facebook-videos.html" class="related-post">
-                            <div class="related-thumb"><i class="fas fa-play"></i></div>
-                            <div class="related-info">
-                                <h4>Download FB Videos in HD</h4>
-                                <span><i class="fas fa-eye"></i> 12.5K views</span>
-                            </div>
-                        </a>
-                        <a href="blog/facebook-downloader-tools.html" class="related-post">
-                            <div class="related-thumb"><i class="fas fa-play"></i></div>
-                            <div class="related-info">
-                                <h4>Top 5 Downloader Tools</h4>
-                                <span><i class="fas fa-eye"></i> 8.2K views</span>
-                            </div>
-                        </a>
-                        <a href="blog/save-facebook-vodeos-without-any-apps.html" class="related-post">
-                            <div class="related-thumb"><i class="fas fa-play"></i></div>
-                            <div class="related-info">
-                                <h4>Save Without App</h4>
-                                <span><i class="fas fa-eye"></i> 5.1K views</span>
-                            </div>
-                        </a>
+                        <div class="sidebar-title"><i class="fas fa-fire"></i> Recent Posts</div>
+                        <div id="recentPosts"></div>
                     </div>
                     <div class="sidebar-card">
                         <div class="sidebar-title"><i class="fas fa-tags"></i> Categories</div>
-                        <div class="tag-list">
-                            <a href="#" class="tag-item">Facebook</a>
-                            <a href="#" class="tag-item">Tutorial</a>
-                            <a href="#" class="tag-item">HD Video</a>
-                            <a href="#" class="tag-item">Free Tools</a>
-                            <a href="#" class="tag-item">MP4</a>
-                            <a href="#" class="tag-item">Online</a>
-                        </div>
+                        <div class="tag-list" id="categoriesList"></div>
                     </div>
                     <div class="sidebar-card sidebar-ad">
-                        <a href="/purchase.html" target="_blank">
-                            <img src="https://picsum.photos/600/400?random=11" alt="Ad" loading="lazy">
-                        </a>
+                        <a href="purchase.html"><img src="https://picsum.photos/600/400?random=11" alt="Ad" loading="lazy"></a>
                     </div>
                 </div>
             </aside>
@@ -610,24 +183,63 @@
             <a href="https://api.whatsapp.com/send?phone=251934646971" class="social-icon whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
         </div>
         <div class="footer-links">
-            <a href="/purchase.html">Purchase</a>
+            <a href="purchase.html">Purchase</a>
             <a href="page/about.html">About</a>
             <a href="page/privacy.html">Privacy</a>
             <a href="page/terms-of-service.html">Terms</a>
             <a href="page/copyright.html">Copyright</a>
         </div>
-        <p class="copyright" id="credit-link">2026 &copy; Ardi Mobile Inc | Developed by <strong><a href="https://www.facebook.com/yasingelma" target="_blank">Yasin Gelma</a></strong></p>
+        <p class="copyright">2026 &copy; Ardi Mobile Inc | <strong>Yasin Gelma</strong></p>
     </footer>
 
+    <script src="blog-posts.js"></script>
     <script>
         function toggleDrawer() {
-            const drawer = document.getElementById('drawer');
-            const overlay = document.getElementById('drawerOverlay');
-            if (drawer && overlay) {
-                drawer.classList.toggle('show');
-                overlay.classList.toggle('show');
-            }
+            document.getElementById('drawer').classList.toggle('show');
+            document.getElementById('drawerOverlay').classList.toggle('show');
         }
+
+        function renderBlogPosts() {
+            const container = document.getElementById('blogPostsContainer');
+            const sorted = [...blogPosts].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            container.innerHTML = sorted.map(post => `
+                <article class="blog-card" onclick="location.href='blog/${post.slug}.html'">
+                    <img src="${post.thumbnail}" alt="${post.title}" class="blog-thumbnail" loading="lazy" onerror="this.src='https://picsum.photos/800/400?random=${post.id}'">
+                    <div class="blog-card-body">
+                        <h2>${post.title}</h2>
+                        <div class="blog-meta">
+                            <span><i class="fas fa-calendar"></i> ${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                            <span><i class="fas fa-user"></i> ${post.author}</span>
+                            <span><i class="fas fa-eye"></i> ${post.views.toLocaleString()} views</span>
+                            <span><i class="fas fa-clock"></i> ${post.readTime}</span>
+                        </div>
+                        <p class="blog-excerpt">${post.excerpt}</p>
+                        <div class="blog-tags">${post.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+                        <a href="blog/${post.slug}.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function renderRecentPosts() {
+            const recent = [...blogPosts].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
+            document.getElementById('recentPosts').innerHTML = recent.map(post => `
+                <a href="blog/${post.slug}.html" class="related-post">
+                    <div class="related-thumb"><img src="${post.thumbnail}" alt="" loading="lazy" onerror="this.style.display='none'"></div>
+                    <div class="related-info"><h4>${post.title}</h4><span><i class="fas fa-calendar"></i> ${new Date(post.date).toLocaleDateString()}</span></div>
+                </a>
+            `).join('');
+        }
+
+        function renderCategories() {
+            const cats = [...new Set(blogPosts.map(p => p.category))];
+            document.getElementById('categoriesList').innerHTML = cats.map(c => `<span class="tag-item">${c}</span>`).join('');
+        }
+
+        renderBlogPosts();
+        renderRecentPosts();
+        renderCategories();
     </script>
 </body>
 </html>
