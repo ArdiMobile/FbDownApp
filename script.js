@@ -6,36 +6,16 @@ const btnLoader = document.getElementById('btnLoader');
 
 // Random ads array
 const randomAds = [
-    {
-        desktop: 'https://picsum.photos/600/400?random=1',
-        mobile: 'https://picsum.photos/400/300?random=1'
-    },
-    {
-        desktop: 'https://picsum.photos/600/400?random=2',
-        mobile: 'https://picsum.photos/400/300?random=2'
-    },
-    {
-        desktop: 'https://picsum.photos/600/400?random=3',
-        mobile: 'https://picsum.photos/400/300?random=3'
-    },
-    {
-        desktop: 'https://picsum.photos/600/400?random=4',
-        mobile: 'https://picsum.photos/400/300?random=4'
-    },
-    {
-        desktop: 'https://picsum.photos/600/400?random=5',
-        mobile: 'https://picsum.photos/400/300?random=5'
-    },
-    {
-        desktop: 'https://picsum.photos/600/400?random=6',
-        mobile: 'https://picsum.photos/400/300?random=6'
-    }
+    { desktop: 'https://picsum.photos/600/400?random=1', mobile: 'https://picsum.photos/400/300?random=1' },
+    { desktop: 'https://picsum.photos/600/400?random=2', mobile: 'https://picsum.photos/400/300?random=2' },
+    { desktop: 'https://picsum.photos/600/400?random=3', mobile: 'https://picsum.photos/400/300?random=3' },
+    { desktop: 'https://picsum.photos/600/400?random=4', mobile: 'https://picsum.photos/400/300?random=4' },
+    { desktop: 'https://picsum.photos/600/400?random=5', mobile: 'https://picsum.photos/400/300?random=5' },
+    { desktop: 'https://picsum.photos/600/400?random=6', mobile: 'https://picsum.photos/400/300?random=6' }
 ];
 
-// Get random ad
 function getRandomAd() {
-    const randomIndex = Math.floor(Math.random() * randomAds.length);
-    return randomAds[randomIndex];
+    return randomAds[Math.floor(Math.random() * randomAds.length)];
 }
 
 // Load history and sidebar on page load
@@ -43,6 +23,27 @@ document.addEventListener('DOMContentLoaded', () => {
     loadDownloadHistory();
     initSidebar();
 });
+
+// Video Modal Functions
+function openVideoModal(videoUrl) {
+    const modal = document.getElementById('videoModal');
+    const video = document.getElementById('modalVideo');
+    
+    video.src = videoUrl;
+    modal.classList.add('show');
+    video.play();
+}
+
+function closeVideoModal(event) {
+    if (event && event.target !== document.getElementById('videoModal')) return;
+    
+    const modal = document.getElementById('videoModal');
+    const video = document.getElementById('modalVideo');
+    
+    video.pause();
+    video.src = '';
+    modal.classList.remove('show');
+}
 
 // Drawer toggle
 function toggleDrawer() {
@@ -63,63 +64,61 @@ function switchTab(event, tabId) {
     document.querySelectorAll('.drawer-menu a').forEach(a => a.classList.remove('active'));
     
     const panel = document.getElementById(tabId);
-    if (panel) {
-        panel.classList.add('active');
-    }
+    if (panel) panel.classList.add('active');
     
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabIds = ['tab-home', 'tab-how', 'tab-updates', 'tab-faq', 'tab-apps'];
     const index = tabIds.indexOf(tabId);
-    if (index >= 0 && tabBtns[index]) {
-        tabBtns[index].classList.add('active');
-    }
+    if (index >= 0 && tabBtns[index]) tabBtns[index].classList.add('active');
     
-    const drawerLinks = document.querySelectorAll('.drawer-menu a');
-    drawerLinks.forEach(link => {
+    document.querySelectorAll('.drawer-menu a').forEach(link => {
         if (link.getAttribute('onclick') && link.getAttribute('onclick').includes(tabId)) {
             link.classList.add('active');
         }
     });
     
-    const drawer = document.getElementById('drawer');
-    const overlay = document.getElementById('drawerOverlay');
-    if (drawer) drawer.classList.remove('show');
-    if (overlay) overlay.classList.remove('show');
-    
-    const tabBar = document.getElementById('tabBar');
-    if (tabBar) tabBar.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('drawer')?.classList.remove('show');
+    document.getElementById('drawerOverlay')?.classList.remove('show');
+    document.getElementById('tabBar')?.scrollIntoView({ behavior: 'smooth' });
 }
 
-// AUTO PASTE
+// Auto paste
 urlInput.addEventListener('focus', async () => {
     try {
         const text = await navigator.clipboard.readText();
-        if (text.includes("facebook.com")) {
-            urlInput.value = text;
-        }
-    } catch (e) {
-        console.log("Clipboard blocked");
-    }
+        if (text.includes("facebook.com")) urlInput.value = text;
+    } catch (e) {}
 });
 
-// SUBMIT
+// Direct download function
+function downloadVideo(url, quality) {
+    // Create a temporary anchor element for direct download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `facebook-video-${quality}.mp4`;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+// Submit form
 dlForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const url = urlInput.value.trim();
     if (!url) return alert("Please paste a Facebook video link");
 
-    // Show spinner on button
+    // Show loading
     dlBtnIcon.style.display = "none";
     btnLoader.style.display = "block";
-    btnLoader.innerHTML = `<div style="width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #fff; border-radius: 50%; animation: spin 0.7s linear infinite;"></div>`;
+    btnLoader.innerHTML = `<div style="width:22px;height:22px;border:2px solid rgba(255,255,255,0.3);border-top:2px solid #fff;border-radius:50%;animation:spin 0.6s linear infinite;"></div>`;
 
     preview.innerHTML = `
-        <div style="text-align:center;padding:50px 20px;">
-            <div style="display:flex;align-items:center;justify-content:center;flex-direction:column;">
-                <div style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid #fff; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-            </div>
-            <p style="color:rgba(255,255,255,0.95);margin-top:18px;font-size:15px;font-weight:500;">Fetching your video...</p>
+        <div style="text-align:center;padding:30px 20px;">
+            <div style="width:40px;height:40px;border:3px solid rgba(255,255,255,0.2);border-top:3px solid #fff;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;"></div>
+            <p style="color:rgba(255,255,255,0.9);font-size:14px;">Fetching video...</p>
         </div>
     `;
 
@@ -127,70 +126,55 @@ dlForm.addEventListener('submit', async (e) => {
         const res = await fetch(`/api/info?url=${encodeURIComponent(url)}`);
         const data = await res.json();
 
-        // Hide spinner, show download icon
         dlBtnIcon.style.display = "block";
         btnLoader.style.display = "none";
 
         if (data.status !== "success") {
             preview.innerHTML = `
-                <div style="text-align:center;padding:30px;">
-                    <i class="fas fa-exclamation-circle" style="font-size:52px;color:#e74c3c;display:block;margin-bottom:14px;"></i>
-                    <p style="color:#e74c3c;font-weight:600;font-size:15px;">${data.message}</p>
+                <div style="text-align:center;padding:20px;">
+                    <i class="fas fa-exclamation-circle" style="font-size:40px;color:#e74c3c;display:block;margin-bottom:10px;"></i>
+                    <p style="color:#e74c3c;font-weight:600;font-size:14px;">${data.message}</p>
                 </div>
             `;
             return;
         }
 
-        // Save to history
         saveToHistory(data);
 
         const firstVideo = data.formats[0]?.url;
         const randomAd = getRandomAd();
 
-        // Quality styles with gradients
         const qualityStyles = {
-            '1080p': { bg: 'linear-gradient(135deg, #e74c3c, #c0392b)', icon: 'fa-crown', label: 'Full HD', emoji: '👑' },
-            '720p': { bg: 'linear-gradient(135deg, #f39c12, #e67e22)', icon: 'fa-star', label: 'HD', emoji: '⭐' },
-            '480p': { bg: 'linear-gradient(135deg, #1877f2, #1565c0)', icon: 'fa-video', label: 'SD', emoji: '📹' },
-            '360p': { bg: 'linear-gradient(135deg, #2ecc71, #27ae60)', icon: 'fa-play', label: 'Low', emoji: '▶️' },
-            '240p': { bg: 'linear-gradient(135deg, #95a5a6, #7f8c8d)', icon: 'fa-download', label: 'Low', emoji: '⬇️' }
+            '1080p': { bg: 'linear-gradient(135deg, #e74c3c, #c0392b)', icon: 'fa-crown', label: 'Full HD' },
+            '720p': { bg: 'linear-gradient(135deg, #f39c12, #e67e22)', icon: 'fa-star', label: 'HD' },
+            '480p': { bg: 'linear-gradient(135deg, #1877f2, #1565c0)', icon: 'fa-video', label: 'SD' },
+            '360p': { bg: 'linear-gradient(135deg, #2ecc71, #27ae60)', icon: 'fa-play', label: 'Low' },
+            '240p': { bg: 'linear-gradient(135deg, #95a5a6, #7f8c8d)', icon: 'fa-download', label: 'Low' }
         };
 
         let formatButtons = data.formats.map((f, index) => {
-            const style = qualityStyles[f.quality] || { bg: 'linear-gradient(135deg, #1877f2, #1565c0)', icon: 'fa-download', label: f.quality, emoji: '📥' };
+            const style = qualityStyles[f.quality] || { bg: 'linear-gradient(135deg, #1877f2, #1565c0)', icon: 'fa-download', label: f.quality };
             const isBest = index === 0;
             
             return `
-                <a href="${f.url}" target="_blank" download
-                   style="display:flex;align-items:center;justify-content:center;gap:12px;
-                   margin:10px 0;padding:16px 20px;
-                   background:${style.bg};color:#fff;border-radius:14px;
-                   text-decoration:none;font-weight:600;font-size:15px;
-                   box-shadow:0 6px 18px rgba(0,0,0,0.25);
-                   transition:all 0.3s ease;
-                   position:relative;overflow:hidden;"
-                   onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 25px rgba(0,0,0,0.35)'"
-                   onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)'">
-                   ${isBest ? '<span style="position:absolute;top:10px;right:10px;background:#fff;color:#333;font-size:10px;padding:4px 12px;border-radius:12px;font-weight:700;letter-spacing:0.5px;box-shadow:0 2px 8px rgba(0,0,0,0.2);">BEST</span>' : ''}
-                   <span style="font-size:18px;">${style.emoji}</span>
-                   <i class="fas ${style.icon}" style="font-size:16px;"></i>
+                <button onclick="downloadVideo('${f.url}', '${f.quality}')"
+                   class="dl-quality-btn"
+                   style="width:100%;background:${style.bg};border:none;${isBest ? '' : ''}">
+                   ${isBest ? '<span class="best-badge">BEST</span>' : ''}
+                   <i class="fas ${style.icon}"></i>
                    Download ${f.quality} (${style.label})
-                </a>
+                </button>
             `;
         }).join("");
 
-        // Use the new function for result with sidebar on desktop
         preview.innerHTML = showResultWithSidebar(data, firstVideo, formatButtons, randomAd);
-
-        // Refresh history after download
         setTimeout(loadDownloadHistory, 1500);
 
     } catch (err) {
-        console.log('Download error:', err);
         preview.innerHTML = `
-            <div style="text-align:center;padding:30px;">
-                <i class="fas fa-exclamation-triangle" style="font-size:52px;color:#e74c3c;display:block;margin-bottom:14px;"></i>
-                <p style="color:#e74c3c;font-weight:600;font-size:15px;">Connection error, please check the URL and try again</p>
+            <div style="text-align:center;padding:20px;">
+                <i class="fas fa-exclamation-triangle" style="font-size:40px;color:#e74c3c;display:block;margin-bottom:10px;"></i>
+                <p style="color:#e74c3c;font-weight:600;font-size:14px;">Connection error, please try again</p>
             </div>
         `;
         dlBtnIcon.style.display = "block";
@@ -198,7 +182,6 @@ dlForm.addEventListener('submit', async (e) => {
     }
 });
 
-// RESET
 function resetDownloader() {
     preview.innerHTML = "";
     urlInput.value = "";
@@ -207,10 +190,7 @@ function resetDownloader() {
     btnLoader.style.display = "none";
 }
 
-// =====================
-// HISTORY FUNCTIONS
-// =====================
-
+// History functions
 async function loadDownloadHistory() {
     const historyContainer = document.getElementById('historyVideos');
     if (!historyContainer) return;
@@ -220,10 +200,10 @@ async function loadDownloadHistory() {
         const data = await res.json();
 
         if (data.status === 'success' && data.history.length > 0) {
-            let html = data.history.slice(0, 6).map((item, index) => `
-                <div class="video-thumb-card" onclick="window.open('${item.url}', '_blank')" title="${item.title}">
+            let html = data.history.slice(0, 6).map(item => `
+                <div class="video-thumb-card" onclick="openVideoModal('${item.url}')" title="${item.title}">
                     <div class="video-thumb-img" style="background-image:url('${item.thumbnail || ''}');background-size:cover;background-position:center;">
-                        ${!item.thumbnail ? '<i class="fas fa-video" style="font-size:36px;color:#1877f2;"></i>' : ''}
+                        ${!item.thumbnail ? '<i class="fas fa-video" style="font-size:28px;color:#1877f2;"></i>' : ''}
                         <div class="video-thumb-play"></div>
                     </div>
                     <div class="thumb-info">
@@ -236,17 +216,16 @@ async function loadDownloadHistory() {
             historyContainer.innerHTML = html;
         } else {
             historyContainer.innerHTML = `
-                <div style="grid-column:1/-1;text-align:center;padding:50px;">
-                    <i class="fas fa-history" style="font-size:52px;color:#ccc;display:block;margin-bottom:14px;"></i>
-                    <p style="color:#888;font-size:15px;">No downloads yet. Be the first!</p>
+                <div style="grid-column:1/-1;text-align:center;padding:40px;">
+                    <i class="fas fa-history" style="font-size:40px;color:#ccc;display:block;margin-bottom:10px;"></i>
+                    <p style="color:#888;font-size:13px;">No downloads yet</p>
                 </div>
             `;
         }
     } catch (err) {
-        console.log('History load error:', err);
         historyContainer.innerHTML = `
-            <div style="grid-column:1/-1;text-align:center;padding:30px;">
-                <p style="color:#888;font-size:14px;">Loading history...</p>
+            <div style="grid-column:1/-1;text-align:center;padding:20px;">
+                <p style="color:#888;font-size:13px;">Loading history...</p>
             </div>
         `;
     }
@@ -254,71 +233,55 @@ async function loadDownloadHistory() {
 
 async function saveToHistory(videoData) {
     try {
-        const payload = {
-            title: videoData.title || 'Unknown',
-            thumbnail: videoData.thumbnail || '',
-            url: videoData.formats?.[0]?.url || '',
-            quality: videoData.formats?.[0]?.quality || 'HD'
-        };
-        
         await fetch('/api/history', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                title: videoData.title || 'Unknown',
+                thumbnail: videoData.thumbnail || '',
+                url: videoData.formats?.[0]?.url || '',
+                quality: videoData.formats?.[0]?.quality || 'HD'
+            })
         });
-    } catch (err) {
-        console.log('History save failed:', err);
-    }
+    } catch (err) {}
 }
 
-// =====================
-// SIDEBAR FUNCTIONS
-// =====================
-
+// Sidebar functions
 function renderSidebar() {
-    const randomAd = getRandomAd();
+    const ad = getRandomAd();
     
     return `
-        <!-- Random Ad Card -->
         <div class="sidebar-card sidebar-ad">
-            <a href="/purchase.html" target="_blank" title="Purchase this tool - YasinG Downloader">
-                <img src="${randomAd.desktop}" alt="Advertisement - YasinG Downloader">
+            <a href="/purchase.html" target="_blank">
+                <img src="${ad.desktop}" alt="Ad">
             </a>
         </div>
-
-        <!-- Related Posts -->
         <div class="sidebar-card">
-            <div class="sidebar-title">
-                <i class="fas fa-fire"></i> Related Posts
-            </div>
+            <div class="sidebar-title"><i class="fas fa-fire"></i> Related Posts</div>
             <a href="#" class="related-post" onclick="document.getElementById('urlInput').value='https://www.facebook.com/reel/example1';document.getElementById('dlForm').requestSubmit();return false;">
                 <div class="related-thumb"><i class="fas fa-play"></i></div>
                 <div class="related-info">
-                    <h4>How to Download Facebook Videos in HD</h4>
+                    <h4>How to Download FB Videos in HD</h4>
                     <span><i class="fas fa-eye"></i> 12.5K views</span>
                 </div>
             </a>
             <a href="#" class="related-post" onclick="document.getElementById('urlInput').value='https://www.facebook.com/reel/example2';document.getElementById('dlForm').requestSubmit();return false;">
                 <div class="related-thumb"><i class="fas fa-play"></i></div>
                 <div class="related-info">
-                    <h4>Top 5 Video Downloader Tools 2026</h4>
+                    <h4>Top 5 Downloader Tools 2026</h4>
                     <span><i class="fas fa-eye"></i> 8.2K views</span>
                 </div>
             </a>
             <a href="#" class="related-post" onclick="document.getElementById('urlInput').value='https://www.facebook.com/reel/example3';document.getElementById('dlForm').requestSubmit();return false;">
                 <div class="related-thumb"><i class="fas fa-play"></i></div>
                 <div class="related-info">
-                    <h4>Save Facebook Videos Without App</h4>
+                    <h4>Save Videos Without App</h4>
                     <span><i class="fas fa-eye"></i> 5.1K views</span>
                 </div>
             </a>
         </div>
-
-        <!-- Tags -->
         <div class="sidebar-card">
-            <div class="sidebar-title">
-                <i class="fas fa-tags"></i> Popular Tags
-            </div>
+            <div class="sidebar-title"><i class="fas fa-tags"></i> Popular Tags</div>
             <div class="tag-list">
                 <a href="#" class="tag-item">Facebook</a>
                 <a href="#" class="tag-item">Downloader</a>
@@ -328,11 +291,9 @@ function renderSidebar() {
                 <a href="#" class="tag-item">Online</a>
             </div>
         </div>
-
-        <!-- Another Random Ad -->
         <div class="sidebar-card sidebar-ad">
-            <a href="/purchase.html" target="_blank" title="Get your own video downloader - YasinG">
-                <img src="${getRandomAd().desktop}" alt="Advertisement - Get YasinG Downloader">
+            <a href="/purchase.html" target="_blank">
+                <img src="${getRandomAd().desktop}" alt="Ad">
             </a>
         </div>
     `;
@@ -340,25 +301,18 @@ function renderSidebar() {
 
 function renderVideoContent(data, firstVideo, formatButtons, randomAd) {
     return `
-    <div style="background:#fff;padding:28px;border-radius:18px;color:#111;box-shadow:0 8px 30px rgba(0,0,0,0.12);border:2px solid #e4e6eb;">
-
-        <video controls playsinline style="width:100%;border-radius:14px;background:#000;max-height:450px;box-shadow:0 4px 15px rgba(0,0,0,0.2);">
+    <div style="background:#fff;padding:20px;border-radius:14px;color:#111;box-shadow:0 4px 20px rgba(0,0,0,0.1);border:2px solid #e4e6eb;">
+        <video controls playsinline style="width:100%;border-radius:10px;background:#000;max-height:400px;">
             <source src="${firstVideo}" type="video/mp4">
-            Your browser does not support the video tag.
         </video>
-
-        <!-- Video Info Card with Stylish Border -->
-        <div class="video-info-card">
+        <div class="video-info-card" style="margin-top:16px;">
             <h3 class="video-title">${data.title || 'Facebook Video'}</h3>
-            
             ${data.uploader ? `
             <div class="uploader-info">
-                <div class="uploader-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
+                <div class="uploader-avatar"><i class="fas fa-user"></i></div>
                 <div class="uploader-details">
                     <div class="uploader-name">${data.uploader}</div>
-                    <div style="font-size:12px;color:var(--text-secondary);">Content Creator</div>
+                    <div style="font-size:11px;color:var(--text-secondary);">Content Creator</div>
                 </div>
                 ${data.uploader_url ? `
                 <a href="${data.uploader_url}" target="_blank" class="uploader-link">
@@ -366,45 +320,27 @@ function renderVideoContent(data, firstVideo, formatButtons, randomAd) {
                 </a>` : ''}
             </div>` : ''}
         </div>
-
-        <!-- Random Ad -->
-        <div style="margin:24px 0;border-radius:14px;overflow:hidden;border:2px solid #e4e6eb;box-shadow:0 4px 15px rgba(0,0,0,0.1);">
-            <a href="/purchase.html" target="_blank" title="Get your own video downloader">
-                <img src="${randomAd.desktop}" style="width:100%;display:block;" alt="Advertisement">
+        <div style="margin:16px 0;border-radius:10px;overflow:hidden;border:2px solid #e4e6eb;">
+            <a href="/purchase.html" target="_blank">
+                <img src="${randomAd.desktop}" style="width:100%;display:block;" alt="Ad">
             </a>
         </div>
-
-        <div style="margin:24px 0;">
-            <p style="font-weight:700;color:#333;margin-bottom:16px;font-size:17px;display:flex;align-items:center;gap:8px;">
-                <i class="fas fa-arrow-down" style="color:#1877f2;font-size:18px;"></i> Available Downloads:
+        <div style="margin:16px 0;">
+            <p style="font-weight:700;color:#333;margin-bottom:12px;font-size:15px;">
+                <i class="fas fa-arrow-down" style="color:#1877f2;"></i> Available Downloads:
             </p>
             ${formatButtons}
         </div>
-
         <button onclick="resetDownloader()" 
-            style="margin-top:16px;padding:16px 24px;width:100%;
-            border:2px solid #e4e6eb;background:#f8f9fa;color:#333;border-radius:14px;
-            font-size:15px;font-weight:600;cursor:pointer;
-            display:flex;align-items:center;justify-content:center;gap:10px;
-            transition:all 0.3s ease;"
-            onmouseover="this.style.background='#e9ecef';this.style.borderColor='#1877f2';this.style.transform='translateY(-2px)'"
-            onmouseout="this.style.background='#f8f9fa';this.style.borderColor='#e4e6eb';this.style.transform='translateY(0)'">
+            style="margin-top:10px;padding:14px 20px;width:100%;border:2px solid #e4e6eb;background:#f8f9fa;color:#333;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
             <i class="fas fa-redo"></i> Download Another Video
         </button>
-        
         <button onclick="window.location.href='/purchase.html'" 
-            style="margin-top:12px;padding:16px 24px;width:100%;
-            border:2px solid #e74c3c;background:#e74c3c;color:#fff;border-radius:14px;
-            font-size:15px;font-weight:600;cursor:pointer;
-            display:flex;align-items:center;justify-content:center;gap:10px;
-            transition:all 0.3s ease;"
-            onmouseover="this.style.background='#c0392b';this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(231,76,60,0.3)'"
-            onmouseout="this.style.background='#e74c3c';this.style.transform='translateY(0)';this.style.boxShadow='none'">
+            style="margin-top:10px;padding:14px 20px;width:100%;border:2px solid #e74c3c;background:#e74c3c;color:#fff;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
             <i class="fas fa-dollar"></i> BUY THIS TOOL
         </button>
-        
-        <p style="text-align:center;margin-top:16px;color:var(--text-secondary);font-size:13px;padding-top:16px;border-top:2px solid #e4e6eb;">
-            Ardi Mobile Inc | Developed by <strong style="color:#1877f2;">Yasin Gelma</strong> - @anayasingg
+        <p style="text-align:center;margin-top:14px;padding-top:14px;border-top:2px solid #e4e6eb;color:var(--text-secondary);font-size:12px;">
+            Ardi Mobile Inc | Developed by <strong style="color:#1877f2;">Yasin Gelma</strong>
         </p>
     </div>
     `;
@@ -415,11 +351,11 @@ function showResultWithSidebar(data, firstVideo, formatButtons, randomAd) {
     
     if (isDesktop) {
         return `
-            <div class="result-layout" style="display:flex;gap:24px;align-items:flex-start;margin-top:16px;">
-                <div class="result-main" style="flex:1;min-width:0;">
+            <div class="result-layout">
+                <div class="result-main">
                     ${renderVideoContent(data, firstVideo, formatButtons, randomAd)}
                 </div>
-                <div class="result-sidebar" style="width:320px;flex-shrink:0;">
+                <div class="result-sidebar">
                     <div class="sidebar-sticky" style="position:sticky;top:80px;">
                         ${renderSidebar()}
                     </div>
@@ -433,28 +369,22 @@ function showResultWithSidebar(data, firstVideo, formatButtons, randomAd) {
 
 function initSidebar() {
     const sidebarContent = document.getElementById('sidebarContent');
-    if (sidebarContent) {
-        sidebarContent.innerHTML = renderSidebar();
-    }
+    if (sidebarContent) sidebarContent.innerHTML = renderSidebar();
 }
 
 // Credit protection
 (function () {
     const REDIRECT_URL = "https://yasing.com.et/purchase.html";
-
+    
     function checkCredit() {
         const credit = document.getElementById("credit-link");
         if (!credit || credit.innerText.trim() === "") {
-            triggerRedirect();
+            if (!window.location.href.includes(REDIRECT_URL)) {
+                window.location.href = REDIRECT_URL;
+            }
         }
     }
-
-    function triggerRedirect() {
-        if (!window.location.href.includes(REDIRECT_URL)) {
-            window.location.href = REDIRECT_URL;
-        }
-    }
-
+    
     setTimeout(checkCredit, Math.random() * 3000 + 1000);
     setInterval(checkCredit, 4000);
 })();
