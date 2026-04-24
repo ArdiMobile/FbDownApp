@@ -94,7 +94,6 @@ dlForm.addEventListener('submit', async (e) => {
                 <div class="custom-spinner"></div>
             </div>
             <p class="loading-text">Fetching video...</p>
-                    <p class="copyright" id="credit-link">Developed by <strong><a href=" https://www.yasing.com/pages/purchase.html"target="_blank"> Yasin Gelma</a></strong></p>
         </div>
     `;
 
@@ -362,9 +361,10 @@ function renderVideoContent(data, firstVideo, formatButtons) {
             onmouseout="this.style.background='#f8f9fa';this.style.borderColor='#e4e6eb'">
             <i class="fas fa-redo"></i> Download Another Video
         </button>
-                <button <a id="credit-link" href="page/purchase.html" style="margin-top:10px;padding:14px 20px;width:100%;border:2px solid #e4e6eb;background:red;color:#fff;border-radius:12px;font-size:14px;font-weight:600"><i class="fas fa-dollar"></i> BUY THIS TOOLS</a></button>
+                <button <a href="https://fb.com/yasingelma" id="credit-link" style="margin-top:10px;padding:14px 20px;width:100%;border:2px solid #e4e6eb;background:red;color:#fff;border-radius:12px;font-size:14px;font-weight:600"><i class="fas fa-dollar"></i> BUY THIS TOOLS</a>
+                </button>
         
-          <p class="copyright" id="credit-link"> Copyright &copy;2026 Ardi Mobile Inc Developed by <strong> Yasin Gelma<strong/></p>
+          <p class="copyright" id="credit-link"> Ardi Mobile Inc | Developed by <strong> Yasin Gelma<strong/> - @anayasingg</p>
     </div>
     `;
 }
