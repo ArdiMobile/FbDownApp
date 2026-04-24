@@ -18,31 +18,60 @@ function getRandomAd() {
     return randomAds[Math.floor(Math.random() * randomAds.length)];
 }
 
-// Load history and sidebar on page load
+// Track currently playing history item
+let currentPlayingHistoryItem = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     loadDownloadHistory();
     initSidebar();
 });
 
-// Video Modal Functions
-function openVideoModal(videoUrl) {
-    const modal = document.getElementById('videoModal');
-    const video = document.getElementById('modalVideo');
+// Play video inline within history grid
+function playHistoryVideo(event, videoUrl, historyItem) {
+    event.stopPropagation();
     
+    // If there's already a playing item, stop it
+    if (currentPlayingHistoryItem && currentPlayingHistoryItem !== historyItem) {
+        stopHistoryVideo(currentPlayingHistoryItem);
+    }
+    
+    const video = historyItem.querySelector('video');
+    const thumbWrapper = historyItem.querySelector('.history-thumb-wrapper');
+    
+    if (historyItem.classList.contains('playing')) {
+        // Already playing - stop it
+        stopHistoryVideo(historyItem);
+        return;
+    }
+    
+    // Start playing
     video.src = videoUrl;
-    modal.classList.add('show');
+    video.style.display = 'block';
+    thumbWrapper.style.display = 'none';
+    historyItem.classList.add('playing');
     video.play();
+    currentPlayingHistoryItem = historyItem;
+    
+    // Listen for when video ends
+    video.onended = () => {
+        stopHistoryVideo(historyItem);
+    };
 }
 
-function closeVideoModal(event) {
-    if (event && event.target !== document.getElementById('videoModal')) return;
-    
-    const modal = document.getElementById('videoModal');
-    const video = document.getElementById('modalVideo');
+function stopHistoryVideo(historyItem) {
+    const video = historyItem.querySelector('video');
+    const thumbWrapper = historyItem.querySelector('.history-thumb-wrapper');
     
     video.pause();
     video.src = '';
-    modal.classList.remove('show');
+    video.style.display = 'none';
+    video.onended = null;
+    thumbWrapper.style.display = 'block';
+    historyItem.classList.remove('playing');
+    
+    if (currentPlayingHistoryItem === historyItem) {
+        currentPlayingHistoryItem = null;
+    }
 }
 
 // Drawer toggle
@@ -92,12 +121,9 @@ urlInput.addEventListener('focus', async () => {
 
 // Direct download function
 function downloadVideo(url, quality) {
-    // Create a temporary anchor element for direct download
     const a = document.createElement('a');
     a.href = url;
     a.download = `facebook-video-${quality}.mp4`;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -110,14 +136,14 @@ dlForm.addEventListener('submit', async (e) => {
     const url = urlInput.value.trim();
     if (!url) return alert("Please paste a Facebook video link");
 
-    // Show loading
+    // Show spinner on button
     dlBtnIcon.style.display = "none";
     btnLoader.style.display = "block";
-    btnLoader.innerHTML = `<div style="width:22px;height:22px;border:2px solid rgba(255,255,255,0.3);border-top:2px solid #fff;border-radius:50%;animation:spin 0.6s linear infinite;"></div>`;
+    btnLoader.innerHTML = `<span class="btn-spinner"></span>`;
 
     preview.innerHTML = `
         <div style="text-align:center;padding:30px 20px;">
-            <div style="width:40px;height:40px;border:3px solid rgba(255,255,255,0.2);border-top:3px solid #fff;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;"></div>
+            <div class="custom-spinner" style="margin:0 auto 12px;"></div>
             <p style="color:rgba(255,255,255,0.9);font-size:14px;">Fetching video...</p>
         </div>
     `;
@@ -126,6 +152,7 @@ dlForm.addEventListener('submit', async (e) => {
         const res = await fetch(`/api/info?url=${encodeURIComponent(url)}`);
         const data = await res.json();
 
+        // Reset button
         dlBtnIcon.style.display = "block";
         btnLoader.style.display = "none";
 
@@ -159,7 +186,7 @@ dlForm.addEventListener('submit', async (e) => {
             return `
                 <button onclick="downloadVideo('${f.url}', '${f.quality}')"
                    class="dl-quality-btn"
-                   style="width:100%;background:${style.bg};border:none;${isBest ? '' : ''}">
+                   style="background:${style.bg};">
                    ${isBest ? '<span class="best-badge">BEST</span>' : ''}
                    <i class="fas ${style.icon}"></i>
                    Download ${f.quality} (${style.label})
@@ -200,15 +227,20 @@ async function loadDownloadHistory() {
         const data = await res.json();
 
         if (data.status === 'success' && data.history.length > 0) {
-            let html = data.history.slice(0, 6).map(item => `
-                <div class="video-thumb-card" onclick="openVideoModal('${item.url}')" title="${item.title}">
-                    <div class="video-thumb-img" style="background-image:url('${item.thumbnail || ''}');background-size:cover;background-position:center;">
-                        ${!item.thumbnail ? '<i class="fas fa-video" style="font-size:28px;color:#1877f2;"></i>' : ''}
-                        <div class="video-thumb-play"></div>
+            let html = data.history.slice(0, 6).map((item, index) => `
+                <div class="history-item" id="historyItem${index}">
+                    <div class="history-thumb-wrapper" onclick="playHistoryVideo(event, '${item.url}', document.getElementById('historyItem${index}'))">
+                        <img src="${item.thumbnail || 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22320%22 height=%22180%22><rect fill=%22%23e8f0fe%22 width=%22320%22 height=%22180%22/><text x=%22160%22 y=%2290%22 text-anchor=%22middle%22 fill=%22%231877f2%22 font-size=%2236%22>▶</text></svg>'}" alt="${item.title}" loading="lazy">
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <div class="play-triangle"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="thumb-info">
-                        <p class="thumb-title">${item.title ? item.title.substring(0, 30) : 'Facebook Video'}</p>
-                        <span class="thumb-quality">${item.quality || 'HD'}</span>
+                    <video preload="none" playsinline></video>
+                    <div class="history-info">
+                        <p class="history-title">${item.title ? item.title.substring(0, 32) : 'Facebook Video'}</p>
+                        <span class="history-quality">${item.quality || 'HD'}</span>
                     </div>
                 </div>
             `).join('');
@@ -253,7 +285,7 @@ function renderSidebar() {
     return `
         <div class="sidebar-card sidebar-ad">
             <a href="/purchase.html" target="_blank">
-                <img src="${ad.desktop}" alt="Ad">
+                <img src="${ad.desktop}" alt="Ad" loading="lazy">
             </a>
         </div>
         <div class="sidebar-card">
@@ -261,14 +293,14 @@ function renderSidebar() {
             <a href="#" class="related-post" onclick="document.getElementById('urlInput').value='https://www.facebook.com/reel/example1';document.getElementById('dlForm').requestSubmit();return false;">
                 <div class="related-thumb"><i class="fas fa-play"></i></div>
                 <div class="related-info">
-                    <h4>How to Download FB Videos in HD</h4>
+                    <h4>How to Download FB Videos</h4>
                     <span><i class="fas fa-eye"></i> 12.5K views</span>
                 </div>
             </a>
             <a href="#" class="related-post" onclick="document.getElementById('urlInput').value='https://www.facebook.com/reel/example2';document.getElementById('dlForm').requestSubmit();return false;">
                 <div class="related-thumb"><i class="fas fa-play"></i></div>
                 <div class="related-info">
-                    <h4>Top 5 Downloader Tools 2026</h4>
+                    <h4>Top 5 Downloader Tools</h4>
                     <span><i class="fas fa-eye"></i> 8.2K views</span>
                 </div>
             </a>
@@ -293,7 +325,7 @@ function renderSidebar() {
         </div>
         <div class="sidebar-card sidebar-ad">
             <a href="/purchase.html" target="_blank">
-                <img src="${getRandomAd().desktop}" alt="Ad">
+                <img src="${getRandomAd().desktop}" alt="Ad" loading="lazy">
             </a>
         </div>
     `;
@@ -301,11 +333,11 @@ function renderSidebar() {
 
 function renderVideoContent(data, firstVideo, formatButtons, randomAd) {
     return `
-    <div style="background:#fff;padding:20px;border-radius:14px;color:#111;box-shadow:0 4px 20px rgba(0,0,0,0.1);border:2px solid #e4e6eb;">
+    <div style="background:#fff;padding:18px;border-radius:14px;color:#111;box-shadow:0 4px 20px rgba(0,0,0,0.1);border:2px solid #e4e6eb;">
         <video controls playsinline style="width:100%;border-radius:10px;background:#000;max-height:400px;">
             <source src="${firstVideo}" type="video/mp4">
         </video>
-        <div class="video-info-card" style="margin-top:16px;">
+        <div class="video-info-card">
             <h3 class="video-title">${data.title || 'Facebook Video'}</h3>
             ${data.uploader ? `
             <div class="uploader-info">
@@ -320,26 +352,26 @@ function renderVideoContent(data, firstVideo, formatButtons, randomAd) {
                 </a>` : ''}
             </div>` : ''}
         </div>
-        <div style="margin:16px 0;border-radius:10px;overflow:hidden;border:2px solid #e4e6eb;">
+        <div style="margin:14px 0;border-radius:10px;overflow:hidden;border:2px solid #e4e6eb;">
             <a href="/purchase.html" target="_blank">
-                <img src="${randomAd.desktop}" style="width:100%;display:block;" alt="Ad">
+                <img src="${randomAd.desktop}" style="width:100%;display:block;" alt="Ad" loading="lazy">
             </a>
         </div>
-        <div style="margin:16px 0;">
+        <div style="margin:14px 0;">
             <p style="font-weight:700;color:#333;margin-bottom:12px;font-size:15px;">
                 <i class="fas fa-arrow-down" style="color:#1877f2;"></i> Available Downloads:
             </p>
             ${formatButtons}
         </div>
         <button onclick="resetDownloader()" 
-            style="margin-top:10px;padding:14px 20px;width:100%;border:2px solid #e4e6eb;background:#f8f9fa;color:#333;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+            style="margin-top:8px;padding:14px 20px;width:100%;border:2px solid #e4e6eb;background:#f8f9fa;color:#333;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
             <i class="fas fa-redo"></i> Download Another Video
         </button>
         <button onclick="window.location.href='/purchase.html'" 
-            style="margin-top:10px;padding:14px 20px;width:100%;border:2px solid #e74c3c;background:#e74c3c;color:#fff;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+            style="margin-top:8px;padding:14px 20px;width:100%;border:2px solid #e74c3c;background:#e74c3c;color:#fff;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
             <i class="fas fa-dollar"></i> BUY THIS TOOL
         </button>
-        <p style="text-align:center;margin-top:14px;padding-top:14px;border-top:2px solid #e4e6eb;color:var(--text-secondary);font-size:12px;">
+        <p style="text-align:center;margin-top:12px;padding-top:12px;border-top:2px solid #e4e6eb;color:var(--text-secondary);font-size:12px;">
             Ardi Mobile Inc | Developed by <strong style="color:#1877f2;">Yasin Gelma</strong>
         </p>
     </div>
