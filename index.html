@@ -1,56 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YasinG Downloader - Facebook Video Downloader</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-<!-- App manifest for TWA -->
-<link rel="manifest" href="/manifest.json">
-<!-- Prevent URL bar and browser chrome -->
-<meta name="theme-color" content="#000000">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-
-<!-- Full screen without browser UI -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
+ <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YasinG Downloader - Facebook Video Downloader</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Sekuya&display=swap" rel="stylesheet">
 <style>
+/* ============================================
+   YASING DOWNLOADER - COMPLETE STYLESHEET
+   Version: 2.0
+   Covers: Home, Blog, Posts, Results, All Pages
+   ============================================ */
+
+/* ============ CSS VARIABLES ============ */
 :root {
     --blue: #1877f2;
+    --blue-dark: #166fe5;
+    --blue-light: #e8f0fe;
     --dark: #1a1a2e;
     --light: #f0f2f5;
     --green: #00c853;
+    --green-dark: #00a844;
+    --red: #e74c3c;
+    --orange: #f39c12;
     --card: #ffffff;
     --text: #1c1e21;
     --text-secondary: #65676b;
+    --text-light: #8a8d91;
     --border: #e4e6eb;
+    --border-light: #f0f0f0;
     --shadow: 0 1px 2px rgba(0,0,0,0.1);
-    --shadow-lg: 0 4px 12px rgba(0,0,0,0.15);
-    --radius: 12px;
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+    --shadow-xl: 0 12px 32px rgba(0,0,0,0.2);
+    --radius-xs: 4px;
     --radius-sm: 8px;
+    --radius: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 50px;
     --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --sidebar-width: 320px;
+    --max-width: 1200px;
+    --content-width: 680px;
 }
 
-* {
+/* ============ RESET ============ */
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
 }
 
 body { 
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
     background: var(--light); 
     color: var(--text);
-    line-height: 1.5;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    min-height: 100vh;
 }
 
-/* HEADER */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+input, textarea {
+    font-family: inherit;
+}
+
+/* ============ HEADER ============ */
 .header {
     background: #fff;
     border-bottom: 1px solid var(--border);
@@ -61,10 +107,11 @@ body {
     -webkit-backdrop-filter: blur(10px);
     background: rgba(255,255,255,0.95);
 }
+
 .header-inner {
-    max-width: 680px;
+    max-width: var(--max-width);
     margin: 0 auto;
-    padding: 12px 16px;
+    padding: 12px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -73,14 +120,31 @@ body {
 .logo {
     display: flex;
     align-items: center;
-    gap: 8px;font-size: 23px;
-    font-weight: 800;color:##1877f2;
-    font-family: Verdana, Geneva, sans-serif;
+    gap: 8px;
+    font-size:22px;
+    font-weight:800px;
     text-decoration: none;
 }
 
+.logo img {
+    height: 32px;
+    width: auto;
+}
 .logo span {
-    color:black;
+    color:blue;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+}
+.logo-text {
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--blue);
 }
 
 .menu-btn {
@@ -106,7 +170,7 @@ body {
     transform: scale(0.95);
 }
 
-/* DRAWER MENU */
+/* ============ DRAWER MENU ============ */
 .drawer-overlay {
     display: none;
     position: fixed;
@@ -134,6 +198,7 @@ body {
     transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     padding: 20px;
     overflow-y: auto;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.1);
 }
 
 .drawer.show {
@@ -147,6 +212,11 @@ body {
     margin-bottom: 24px;
     padding-bottom: 16px;
     border-bottom: 1px solid var(--border);
+}
+
+.drawer-header h3 {
+    font-size: 18px;
+    font-weight: 700;
 }
 
 .drawer-close {
@@ -190,7 +260,7 @@ body {
 
 .drawer-menu a:hover,
 .drawer-menu a.active {
-    background: #e8f0fe;
+    background: var(--blue-light);
     color: var(--blue);
 }
 
@@ -200,14 +270,26 @@ body {
     font-size: 16px;
 }
 
-/* MAIN CONTENT */
+/* ============ MAIN CONTENT ============ */
 .main {
-    max-width: 680px;
+    max-width: var(--max-width);
     margin: 0 auto;
-    padding: 16px;
+    padding: 20px;
 }
 
-/* HERO CARD */
+/* Main Layout with Sidebar */
+.main-layout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ============ HERO CARD ============ */
 .hero-card {
     background: linear-gradient(135deg, #1877f2 0%, #166fe5 100%);
     border-radius: var(--radius);
@@ -223,6 +305,7 @@ body {
     font-weight: 700;
     margin-bottom: 6px;
     letter-spacing: -0.5px;
+    line-height: 1.3;
 }
 
 .hero-card p {
@@ -231,20 +314,20 @@ body {
     margin-bottom: 20px;
 }
 
-/* SEARCH BOX */
+/* ============ SEARCH BOX ============ */
 .search-box {
     display: flex;
     background: #fff;
-    border-radius: 50px;
+    border-radius: var(--radius-full);
     padding: 4px;
     box-shadow: var(--shadow);
-    max-width: 500px;
+    max-width: 600px;
     margin: 0 auto;
     transition: var(--transition);
 }
 
 .search-box:focus-within {
-    box-shadow: 0 0 0 3px rgba(24,119,242,0.2);
+    box-shadow: 0 0 0 4px rgba(24,119,242,0.2);
 }
 
 .search-box input {
@@ -252,14 +335,14 @@ body {
     border: none;
     padding: 14px 20px;
     outline: none;
-    border-radius: 50px;
+    border-radius: var(--radius-full);
     font-size: 15px;
     background: transparent;
     color: var(--text);
 }
 
 .search-box input::placeholder {
-    color: #8a8d91;
+    color: var(--text-light);
 }
 
 .dl-btn {
@@ -279,20 +362,145 @@ body {
 }
 
 .dl-btn:hover {
-    background: #166fe5;
+    background: var(--blue-dark);
     transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(24,119,242,0.4);
 }
 
 .dl-btn:active {
     transform: scale(0.95);
 }
 
-/* PREVIEW */
+/* ============ PREVIEW AREA ============ */
 .preview-area {
     margin-top: 16px;
 }
 
-/* TABS */
+/* Result Layout */
+.result-layout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.result-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.result-sidebar {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+}
+
+/* ============ SIDEBAR ============ */
+.sidebar {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    display: none;
+}
+
+.sidebar-sticky {
+    position: sticky;
+    top: 80px;
+}
+
+.sidebar-card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.sidebar-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar-title i {
+    color: var(--blue);
+    font-size: 14px;
+}
+
+/* Related Posts */
+.related-post {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.related-post:last-child {
+    border-bottom: none;
+}
+
+.related-post:hover {
+    background: #f8f9fa;
+    margin: 0 -8px;
+    padding: 10px 8px;
+    border-radius: var(--radius-sm);
+}
+
+.related-thumb {
+    width: 80px;
+    height: 60px;
+    border-radius: 6px;
+    background: var(--blue-light);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--blue);
+    font-size: 20px;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+.related-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.related-info h4 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+.related-info span {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+/* Sidebar Ads */
+.sidebar-ad {
+    text-align: center;
+    overflow: hidden;
+}
+
+.sidebar-ad img {
+    width: 100%;
+    border-radius: var(--radius-sm);
+}
+
+/* ============ TABS ============ */
 .tabs-scroll {
     display: flex;
     gap: 4px;
@@ -300,6 +508,7 @@ body {
     padding: 4px 0 12px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .tabs-scroll::-webkit-scrollbar {
@@ -310,7 +519,7 @@ body {
     padding: 8px 16px;
     border: none;
     background: #fff;
-    border-radius: 50px;
+    border-radius: var(--radius-full);
     font-size: 13px;
     font-weight: 600;
     color: var(--text-secondary);
@@ -337,7 +546,7 @@ body {
     font-size: 14px;
 }
 
-/* CONTENT CARDS */
+/* Tab Panels */
 .tab-panel {
     display: none;
     animation: slideUp 0.3s ease;
@@ -347,22 +556,7 @@ body {
     display: block;
 }
 
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
+/* ============ CARDS ============ */
 .card {
     background: var(--card);
     border-radius: var(--radius);
@@ -377,9 +571,12 @@ body {
     font-weight: 700;
     margin-bottom: 12px;
     color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* STEP CARDS */
+/* ============ STEP CARDS ============ */
 .step-item {
     display: flex;
     align-items: center;
@@ -390,13 +587,18 @@ body {
     margin-bottom: 10px;
     box-shadow: var(--shadow);
     border: 1px solid var(--border);
+    transition: var(--transition);
+}
+
+.step-item:hover {
+    box-shadow: var(--shadow-md);
 }
 
 .step-num {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #e8f0fe;
+    background: var(--blue-light);
     color: var(--blue);
     display: flex;
     align-items: center;
@@ -406,10 +608,16 @@ body {
     flex-shrink: 0;
 }
 
-/* VIDEO GRID */
+.step-item strong {
+    font-size: 15px;
+    display: block;
+    margin-bottom: 2px;
+}
+
+/* ============ VIDEO GRID ============ */
 .video-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
 }
 
@@ -420,7 +628,7 @@ body {
     box-shadow: var(--shadow);
     cursor: pointer;
     transition: var(--transition);
-    border: 2px solid #e4e6eb;
+    border: 2px solid var(--border);
 }
 
 .video-thumb-card:hover {
@@ -498,7 +706,7 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* UPDATE CARD */
+/* ============ UPDATE CARDS ============ */
 .update-card {
     background: #fff;
     border-radius: var(--radius);
@@ -506,6 +714,11 @@ body {
     margin-bottom: 10px;
     box-shadow: var(--shadow);
     border-left: 4px solid var(--green);
+    transition: var(--transition);
+}
+
+.update-card:hover {
+    box-shadow: var(--shadow-md);
 }
 
 .badge {
@@ -521,7 +734,19 @@ body {
     margin-bottom: 8px;
 }
 
-/* FAQ */
+.badge.new {
+    background: var(--blue);
+}
+
+.badge.fix {
+    background: var(--orange);
+}
+
+.badge.hot {
+    background: var(--red);
+}
+
+/* ============ FAQ ============ */
 .faq-card {
     background: #fff;
     border-radius: var(--radius);
@@ -530,6 +755,11 @@ body {
     box-shadow: var(--shadow);
     border: 1px solid var(--border);
     cursor: pointer;
+    transition: var(--transition);
+}
+
+.faq-card:hover {
+    box-shadow: var(--shadow-md);
 }
 
 .faq-question {
@@ -567,10 +797,10 @@ body {
 
 .faq-card.active .faq-answer {
     padding: 0 16px 16px;
-    max-height: 200px;
+    max-height: 300px;
 }
 
-/* APPS GRID */
+/* ============ APPS GRID ============ */
 .apps-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -610,14 +840,15 @@ body {
     color: var(--text);
 }
 
-/* AD BANNER */
+/* ============ AD BANNERS ============ */
 .ad-banner {
     background: #fff;
     border-radius: var(--radius);
     padding: 20px;
     text-align: center;
     margin: 16px 0;
-    border: 2px dashed #e4e6eb;
+    border: 2px dashed var(--border);
+    overflow: hidden;
 }
 
 .ad-banner img {
@@ -625,13 +856,388 @@ body {
     border-radius: var(--radius-sm);
 }
 
-/* FOOTER */
+.ad-banner-horizontal {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+/* ============ BLOG / POST STYLES ============ */
+.blog-post {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.blog-post h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+.blog-post h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 20px 0 10px;
+    color: var(--text);
+}
+
+.blog-post h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 16px 0 8px;
+}
+
+.blog-post p {
+    margin-bottom: 12px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.blog-post img {
+    border-radius: var(--radius-sm);
+    margin: 16px 0;
+}
+
+.blog-post ul, .blog-post ol {
+    margin: 10px 0 10px 20px;
+    color: var(--text-secondary);
+}
+
+.blog-post ul li, .blog-post ol li {
+    margin-bottom: 6px;
+    list-style: disc;
+}
+
+.blog-post ol li {
+    list-style: decimal;
+}
+
+.blog-post blockquote {
+    border-left: 4px solid var(--blue);
+    padding: 12px 16px;
+    background: var(--blue-light);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 16px 0;
+    font-style: italic;
+}
+
+.blog-post code {
+    background: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.blog-post pre {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+    margin: 16px 0;
+}
+
+.blog-post pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+}
+
+/* Post Meta */
+.post-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.post-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.post-meta i {
+    font-size: 14px;
+}
+
+/* Post Tags */
+.post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+/* ============ TAGS ============ */
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag-item {
+    padding: 6px 14px;
+    background: var(--blue-light);
+    color: var(--blue);
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.tag-item:hover {
+    background: var(--blue);
+    color: #fff;
+}
+
+/* ============ VIDEO PLAYER ============ */
+video {
+    background: #000;
+    border-radius: var(--radius-sm);
+    width: 100%;
+    max-height: 400px;
+}
+
+/* ============ BUTTONS ============ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--radius-full);
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--blue);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--blue-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(24,119,242,0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--border);
+    color: var(--text);
+}
+
+.btn-outline:hover {
+    background: #f8f9fa;
+    border-color: #ccc;
+}
+
+.btn-danger {
+    background: var(--red);
+    color: #fff;
+}
+
+.btn-success {
+    background: var(--green);
+    color: #fff;
+}
+
+.btn-lg {
+    padding: 14px 28px;
+    font-size: 16px;
+}
+
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 12px;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* Download Buttons */
+.dl-quality-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 8px 0;
+    padding: 14px 15px;
+    color: #fff;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.dl-quality-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.best-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #fff;
+    color: #333;
+    font-size: 9px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* ============ SPINNERS ============ */
+.spinner-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.custom-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid transparent;
+    border-top: 3px solid rgba(255, 255, 255, 0.9);
+    border-right: 3px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+.spinner-dark {
+    border-top-color: var(--blue);
+    border-right-color: rgba(24,119,242,0.5);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: rgba(255,255,255,0.9);
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.loading-text-dark {
+    color: var(--text-secondary);
+}
+
+.btn-spinner {
+    width: 22px;
+    height: 22px;
+    border: 2px solid transparent;
+    border-top: 2px solid #fff;
+    border-right: 2px solid rgba(255,255,255,0.6);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+/* ============ LOADING STATES ============ */
+.loading-state {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.loading-state img {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+}
+
+/* Skeleton Loading */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-sm);
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-img {
+    width: 100%;
+    height: 200px;
+}
+
+.skeleton-text {
+    height: 16px;
+    margin: 8px 0;
+}
+
+.skeleton-text-sm {
+    height: 12px;
+    width: 60%;
+}
+
+/* ============ ERROR / EMPTY STATES ============ */
+.error-state {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.error-state i {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.error-state .error-icon { color: var(--red); }
+.error-state .empty-icon { color: #ccc; }
+
+.error-state p {
+    font-weight: 500;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+}
+
+.empty-state i {
+    font-size: 48px;
+    color: #ccc;
+    display: block;
+    margin-bottom: 12px;
+}
+
+/* ============ FOOTER ============ */
 .footer {
     background: #fff;
     border-top: 1px solid var(--border);
-    padding: 24px 16px;
+    padding: 24px 20px;
     text-align: center;
-    margin-top: 24px;
+    margin-top: 40px;
 }
 
 .social-icons {
@@ -661,141 +1267,403 @@ body {
     transform: translateY(-2px);
 }
 
+.social-icon.fb:hover { background: #1877f2; }
+.social-icon.telegram:hover { background: #0088cc; }
+.social-icon.whatsapp:hover { background: #25D366; }
+
 .copyright {
     font-size: 12px;
     color: var(--text-secondary);
 }
 
 .copyright strong {
-    color: #e74c3c;
+    color: var(--red);
 }
 
-/* VIDEO PLAYER */
-video {
-    background: #000;
-    border-radius: var(--radius-sm);
-    width: 100%;
-    max-height: 400px;
-}
-
-/* SPINNERS */
-.spinner-container {
+/* Footer Links */
+.footer-links {
     display: flex;
-    align-items: center;
     justify-content: center;
-}
-
-.custom-spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid transparent;
-    border-top: 3px solid rgba(255, 255, 255, 0.9);
-    border-right: 3px solid rgba(255, 255, 255, 0.5);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.loading-text {
-    color: rgba(255,255,255,0.9);
-    margin-top: 12px;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-}
-
-.btn-spinner {
-    width: 22px;
-    height: 22px;
-    border: 2px solid transparent;
-    border-top: 2px solid #fff;
-    border-right: 2px solid rgba(255,255,255,0.6);
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-}
-
-/* LOADING STATE */
-.loading-state {
-    text-align: center;
-    padding: 40px 20px;
-}
-
-.loading-state img {
-    width: 48px;
-    height: 48px;
+    gap: 20px;
+    flex-wrap: wrap;
     margin-bottom: 12px;
 }
 
-/* RESPONSIVE */
+.footer-links a {
+    font-size: 13px;
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+
+.footer-links a:hover {
+    color: var(--blue);
+}
+
+/* ============ ANIMATIONS ============ */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes bounceIn {
+    0% { opacity: 0; transform: scale(0.3); }
+    50% { opacity: 1; transform: scale(1.05); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+/* ============ UTILITY CLASSES ============ */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.mb-3 { margin-bottom: 24px; }
+
+.p-0 { padding: 0; }
+.p-1 { padding: 8px; }
+.p-2 { padding: 16px; }
+.p-3 { padding: 24px; }
+
+.d-flex { display: flex; }
+.d-none { display: none; }
+.d-block { display: block; }
+
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-wrap { flex-wrap: wrap; }
+.gap-1 { gap: 8px; }
+.gap-2 { gap: 16px; }
+.gap-3 { gap: 24px; }
+
+.w-100 { width: 100%; }
+.rounded { border-radius: var(--radius-sm); }
+.shadow { box-shadow: var(--shadow); }
+
+.text-blue { color: var(--blue); }
+.text-red { color: var(--red); }
+.text-green { color: var(--green); }
+.text-orange { color: var(--orange); }
+.text-muted { color: var(--text-secondary); }
+
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.font-sm { font-size: 13px; }
+.font-xs { font-size: 11px; }
+
+.hidden { display: none !important; }
+.visible { display: block !important; }
+
+/* ============ RESPONSIVE BREAKPOINTS ============ */
+
+/* Small Mobile (320px - 480px) */
 @media (max-width: 480px) {
-    .hero-card {
-        padding: 24px 16px;
+    .hero-card { 
+        padding: 24px 16px; 
     }
     
-    .hero-card h1 {
-        font-size: 20px;
+    .hero-card h1 { 
+        font-size: 20px; 
     }
     
-    .video-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
+    .hero-card p {
+        font-size: 13px;
     }
     
-    .video-thumb-img {
-        height: 120px;
+    .video-grid { 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 10px; 
     }
     
-    .video-thumb-img::after {
-        width: 36px;
-        height: 36px;
+    .video-thumb-img { 
+        height: 120px; 
     }
     
-    .video-thumb-play {
-        border-left: 12px solid #fff;
-        border-top: 7px solid transparent;
-        border-bottom: 7px solid transparent;
-        margin-left: 2px;
+    .video-thumb-img::after { 
+        width: 36px; 
+        height: 36px; 
+    }
+    
+    .video-thumb-play { 
+        border-left: 12px solid #fff; 
+        border-top: 7px solid transparent; 
+        border-bottom: 7px solid transparent; 
+        margin-left: 2px; 
+    }
+    
+    .apps-grid { 
+        grid-template-columns: repeat(2, 1fr); 
+    }
+    
+    .search-box input { 
+        padding: 12px 16px; 
+        font-size: 14px; 
+    }
+    
+    .dl-btn { 
+        width: 42px; 
+        height: 42px; 
+    }
+    
+    .sidebar { 
+        display: none !important; 
+    }
+    
+    .result-sidebar { 
+        display: none !important; 
+    }
+    
+    .main { 
+        padding: 12px; 
+    }
+    
+    .main-layout {
+        flex-direction: column;
+    }
+    
+    .blog-post {
+        padding: 16px;
+    }
+    
+    .blog-post h1 { 
+        font-size: 20px; 
+    }
+    
+    .blog-post h2 { 
+        font-size: 18px; 
+    }
+    
+    .footer-links {
+        gap: 12px;
+    }
+}
+
+/* Tablet (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .video-grid { 
+        grid-template-columns: repeat(3, 1fr); 
+    }
+    
+    .sidebar { 
+        display: none !important; 
+    }
+    
+    .result-sidebar { 
+        display: none !important; 
+    }
+    
+    .main-layout {
+        flex-direction: column;
+    }
+    
+    .hero-card { 
+        padding: 28px 20px; 
+    }
+    
+    .hero-card h1 { 
+        font-size: 22px; 
+    }
+}
+
+/* Small Desktop (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .video-grid { 
+        grid-template-columns: repeat(3, 1fr); 
+    }
+    
+    .sidebar { 
+        display: none !important; 
+    }
+    
+    .result-sidebar { 
+        display: none !important; 
+    }
+    
+    .main { 
+        padding: 20px 24px; 
+    }
+}
+
+/* Large Desktop (1025px+) */
+@media (min-width: 1025px) {
+    .main { 
+        padding: 24px 32px; 
+    }
+    
+    .hero-card { 
+        padding: 40px 32px; 
+    }
+    
+    .hero-card h1 { 
+        font-size: 28px; 
+    }
+    
+    .hero-card p {
+        font-size: 16px;
+    }
+    
+    /* 4 columns on desktop */
+    .video-grid { 
+        grid-template-columns: repeat(4, 1fr); 
+    }
+    
+    /* Show sidebar on desktop */
+    .sidebar { 
+        display: block; 
+    }
+    
+    .result-sidebar { 
+        display: block; 
+    }
+    
+    .video-thumb-img { 
+        height: 120px; 
+    }
+    
+    .blog-post {
+        padding: 32px;
+    }
+    
+    .blog-post h1 { 
+        font-size: 28px; 
     }
     
     .apps-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .search-box input {
-        padding: 12px 16px;
-        font-size: 14px;
-    }
-    
-    .dl-btn {
-        width: 42px;
-        height: 42px;
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 
-@media (min-width: 481px) and (max-width: 768px) {
-    .video-grid {
-        grid-template-columns: repeat(3, 1fr);
+/* Extra Large Desktop (1400px+) */
+@media (min-width: 1400px) {
+    .main { 
+        padding: 28px 40px; 
+    }
+    
+    .video-grid { 
+        grid-template-columns: repeat(5, 1fr); 
+        gap: 16px;
+    }
+    
+    .video-thumb-img { 
+        height: 150px; 
     }
 }
 
-@media (min-width: 769px) {
+/* ============ PRINT STYLES ============ */
+@media print {
+    .header,
+    .drawer,
+    .drawer-overlay,
+    .sidebar,
+    .result-sidebar,
+    .tabs-scroll,
+    .footer,
+    .ad-banner,
+    .dl-btn,
+    .menu-btn {
+        display: none !important;
+    }
+    
+    body {
+        background: #fff;
+    }
+    
     .main {
-        padding: 24px;
+        max-width: 100%;
+        padding: 0;
     }
     
     .hero-card {
-        padding: 40px 32px;
-    }
-    
-    .hero-card h1 {
-        font-size: 28px;
+        background: none;
+        color: #000;
+        box-shadow: none;
+        padding: 0;
+        margin-bottom: 20px;
     }
 }
-    </style>
+
+/* ============ DARK MODE (Optional - Add class "dark-mode" to body) ============ */
+body.dark-mode {
+    --light: #1a1a2e;
+    --card: #16213e;
+    --text: #e4e6eb;
+    --text-secondary: #b0b3b8;
+    --border: #2a2a4a;
+    --border-light: #222244;
+    background: #0f0f23;
+}
+
+body.dark-mode .header {
+    background: rgba(26,26,46,0.95);
+}
+
+body.dark-mode .hero-card {
+    background: linear-gradient(135deg, #1a3a5c 0%, #16213e 100%);
+}
+
+body.dark-mode .search-box,
+body.dark-mode .card,
+body.dark-mode .sidebar-card,
+body.dark-mode .blog-post,
+body.dark-mode .step-item,
+body.dark-mode .update-card,
+body.dark-mode .faq-card,
+body.dark-mode .app-card,
+body.dark-mode .video-thumb-card,
+body.dark-mode .footer {
+    background: var(--card);
+    border-color: var(--border);
+}
+
+body.dark-mode .search-box input {
+    color: #fff;
+}
+
+body.dark-mode .tab-btn {
+    background: var(--card);
+    color: var(--text-secondary);
+}
+
+body.dark-mode .drawer {
+    background: var(--card);
+}
+
+body.dark-mode .drawer-menu a {
+    color: var(--text);
+}
+
+body.dark-mode .drawer-menu a:hover,
+body.dark-mode .drawer-menu a.active {
+    background: #1a3a5c;
+}
+
+body.dark-mode .footer {
+    background: var(--card);
+}
+</style>
 </head>
 <body>
 
@@ -815,7 +1683,7 @@ video {
     <!-- DRAWER MENU -->
     <nav class="drawer" id="drawer">
         <div class="drawer-header">
-            <h3 style="font-size:18px;">Menu</h3>
+            <h3 style="font-size:18px;">Browse more  <i class="fa fa-chevron-down"></i></h3>
             <button class="drawer-close" onclick="toggleDrawer()">
                 <i class="fas fa-times"></i>
             </button>
@@ -825,155 +1693,152 @@ video {
             <li><a href="#" onclick="switchTab(event, 'tab-how')"><i class="fas fa-download"></i> How to Use</a></li>
             <li><a href="#" onclick="switchTab(event, 'tab-updates')"><i class="fas fa-bell"></i> Updates</a></li>
             <li><a href="#" onclick="switchTab(event, 'tab-faq')"><i class="fas fa-question-circle"></i> FAQ</a></li>
-            <li><a href="#" onclick="switchTab(event, 'tab-apps')"><i class="fas fa-th-large"></i> More Apps</a></li>
+            <li><a href="page/purchase.html"><i class="fa-solid fa-dollar"></i> Purchase this tool</a></li>
+            <li><a href="page/about.html"><i class="fa-solid fa-user"></i> About us</a></li>
+            <li><a href="page/copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a></li>
+            <li><a href="page/disclaimers.html"><i class="fa-solid fa-hand"></i> Disclaimers</a></li>
+            <li><a href="page/privacy.html"><i class="fa-solid fa-user-secret"></i> Privacy Policy</a></li>
+            <li><a href="page/terms-of-service.html"><i class="fa-solid fa-file-contract"></i> Terms of service</a></li>
+            <li><a href="page/bug-report.html"><i class="fa-solid fa-bug"></i> Report issue</a></li<li><a href="contact.html"><i class="fa-solid fa-envelope"></i> Contact us</a></li>
+            <li><a href="blog.html" style="font-size:18px;background: #cee0ed;"><i class="fas fa-rss"></i> BLOG POSTS<i class="fa-solid fa-chevron-right"></i> </a></li></a></li>
         </ul>
     </nav>
 
     <!-- MAIN CONTENT -->
-    <main class="main">
-        
-        <!-- HERO -->
-        <div class="hero-card">
-            <h1>Facebook Video Downloader</h1>
-            <p>Fast • Free • HD Quality</p>
+<main class="main">
+    
+    <!-- HERO -->
+    <div class="hero-card" id="heroSection">
+        <h1>Facebook Video Downloader</h1>
+        <p>Fast • Free • HD Quality</p>
 
-            <form id="dlForm" class="search-box">
-                <input type="text" id="urlInput" placeholder="Paste Facebook link here...">
-                <button type="submit" class="dl-btn" id="dlBtn" aria-label="Download">
-    <i class="fas fa-download" id="dlBtnIcon" style="font-size:18px;"></i>
-    <span id="btnLoader" style="display:none;"></span>
-</button>
-            </form>
-
-            <div id="preview" class="preview-area"></div>
-        </div>
-
-        <!-- TABS -->
-        <div class="tabs-scroll" id="tabBar">
-            <button class="tab-btn active" onclick="switchTab(event, 'tab-home')">
-                <i class="fas fa-home"></i> Home
+        <form id="dlForm" class="search-box">
+            <input type="text" id="urlInput" placeholder="Paste Facebook link here...">
+            <button type="submit" class="dl-btn" id="dlBtn" aria-label="Download">
+                <i class="fas fa-download" id="dlBtnIcon" style="font-size:18px;"></i>
+                <span id="btnLoader" style="display:none;"></span>
             </button>
-            <button class="tab-btn" onclick="switchTab(event, 'tab-how')">
-                <i class="fas fa-download"></i> Steps
-            </button>
-            <button class="tab-btn" onclick="switchTab(event, 'tab-updates')">
-                <i class="fas fa-bell"></i> Updates
-            </button>
-            <button class="tab-btn" onclick="switchTab(event, 'tab-faq')">
-                <i class="fas fa-question-circle"></i> FAQ
-            </button>
-            <button class="tab-btn" onclick="switchTab(event, 'tab-apps')">
-                <i class="fas fa-th-large"></i> Apps
-            </button>
-        </div>
+        </form>
 
-        <!-- TAB CONTENT -->
-        <div id="tab-home" class="tab-panel active">
-            <div class="card">
-                <div class="card-title">📥 Recent Downloads</div>
-                <div class="video-grid" id="historyVideos">
-                    <p style="text-align:center;color:#888;font-size:13px;padding:20px;">Loading history...</p>
+        <div id="preview" class="preview-area"></div>
+    </div>
+
+    <!-- MAIN LAYOUT WITH SIDEBAR -->
+    <div class="main-layout">
+        <!-- CONTENT AREA -->
+        <div class="main-content">
+            <!-- TABS -->
+            <div class="tabs-scroll" id="tabBar">
+                <button class="tab-btn active" onclick="switchTab(event, 'tab-home')">
+                    <i class="fas fa-home"></i>
+                </button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-how')">
+                    <i class="fas fa-download"></i> Steps
+                </button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-updates')">
+                    <i class="fas fa-bell"></i> Updates
+                </button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-faq')">
+                    <i class="fas fa-question-circle"></i> FAQ
+                </button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-apps')">
+                    <i class="fas fa-th-large"></i>More
+                </button>
+            </div>
+
+            <!-- TAB CONTENT -->
+            <div id="tab-home" class="tab-panel active">
+                <div class="card">
+                    <div class="card-title">📥 Recent Downloads</div>
+                    <div class="video-grid" id="historyVideos">
+                        <p style="text-align:center;color:#888;font-size:13px;padding:20px;">Loading history...</p>
+                    </div>
+                </div>
+
+                <div class="ad-banner">
+                    <a href="https://www.yasing.com.et" target="_blank">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgK6iDLBJrJkvsyqRw7GiZuy6A0pI7Apb3iJ5jWUxwHaUq_GK1R9doWYd9jrnRPbEFNEde1OjOM3lpD_HvcMnMIodYtmYy5iDvk80Q2kpifHMJYg35r0raHWAzT9L7EXzncINcZ-6Dlp2P4raDG7XAM4m4oHhhFX2PV_LHRTd9mPv4QB9VZHHNBIcnRwbM/s2320/20494.jpg" alt="Ad">
+                    </a>
                 </div>
             </div>
 
-            <div class="ad-banner">
-                <a href="https://www.yasing.com.et" target="_blank">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgK6iDLBJrJkvsyqRw7GiZuy6A0pI7Apb3iJ5jWUxwHaUq_GK1R9doWYd9jrnRPbEFNEde1OjOM3lpD_HvcMnMIodYtmYy5iDvk80Q2kpifHMJYg35r0raHWAzT9L7EXzncINcZ-6Dlp2P4raDG7XAM4m4oHhhFX2PV_LHRTd9mPv4QB9VZHHNBIcnRwbM/s2320/20494.jpg" alt="Ad">
-                </a>
+            <div id="tab-how" class="tab-panel">
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <div>
+                        <strong>Copy Video Link</strong>
+                        <p style="color:var(--text-secondary);font-size:13px;">Open Facebook, find video, tap Share → Copy Link</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <div>
+                        <strong>Paste in Search Box</strong>
+                        <p style="color:var(--text-secondary);font-size:13px;">Tap the input field above, link auto-pastes from clipboard</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <div>
+                        <strong>Download Video</strong>
+                        <p style="color:var(--text-secondary);font-size:13px;">Choose your quality and save to your device</p>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div id="tab-how" class="tab-panel">
-            <div class="step-item">
-                <div class="step-num">1</div>
-                <div>
-                    <strong>Copy Video Link</strong>
-                    <p style="color:var(--text-secondary);font-size:13px;">Open Facebook, find video, tap Share → Copy Link</p>
+            <div id="tab-updates" class="tab-panel">
+                <div class="update-card">
+                    <span class="badge">New</span>
+                    <h4 style="margin:4px 0;">Server Update v2.0</h4>
+                    <p style="font-size:13px;color:var(--text-secondary);">Download speed increased by 50%. Now supports more formats.</p>
+                </div>
+                <div class="update-card">
+                    <span class="badge">Fix</span>
+                    <h4 style="margin:4px 0;">Bug Fixes</h4>
+                    <p style="font-size:13px;color:var(--text-secondary);">Fixed Facebook private video detection. Improved error handling.</p>
                 </div>
             </div>
-            <div class="step-item">
-                <div class="step-num">2</div>
-                <div>
-                    <strong>Paste in Search Box</strong>
-                    <p style="color:var(--text-secondary);font-size:13px;">Tap the input field above, link auto-pastes from clipboard</p>
-                </div>
-            </div>
-            <div class="step-item">
-                <div class="step-num">3</div>
-                <div>
-                    <strong>Download Video</strong>
-                    <p style="color:var(--text-secondary);font-size:13px;">Choose your quality and save to your device</p>
-                </div>
-            </div>
-        </div>
 
-        <div id="tab-updates" class="tab-panel">
-            <div class="update-card">
-                <span class="badge">New</span>
-                <h4 style="margin:4px 0;">Server Update v2.0</h4>
-                <p style="font-size:13px;color:var(--text-secondary);">Download speed increased by 50%. Now supports more formats.</p>
+            <div id="tab-faq" class="tab-panel">
+                <div class="faq-card" onclick="this.classList.toggle('active')">
+                    <div class="faq-question">Is this tool free to use? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">Yes! It's completely free. No registration required.</div>
+                </div>
+                <div class="faq-card" onclick="this.classList.toggle('active')">
+                    <div class="faq-question">Can I download private videos? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">Only public videos can be downloaded due to privacy policies.</div>
+                </div>
+                <div class="faq-card" onclick="this.classList.toggle('active')">
+                    <div class="faq-question">What quality is available? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">We support up to 1080p Full HD quality downloads.</div>
+                </div>
             </div>
-            <div class="update-card">
-                <span class="badge">Fix</span>
-                <h4 style="margin:4px 0;">Bug Fixes</h4>
-                <p style="font-size:13px;color:var(--text-secondary);">Fixed Facebook private video detection. Improved error handling.</p>
-            </div>
-        </div>
 
-        <div id="tab-faq" class="tab-panel">
-            <div class="faq-card" onclick="this.classList.toggle('active')">
-                <div class="faq-question">
-                    Is this tool free to use?
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">Yes! It's completely free. No registration required.</div>
-            </div>
-            <div class="faq-card" onclick="this.classList.toggle('active')">
-                <div class="faq-question">
-                    Can I download private videos?
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">Only public videos can be downloaded due to privacy policies.</div>
-            </div>
-            <div class="faq-card" onclick="this.classList.toggle('active')">
-                <div class="faq-question">
-                    What quality is available?
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">We support up to 1080p Full HD quality downloads.</div>
-            </div>
-        </div>
-
-        <div id="tab-apps" class="tab-panel">
-            <div class="apps-grid">
-                <div class="app-card">
-                    <i class="fab fa-instagram" style="color:#E4405F;"></i>
-                    <span>IG Downloader</span>
-                </div>
-                <div class="app-card">
-                    <i class="fab fa-tiktok" style="color:#000;"></i>
-                    <span>TT Saver</span>
-                </div>
-                <div class="app-card">
-                    <i class="fab fa-youtube" style="color:#FF0000;"></i>
-                    <span>YT Downloader</span>
-                </div>
-                <div class="app-card">
-                    <i class="fab fa-twitter" style="color:#1DA1F2;"></i>
-                    <span>X Video Saver</span>
-                </div>
-                <div class="app-card">
-                    <i class="fab fa-pinterest" style="color:#E60023;"></i>
-                    <span>Pin Saver</span>
-                </div>
-                <div class="app-card">
-                    <i class="fab fa-vimeo" style="color:#1AB7EA;"></i>
-                    <span>Vimeo DL</span>
+            <div id="tab-apps" class="tab-panel">
+                <div class="apps-grid">
+                    <div class="app-card"><i class="fab fa-instagram" style="color:gray;opacity:.3"></i><span>Coming Soon...</span></div>
+                    <div class="app-card"><i class="fab fa-tiktok" style="color:gray;opacity:.3"></i><span>Coming Soon...</span></div>
+                    <div class="app-card"><i class="fab fa-youtube" style="color:gray;opacity:.3"></i><span>Coming Soon...</span></div>
+                    <div class="app-card"><i class="fab fa-twitter" style="color:gray;opacity:.3"></i><span>Coming Soon...</span></div>
+                    <div class="app-card"><i class="fab fa-pinterest" style="color:gray;opacity:.3"></i><span>Coming Soon...</span></div>
+                    <div class="app-card"><i class="fab fa-vimeo" style="color:gray;opacity:.3"></i><span>Coming Soon...</span></div>
+                    <div class="app-card">
+            <a href="page/yt-thumbnail-downloader.html"><i class="fab fa-youtube-square" style="color:red;opacity:1"></i><span>YT Thumbnail downloader</span</a>
+                    
+                    </div>
                 </div>
             </div>
         </div>
 
-    </main>
+        <!-- SIDEBAR - Desktop only -->
+        <aside class="sidebar" id="homeSidebar">
+            <div class="sidebar-sticky" id="sidebarContent">
+                <!-- Sidebar content injected by JS -->
+            </div>
+        </aside>
+    </div>
+
+</main>
 
     <!-- FOOTER -->
     <footer class="footer">
@@ -984,7 +1849,150 @@ video {
         </div>
         <p class="copyright" id="credit-link">2026 &copy; Ardi Mobile Inc. Developed by <strong><a href=" https://www.facebook.com/yasingelma"target="_blank"> Yasin Gelma</a></strong></p>
     </footer>
+<script>// Add this function to script.js
+function renderSidebar() {
+    const sidebarHTML = `
+        <!-- Ad Card -->
+        <div class="sidebar-card sidebar-ad">
+            <a href="https://www.yasing.com.et" target="_blank">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgK6iDLBJrJkvsyqRw7GiZuy6A0pI7Apb3iJ5jWUxwHaUq_GK1R9doWYd9jrnRPbEFNEde1OjOM3lpD_HvcMnMIodYtmYy5iDvk80Q2kpifHMJYg35r0raHWAzT9L7EXzncINcZ-6Dlp2P4raDG7XAM4m4oHhhFX2PV_LHRTd9mPv4QB9VZHHNBIcnRwbM/s2320/20494.jpg" alt="Ad">
+            </a>
+        </div>
 
-    <script src="script.js"></script>
+        <!-- Related Posts -->
+        <div class="sidebar-card">
+            <div class="sidebar-title">
+                <i class="fas fa-fire"></i> Related Posts
+            </div>
+            <a href="#" class="related-post" onclick="document.getElementById('urlInput').value='https://www.facebook.com/reel/example1';document.getElementById('dlForm').requestSubmit();return false;">
+                <div class="related-thumb"><i class="fas fa-play"></i></div>
+                <div class="related-info">
+                    <h4>How to Download Facebook Videos in HD</h4>
+                    <span><i class="fas fa-eye"></i> 12.5K views</span>
+                </div>
+            </a>
+            <a href="#" class="related-post" onclick="document.getElementById('urlInput').value='https://www.facebook.com/reel/example2';document.getElementById('dlForm').requestSubmit();return false;">
+                <div class="related-thumb"><i class="fas fa-play"></i></div>
+                <div class="related-info">
+                    <h4>Top 5 Video Downloader Tools 2026</h4>
+                    <span><i class="fas fa-eye"></i> 8.2K views</span>
+                </div>
+            </a>
+            <a href="#" class="related-post" onclick="document.getElementById('urlInput').value='https://www.facebook.com/reel/example3';document.getElementById('dlForm').requestSubmit();return false;">
+                <div class="related-thumb"><i class="fas fa-play"></i></div>
+                <div class="related-info">
+                    <h4>Save Facebook Videos Without App</h4>
+                    <span><i class="fas fa-eye"></i> 5.1K views</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Tags -->
+        <div class="sidebar-card">
+            <div class="sidebar-title">
+                <i class="fas fa-tags"></i> Popular Tags
+            </div>
+            <div class="tag-list">
+                <a href="#" class="tag-item">Facebook</a>
+                <a href="#" class="tag-item">Downloader</a>
+                <a href="#" class="tag-item">HD Video</a>
+                <a href="#" class="tag-item">Free</a>
+                <a href="#" class="tag-item">MP4</a>
+                <a href="#" class="tag-item">Online</a>
+            </div>
+        </div>
+
+        <!-- Another Ad -->
+        <div class="sidebar-card sidebar-ad">
+            <a href="https://www.yasing.com.et" target="_blank">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgK6iDLBJrJkvsyqRw7GiZuy6A0pI7Apb3iJ5jWUxwHaUq_GK1R9doWYd9jrnRPbEFNEde1OjOM3lpD_HvcMnMIodYtmYy5iDvk80Q2kpifHMJYg35r0raHWAzT9L7EXzncINcZ-6Dlp2P4raDG7XAM4m4oHhhFX2PV_LHRTd9mPv4QB9VZHHNBIcnRwbM/s2320/20494.jpg" alt="Ad">
+            </a>
+        </div>
+    `;
+    return sidebarHTML;
+}
+// Initialize sidebar
+function initSidebar() {
+    const sidebarContent = document.getElementById('sidebarContent');
+    if (sidebarContent) {
+        sidebarContent.innerHTML = renderSidebar();
+    }
+}
+
+// Call on page load
+document.addEventListener('DOMContentLoaded', () => {
+    initSidebar();
+    loadDownloadHistory();
+});
+
+// Also show sidebar in preview when on desktop
+// Add this inside your dlForm submit handler, right after renderPreview content:
+// Update the preview to include sidebar on desktop
+function showResultWithSidebar(data, firstVideo, formatButtons) {
+    const isDesktop = window.innerWidth >= 1025;
+    
+    if (isDesktop) {
+        return `
+            <div class="result-layout">
+                <div class="result-main">
+                    ${renderVideoContent(data, firstVideo, formatButtons)}
+                </div>
+                <div class="result-sidebar">
+                    <div class="sidebar-sticky">
+                        ${renderSidebar()}
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        return renderVideoContent(data, firstVideo, formatButtons);
+    }
+}
+
+function renderVideoContent(data, firstVideo, formatButtons) {
+    return `
+    <div style="background:#fff;padding:20px;border-radius:16px;color:#111;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+
+        <video controls playsinline style="width:100%;border-radius:12px;background:#000;max-height:400px;">
+            <source src="${firstVideo}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <h3 style="margin-top:15px;font-size:17px;font-weight:700;line-height:1.4;">${data.title}</h3>
+
+        ${data.uploader ? `
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <i class="fas fa-user-circle" style="color:#1877f2;font-size:20px;"></i>
+            <span style="color:#555;font-size:13px;font-weight:500;">${data.uploader}</span>
+        </div>` : ""}
+
+        ${data.uploader_url ? `
+        <a href="${data.uploader_url}" target="_blank" 
+        style="display:inline-flex;align-items:center;gap:6px;
+        margin:10px 0;padding:8px 16px;
+        color:#1877f2;background:#e8f0fe;border-radius:20px;
+        text-decoration:none;font-size:13px;font-weight:600;">
+        <i class="fas fa-external-link-alt"></i> View more from uploader
+        </a>` : ""}
+
+        <div style="margin:15px 0;">
+            <p style="font-weight:700;color:#333;margin-bottom:12px;font-size:15px;">
+                <i class="fas fa-arrow-down" style="color:#1877f2;"></i> Available Downloads:
+            </p>
+            ${formatButtons}
+        </div>
+
+        <button onclick="resetDownloader()" 
+            style="margin-top:10px;padding:14px 20px;width:100%;
+            border:2px solid #e4e6eb;background:#f8f9fa;color:#333;border-radius:12px;
+            font-size:14px;font-weight:600;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;gap:8px;">
+            <i class="fas fa-redo"></i> Download Another Video
+        </button>
+    </div>
+    `;
+}
+</script>
+<script src="script.js"></script>
 </body>
 </html>
