@@ -453,6 +453,13 @@
     aspect-ratio: 16/9;
     overflow: hidden;
 }
+.history-thumb-wrapper .play-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+        .history-thumb-wrapper .play-btn-circle {
+            width: 34px; height: 34px; background: rgba(0,153,89,0.9);
+            border-radius: 50%; border: 2px solid #fff;
+            display: flex; align-items: center; justify-content: center;
+        }
+
 
 .history-thumb-wrapper img {
     width: 100%;
@@ -473,10 +480,10 @@
     display: none;
     background: #000;
 }
-
+.play-triangle { width: 0; height: 0; border-left: 10px solid #fff; border-top: 6px solid transparent; border-bottom: 6px solid transparent; margin-left: 2px; }
 .history-item.playing video { display: block; }
 .history-item.playing .history-thumb-wrapper { display: none; }
-        .history-info { padding: 6px 8px; }
+      .history-info { padding: 6px 8px; }
         .history-title { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--dark); }
         .history-quality { font-size: 9px; color: #fff; background: var(--primary); display: inline-block; padding: 2px 8px; border-radius: 8px; font-weight: 600; margin-top: 4px; }
 
