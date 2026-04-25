@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YasinG Downloader - Facebook Video Downloader</title>
+    <title>YasinG Downloader - Facebook & Instagram Video Downloader</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,6 +13,11 @@
             --blue: #1877f2;
             --blue-dark: #166fe5;
             --blue-light: #e8f0fe;
+            --instagram: #E4405F;
+            --instagram-dark: #C13584;
+            --instagram-light: #fce4ec;
+            --gradient-fb: linear-gradient(135deg, #1877f2, #0d5bbd);
+            --gradient-ig: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
             --light: #f0f2f5;
             --green: #00c853;
             --red: #e74c3c;
@@ -30,12 +35,7 @@
             --radius-full: 50px;
         }
 
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
 
         body { 
@@ -46,15 +46,11 @@
             min-height: 100vh;
         }
 
-        /* Remove all link underlines globally */
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        a:hover {
-            text-decoration: none;
-        }
+        a { text-decoration: none; color: inherit; }
+        a:hover { text-decoration: none; }
+        ul, ol { list-style: none; }
+        button { cursor: pointer; font-family: inherit; }
+        input { font-family: inherit; }
 
         /* Header */
         .header {
@@ -77,14 +73,34 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 18px;
+            gap: 6px;
+            font-size: 17px;
             font-weight: 800;
             color: var(--text);
         }
 
-        .logo i { color: #1877f2; font-size: 24px; }
-        .logo span { color: #1877f2; font-family: "Bricolage Grotesque", sans-serif; }
+        .logo-icons {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .logo .fa-facebook-square { color: #1877f2; font-size: 24px; }
+        .logo .fa-instagram { 
+            background: var(--gradient-ig);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 22px; 
+        }
+
+        .logo span { 
+            background: linear-gradient(135deg, #1877f2, #E4405F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: "Bricolage Grotesque", sans-serif; 
+        }
 
         .menu-btn {
             width: 38px;
@@ -101,7 +117,7 @@
             flex-shrink: 0;
         }
 
-        /* Drawer Menu - Fixed */
+        /* Drawer */
         .drawer-overlay {
             display: none;
             position: fixed;
@@ -139,16 +155,8 @@
             z-index: 10;
         }
 
-        .drawer-header h3 {
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .drawer-header h3 i {
-            color: var(--blue);
-        }
+        .drawer-header h3 { font-size: 16px; display: flex; align-items: center; gap: 8px; }
+        .drawer-header h3 i { color: var(--blue); }
 
         .drawer-close {
             width: 34px;
@@ -164,15 +172,9 @@
             color: var(--text);
             flex-shrink: 0;
         }
+        .drawer-close:hover { background: #e74c3c; color: #fff; }
 
-        .drawer-close:hover {
-            background: #e74c3c;
-            color: #fff;
-        }
-
-        .drawer-menu {
-            padding: 8px 12px;
-        }
+        .drawer-menu { padding: 8px 12px; }
 
         .drawer-menu a {
             display: flex;
@@ -195,10 +197,7 @@
             border-color: var(--blue);
         }
 
-        .drawer-menu a i {
-            width: 20px;
-            text-align: center;
-        }
+        .drawer-menu a i { width: 20px; text-align: center; }
 
         /* Main */
         .main {
@@ -217,21 +216,17 @@
 
         /* Hero Card */
         .hero-card {
-            background: linear-gradient(135deg, #1877f2, #0d5bbd);
+            background: var(--gradient-fb);
             border-radius: var(--radius);
-            padding: 28px 16px;
+            padding: 32px 20px;
             text-align: center;
             color: #fff;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(24,119,242,0.3);
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(24,119,242,0.3);
             position: relative;
             overflow: hidden;
         }
-.hero-card {
-    position: relative;
-    z-index: 2;  /* This prevents tabs/cards from overlapping */
-    /* rest of your styles */
-}
+
         .hero-card::before {
             content: '';
             position: absolute;
@@ -250,38 +245,87 @@
         }
 
         .hero-card h1 {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             position: relative;
             z-index: 1;
+        }
+
+        .hero-card .platform-icons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-card .platform-icons i {
+            font-size: 32px;
+        }
+
+        .hero-card .platform-icons .fa-facebook { color: #fff; }
+        .hero-card .platform-icons .fa-instagram { 
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero-card p {
             font-size: 14px;
             opacity: 0.9;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
             position: relative;
             z-index: 1;
         }
+
+        .hero-card .platform-badges {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-card .platform-badge {
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 2px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hero-card .platform-badge.fb { background: rgba(255,255,255,0.15); }
+        .hero-card .platform-badge.ig { background: rgba(255,255,255,0.15); }
 
         /* Search Box */
         .search-box {
             display: flex;
             background: #fff;
             border-radius: var(--radius-full);
-            padding: 4px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            max-width: 100%;
+            padding: 5px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            max-width: 650px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
         }
 
+        .search-box:focus-within {
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.5), 0 6px 20px rgba(0,0,0,0.2);
+        }
+
         .search-box input {
             flex: 1;
             border: none;
-            padding: 12px 16px;
+            padding: 14px 18px;
             outline: none;
             border-radius: var(--radius-full);
             font-size: 14px;
@@ -294,12 +338,21 @@
             color: var(--text-light);
         }
 
+        .input-platform-icon {
+            display: flex;
+            align-items: center;
+            padding-left: 14px;
+            font-size: 18px;
+            color: #ccc;
+            flex-shrink: 0;
+        }
+
         .dl-btn {
-            background: var(--blue);
+            background: linear-gradient(135deg, #1877f2, #E4405F);
             color: #fff;
             border: none;
-            width: 42px;
-            height: 42px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -310,8 +363,9 @@
         }
 
         .dl-btn:hover {
-            background: var(--blue-dark);
+            background: linear-gradient(135deg, #166fe5, #C13584);
             transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(24,119,242,0.4);
         }
 
         .preview-area {
@@ -320,36 +374,10 @@
             z-index: 1;
         }
 
-        /* Spinner */
-        .custom-spinner {
-            width: 32px;
-            height: 32px;
-            border: 3px solid rgba(255,255,255,0.2);
-            border-top: 3px solid #fff;
-            border-right: 3px solid rgba(255,255,255,0.5);
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .btn-spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top: 2px solid #fff;
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-            display: inline-block;
-        }
-
         /* Tabs */
         .tabs-scroll {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             overflow-x: auto;
             padding: 4px 0 16px;
             scrollbar-width: none;
@@ -357,7 +385,7 @@
         .tabs-scroll::-webkit-scrollbar { display: none; }
 
         .tab-btn {
-            padding: 8px 16px;
+            padding: 10px 20px;
             border: none;
             background: #fff;
             border-radius: var(--radius-full);
@@ -370,20 +398,23 @@
             border: 2px solid transparent;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             box-shadow: var(--shadow);
         }
 
         .tab-btn.active {
-            background: var(--blue);
+            background: linear-gradient(135deg, #1877f2, #E4405F);
             color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(24,119,242,0.3);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #f0f2f5;
             border-color: var(--blue);
         }
 
-        .tab-panel {
-            display: none;
-            animation: slideUp 0.3s ease;
-        }
+        .tab-panel { display: none; animation: slideUp 0.3s ease; }
         .tab-panel.active { display: block; }
 
         @keyframes slideUp {
@@ -395,20 +426,20 @@
         .card {
             background: #fff;
             border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 12px;
+            padding: 18px;
+            margin-bottom: 14px;
             box-shadow: var(--shadow);
             border: 2px solid var(--border);
         }
 
         .card-title {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 700;
             margin-bottom: 16px;
             color: var(--text);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             padding-bottom: 12px;
             border-bottom: 2px solid var(--blue-light);
         }
@@ -422,7 +453,6 @@
             gap: 12px;
         }
 
-        /* History item - inline player */
         .history-item {
             background: #fff;
             border-radius: var(--radius-sm);
@@ -433,7 +463,7 @@
         }
 
         .history-item:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
             box-shadow: var(--shadow-lg);
             border-color: var(--blue);
         }
@@ -446,10 +476,9 @@
 
         .history-thumb-wrapper img {
             width: 100%;
-            height: 300px;
+            height: 110px;
             object-fit: cover;
             display: block;
-            transition: opacity 0.3s ease;
         }
 
         .history-thumb-wrapper .play-overlay {
@@ -458,20 +487,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            pointer-events: none;
         }
 
         .history-thumb-wrapper .play-btn-circle {
             width: 38px;
             height: 38px;
-            background: rgba(24, 119, 242, 0.9);
+            background: rgba(24,119,242,0.9);
             border-radius: 50%;
             border: 3px solid #fff;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: transform 0.2s ease;
         }
 
         .history-thumb-wrapper .play-triangle {
@@ -483,30 +510,18 @@
             margin-left: 2px;
         }
 
-        .history-item:hover .play-btn-circle {
-            transform: scale(1.1);
-            background: rgba(24, 119, 242, 1);
-        }
-
         .history-item video {
             width: 100%;
-            height: 300px;
+            height: 110px;
             object-fit: cover;
             display: none;
             background: #000;
         }
 
-        .history-item.playing video {
-            display: block;
-        }
+        .history-item.playing video { display: block; }
+        .history-item.playing .history-thumb-wrapper { display: none; }
 
-        .history-item.playing .history-thumb-wrapper {
-            display: none;
-        }
-
-        .history-info {
-            padding: 8px 10px;
-        }
+        .history-info { padding: 8px 10px; }
 
         .history-title {
             font-size: 12px;
@@ -520,7 +535,7 @@
         .history-quality {
             font-size: 10px;
             color: #fff;
-            background: var(--blue);
+            background: linear-gradient(135deg, #1877f2, #E4405F);
             display: inline-block;
             padding: 3px 10px;
             border-radius: 10px;
@@ -532,7 +547,7 @@
             display: flex;
             align-items: flex-start;
             gap: 14px;
-            padding: 16px;
+            padding: 18px;
             background: #fff;
             border-radius: var(--radius);
             margin-bottom: 10px;
@@ -541,10 +556,10 @@
         }
 
         .step-num {
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            background: linear-gradient(135deg, #1877f2, #E4405F);
             color: #fff;
             display: flex;
             align-items: center;
@@ -554,22 +569,14 @@
             flex-shrink: 0;
         }
 
-        .step-content strong {
-            display: block;
-            font-size: 15px;
-            margin-bottom: 2px;
-        }
-
-        .step-content p {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
+        .step-content strong { display: block; font-size: 15px; margin-bottom: 2px; }
+        .step-content p { font-size: 13px; color: var(--text-secondary); }
 
         /* Update Cards */
         .update-card {
             background: #fff;
             border-radius: var(--radius);
-            padding: 16px;
+            padding: 18px;
             margin-bottom: 10px;
             box-shadow: var(--shadow);
             border-left: 4px solid var(--green);
@@ -586,7 +593,7 @@
             letter-spacing: 0.5px;
             margin-bottom: 8px;
         }
-        .badge.new { background: var(--blue); }
+        .badge.new { background: linear-gradient(135deg, var(--blue), #E4405F); }
         .badge.fix { background: var(--orange); }
 
         /* FAQ */
@@ -615,9 +622,7 @@
             background: var(--blue-light);
         }
 
-        .faq-card.active .faq-question i {
-            transform: rotate(180deg);
-        }
+        .faq-card.active .faq-question i { transform: rotate(180deg); }
 
         .faq-answer {
             padding: 0 16px;
@@ -631,7 +636,7 @@
 
         .faq-card.active .faq-answer {
             padding: 0 16px 16px;
-            max-height: 300px;
+            max-height: 400px;
         }
 
         /* Apps Grid */
@@ -643,7 +648,7 @@
 
         .app-card {
             background: #fff;
-            padding: 20px 14px;
+            padding: 24px 16px;
             border-radius: var(--radius);
             text-align: center;
             box-shadow: var(--shadow);
@@ -658,22 +663,24 @@
             border-color: var(--blue);
         }
 
-        .app-card i { font-size: 32px; display: block; margin-bottom: 8px; }
-        .app-card span { font-size: 12px; font-weight: 600; }
+        .app-card i { font-size: 36px; display: block; margin-bottom: 10px; }
+        .app-card span { font-size: 13px; font-weight: 600; }
 
-        /* Sidebar */
-        .sidebar {
-            width: 320px;
-            flex-shrink: 0;
-            display: none;
+        .app-card.ig i { 
+            background: var(--gradient-ig);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
+        /* Sidebar */
+        .sidebar { width: 320px; flex-shrink: 0; display: none; }
         .sidebar-sticky { position: sticky; top: 80px; }
 
         .sidebar-card {
             background: #fff;
             border-radius: var(--radius);
-            padding: 16px;
+            padding: 18px;
             margin-bottom: 16px;
             box-shadow: var(--shadow);
             border: 2px solid var(--border);
@@ -714,6 +721,7 @@
             border-radius: 6px;
             background: var(--blue-light);
             flex-shrink: 0;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -721,36 +729,18 @@
             font-size: 18px;
         }
 
-        .related-info h4 {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
+        .related-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
-        .related-info span {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
+        .related-info h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; line-height: 1.4; }
+        .related-info span { font-size: 11px; color: var(--text-secondary); }
 
-        .sidebar-ad {
-            text-align: center;
-            overflow: hidden;
-            border-radius: var(--radius);
-        }
-        .sidebar-ad img {
-            width: 100%;
-            border-radius: var(--radius);
-            display: block;
-        }
+        .sidebar-ad { text-align: center; overflow: hidden; border-radius: var(--radius); }
+        .sidebar-ad img { width: 100%; border-radius: var(--radius); display: block; }
 
-        .tag-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
+        .tag-list { display: flex; flex-wrap: wrap; gap: 8px; }
 
         .tag-item {
-            padding: 6px 12px;
+            padding: 6px 14px;
             background: var(--blue-light);
             color: var(--blue);
             border-radius: var(--radius-full);
@@ -758,30 +748,22 @@
             font-weight: 600;
             cursor: pointer;
         }
-        .tag-item:hover {
-            background: var(--blue);
-            color: #fff;
-        }
+        .tag-item:hover { background: linear-gradient(135deg, #1877f2, #E4405F); color: #fff; }
 
         /* Footer */
         .footer {
             background: #fff;
             border-top: 2px solid var(--border);
-            padding: 24px 16px;
+            padding: 28px 16px;
             text-align: center;
-            margin-top: 32px;
+            margin-top: 36px;
         }
 
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
+        .social-icons { display: flex; justify-content: center; gap: 16px; margin-bottom: 18px; }
 
         .social-icon {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             background: var(--light);
             color: var(--text-secondary);
@@ -790,47 +772,59 @@
             justify-content: center;
             font-size: 18px;
             border: 2px solid var(--border);
+            transition: all 0.2s ease;
         }
 
+        .social-icon:hover { transform: translateY(-3px); }
         .social-icon.fb:hover { background: #1877f2; color: #fff; border-color: #1877f2; }
+        .social-icon.ig:hover { background: var(--gradient-ig); color: #fff; border-color: #E4405F; }
         .social-icon.telegram:hover { background: #0088cc; color: #fff; border-color: #0088cc; }
         .social-icon.whatsapp:hover { background: #25D366; color: #fff; border-color: #25D366; }
 
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-        }
-
-        .footer-links a {
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
+        .footer-links { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; margin-bottom: 14px; }
+        .footer-links a { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
         .footer-links a:hover { color: var(--blue); }
 
-        .copyright {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px solid var(--border);
+        .copyright { font-size: 12px; color: var(--text-secondary); margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+        .copyright strong { 
+            background: linear-gradient(135deg, #1877f2, #E4405F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .copyright strong { color: var(--blue); }
 
-        /* Result Layout */
-        .result-layout {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
+        /* Video Info Card */
+        .video-info-card {
+            background: #f8f9fa;
+            border-radius: var(--radius);
+            padding: 16px;
+            margin: 16px 0;
+            border: 2px solid var(--border);
+            position: relative;
+            overflow: hidden;
         }
-        .result-main { flex: 1; min-width: 0; }
-        .result-sidebar { width: 320px; flex-shrink: 0; display: none; }
 
-        /* Download Buttons */
+        .video-info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #1877f2, #E4405F);
+        }
+
+        .video-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 2px solid rgba(24,119,242,0.15); line-height: 1.4; word-wrap: break-word; }
+
+        .uploader-info { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #fff; border-radius: var(--radius-sm); border: 2px solid rgba(24,119,242,0.1); flex-wrap: wrap; }
+
+        .uploader-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--blue-light); display: flex; align-items: center; justify-content: center; color: var(--blue); font-size: 20px; flex-shrink: 0; }
+
+        .uploader-details { flex: 1; min-width: 0; }
+        .uploader-name { font-weight: 700; font-size: 14px; }
+
+        .uploader-link { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; background: linear-gradient(135deg, #1877f2, #E4405F); color: #fff; border-radius: var(--radius-full); font-size: 12px; font-weight: 600; margin-top: 6px; white-space: nowrap; }
+
         .dl-quality-btn {
             display: flex;
             align-items: center;
@@ -851,124 +845,39 @@
             border: none;
         }
 
-        .dl-quality-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
+        .dl-quality-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
 
-        .best-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #fff;
-            color: #333;
-            font-size: 9px;
-            padding: 3px 10px;
-            border-radius: 10px;
-            font-weight: 700;
-        }
+        .best-badge { position: absolute; top: 8px; right: 8px; background: #fff; color: #333; font-size: 9px; padding: 3px 10px; border-radius: 10px; font-weight: 700; }
 
-        /* Video Info Card */
-        .video-info-card {
-            background: #f8f9fa;
-            border-radius: var(--radius);
-            padding: 14px;
-            margin: 14px 0;
-            border: 2px solid var(--border);
-            position: relative;
-            overflow: hidden;
-        }
+        /* Spinner */
+        .custom-spinner { width: 32px; height: 32px; border: 3px solid rgba(255,255,255,0.2); border-top: 3px solid #fff; border-right: 3px solid rgba(255,255,255,0.5); border-radius: 50%; animation: spin 0.7s linear infinite; }
 
-        .video-info-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--blue);
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .video-title {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid rgba(24,119,242,0.15);
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
+        .btn-spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid #fff; border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block; }
 
-        .uploader-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            background: #fff;
-            border-radius: var(--radius-sm);
-            border: 2px solid rgba(24,119,242,0.1);
-            flex-wrap: wrap;
-        }
+        /* Result Layout */
+        .result-layout { display: flex; gap: 20px; align-items: flex-start; }
+        .result-main { flex: 1; min-width: 0; }
+        .result-sidebar { width: 320px; flex-shrink: 0; display: none; }
 
-        .uploader-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: var(--blue-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--blue);
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-
-        .uploader-details { flex: 1; min-width: 0; }
-        .uploader-name { font-weight: 700; font-size: 14px; }
-
-        .uploader-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 6px 14px;
-            background: var(--blue);
-            color: #fff;
-            border-radius: var(--radius-full);
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 6px;
-            white-space: nowrap;
-        }
-
-        .uploader-link:hover {
-            background: var(--blue-dark);
-        }
-
-        /* Responsive */
         @media (max-width: 480px) {
-            .hero-card { 
-                padding: 22px 12px;
-                border-radius: var(--radius-sm);
-            }
-            .hero-card h1 { font-size: 18px; }
-            .hero-card p { font-size: 13px; margin-bottom: 14px; }
-            .search-box { padding: 3px; }
-            .search-box input { padding: 10px 12px; font-size: 13px; }
-            .dl-btn { width: 38px; height: 38px; }
+            .hero-card { padding: 24px 14px; }
+            .hero-card h1 { font-size: 19px; }
+            .hero-card p { font-size: 12px; }
+            .search-box input { padding: 12px 14px; font-size: 13px; }
+            .dl-btn { width: 42px; height: 42px; }
             .video-grid { gap: 8px; }
-            .history-thumb-wrapper img,
-            .history-item video { height: 90px; }
+            .history-thumb-wrapper img, .history-item video { height: 90px; }
             .apps-grid { gap: 8px; }
-            .tab-btn { font-size: 11px; padding: 7px 12px; }
-            .drawer { width: 280px; max-width: 85vw; }
+            .tab-btn { font-size: 11px; padding: 8px 14px; }
+            .hero-card .platform-icons i { font-size: 26px; }
         }
 
         @media (min-width: 481px) and (max-width: 768px) {
-            .hero-card { padding: 28px 20px; }
-            .hero-card h1 { font-size: 24px; }
+            .hero-card { padding: 30px 22px; }
+            .hero-card h1 { font-size: 22px; }
             .video-grid { grid-template-columns: repeat(3, 1fr); }
-            .history-thumb-wrapper img,
-            .history-item video { height: 120px; }
             .apps-grid { grid-template-columns: repeat(3, 1fr); }
         }
 
@@ -977,15 +886,13 @@
             .sidebar { display: block; }
             .result-sidebar { display: block; }
             .video-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
-            .hero-card { padding: 44px 36px; }
-            .hero-card h1 { font-size: 32px; }
-            .hero-card p { font-size: 16px; margin-bottom: 24px; }
-            .search-box { padding: 5px; max-width: 650px; }
-            .search-box input { padding: 16px 20px; font-size: 15px; }
-            .dl-btn { width: 50px; height: 50px; }
+            .hero-card { padding: 48px 40px; }
+            .hero-card h1 { font-size: 34px; }
+            .hero-card p { font-size: 16px; }
+            .search-box input { padding: 16px 22px; font-size: 15px; }
+            .dl-btn { width: 52px; height: 52px; }
             .apps-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
-            .history-thumb-wrapper img,
-            .history-item video { height: 140px; }
+            .history-thumb-wrapper img, .history-item video { height: 140px; }
         }
     </style>
 </head>
@@ -993,7 +900,11 @@
     <header class="header">
         <div class="header-inner">
             <a href="/" class="logo">
-                <i class="fab fa-facebook-square"></i> VIDEO <span>DOWNLOADER</span>
+                <span class="logo-icons">
+                    <i class="fab fa-facebook-square"></i>
+                    <i class="fab fa-instagram"></i>
+                </span>
+                VIDEO <span>DOWNLOADER</span>
             </a>
             <button class="menu-btn" onclick="toggleDrawer()" aria-label="Menu">
                 <i class="fas fa-bars"></i>
@@ -1001,7 +912,6 @@
         </div>
     </header>
 
-    <!-- Drawer -->
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
     <nav class="drawer" id="drawer">
         <div class="drawer-header">
@@ -1009,25 +919,36 @@
             <button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
         </div>
         <div class="drawer-menu">
-    <a href="index.html" class="active"><i class="fas fa-home"></i> Home</a>
-    <a href="blog.html"><i class="fas fa-rss"></i> Blog</a>
-    <a href="purchase.html"><i class="fa-solid fa-dollar"></i> Purchase</a>
-    <a href="page/about.html"><i class="fa-solid fa-user"></i> About us</a>
-    <a href="page/copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a>
-    <a href="page/disclaimers.html"><i class="fa-solid fa-hand"></i> Disclaimers</a>
-    <a href="page/privacy.html"><i class="fa-solid fa-user-secret"></i> Privacy Policy</a>
-    <a href="page/terms-of-service.html"><i class="fa-solid fa-file-contract"></i> Terms of service</a>
-    <a href="page/bug-report.html"><i class="fa-solid fa-bug"></i> Report issue</a>
-</div>
-
+            <a href="#" class="active" onclick="switchTab(event, 'tab-home')"><i class="fas fa-home"></i> Home</a>
+            <a href="#" onclick="switchTab(event, 'tab-how')"><i class="fas fa-download"></i> How to Use</a>
+            <a href="#" onclick="switchTab(event, 'tab-updates')"><i class="fas fa-bell"></i> Updates</a>
+            <a href="#" onclick="switchTab(event, 'tab-faq')"><i class="fas fa-question-circle"></i> FAQ</a>
+            <a href="purchase.html"><i class="fa-solid fa-dollar"></i> Purchase</a>
+            <a href="blog.html"><i class="fas fa-rss"></i> Blog</a>
+            <a href="page/about.html"><i class="fa-solid fa-user"></i> About</a>
+            <a href="page/privacy.html"><i class="fa-solid fa-user-secret"></i> Privacy</a>
+            <a href="page/terms-of-service.html"><i class="fa-solid fa-file-contract"></i> Terms</a>
+            <a href="page/copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a>
+            <a href="page/disclaimer.html"><i class="fa-solid fa-hand"></i> Disclaimer</a>
+            <a href="page/bug-report.html"><i class="fa-solid fa-bug"></i> Report</a>
+        </div>
     </nav>
 
     <main class="main">
         <div class="hero-card" id="heroSection">
-            <h1>Facebook Video Downloader</h1>
-            <p>Fast • Free • HD Quality</p>
+            <div class="platform-icons">
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-instagram"></i>
+            </div>
+            <h1>Facebook & Instagram Video Downloader</h1>
+            <div class="platform-badges">
+                <span class="platform-badge fb"><i class="fab fa-facebook"></i> Facebook</span>
+                <span class="platform-badge ig"><i class="fab fa-instagram"></i> Instagram</span>
+            </div>
+            <p>Download videos from Facebook & Instagram • Fast • Free • HD Quality</p>
             <form id="dlForm" class="search-box">
-                <input type="text" id="urlInput" placeholder="Paste Facebook link here...">
+                <span class="input-platform-icon"><i class="fas fa-link"></i></span>
+                <input type="text" id="urlInput" placeholder="Paste Facebook or Instagram link here...">
                 <button type="submit" class="dl-btn" id="dlBtn" aria-label="Download">
                     <i class="fas fa-download" id="dlBtnIcon" style="font-size:18px;"></i>
                     <span id="btnLoader" style="display:none;"></span>
@@ -1060,21 +981,21 @@
                         <div class="step-num">1</div>
                         <div class="step-content">
                             <strong>Copy Video Link</strong>
-                            <p>Open Facebook, find video, tap Share → Copy Link</p>
+                            <p>Open Facebook or Instagram, find video, tap Share → Copy Link</p>
                         </div>
                     </div>
                     <div class="step-item">
                         <div class="step-num">2</div>
                         <div class="step-content">
                             <strong>Paste in Search Box</strong>
-                            <p>Tap the input field above, link auto-pastes</p>
+                            <p>Tap the input field above, link auto-pastes from clipboard</p>
                         </div>
                     </div>
                     <div class="step-item">
                         <div class="step-num">3</div>
                         <div class="step-content">
                             <strong>Download Video</strong>
-                            <p>Choose quality and save to your device</p>
+                            <p>Choose your quality and save to your device instantly</p>
                         </div>
                     </div>
                 </div>
@@ -1082,39 +1003,48 @@
                 <div id="tab-updates" class="tab-panel">
                     <div class="update-card">
                         <span class="badge new">New</span>
-                        <h4 style="margin:6px 0;">Server Update v2.0</h4>
-                        <p style="font-size:13px;color:var(--text-secondary);">Download speed increased by 50%.</p>
+                        <h4 style="margin:6px 0;">Instagram Support Added! 🎉</h4>
+                        <p style="font-size:13px;color:var(--text-secondary);">Now download Instagram videos, reels, and stories!</p>
+                    </div>
+                    <div class="update-card">
+                        <span class="badge new">New</span>
+                        <h4 style="margin:6px 0;">Server Update v3.0</h4>
+                        <p style="font-size:13px;color:var(--text-secondary);">Download speed increased by 60%. Dual platform support.</p>
                     </div>
                     <div class="update-card">
                         <span class="badge fix">Fix</span>
                         <h4 style="margin:6px 0;">Bug Fixes</h4>
-                        <p style="font-size:13px;color:var(--text-secondary);">Fixed private video detection.</p>
+                        <p style="font-size:13px;color:var(--text-secondary);">Fixed Instagram private account detection. Improved stability.</p>
                     </div>
                 </div>
 
                 <div id="tab-faq" class="tab-panel">
                     <div class="faq-card" onclick="this.classList.toggle('active')">
                         <div class="faq-question">Is this tool free? <i class="fas fa-chevron-down"></i></div>
-                        <div class="faq-answer">Yes! Completely free. No registration required.</div>
+                        <div class="faq-answer">Yes! 100% free for Facebook and Instagram videos. No registration.</div>
                     </div>
                     <div class="faq-card" onclick="this.classList.toggle('active')">
-                        <div class="faq-question">Can I download private videos? <i class="fas fa-chevron-down"></i></div>
-                        <div class="faq-answer">Only public videos can be downloaded.</div>
+                        <div class="faq-question">Can I download Instagram stories? <i class="fas fa-chevron-down"></i></div>
+                        <div class="faq-answer">Yes! You can download Instagram stories, reels, and posts.</div>
                     </div>
                     <div class="faq-card" onclick="this.classList.toggle('active')">
                         <div class="faq-question">What quality is available? <i class="fas fa-chevron-down"></i></div>
-                        <div class="faq-answer">We support up to 1080p Full HD quality.</div>
+                        <div class="faq-answer">Up to 1080p Full HD for both Facebook and Instagram.</div>
+                    </div>
+                    <div class="faq-card" onclick="this.classList.toggle('active')">
+                        <div class="faq-question">Can I download private videos? <i class="fas fa-chevron-down"></i></div>
+                        <div class="faq-answer">Only public videos from both platforms can be downloaded.</div>
                     </div>
                 </div>
 
                 <div id="tab-apps" class="tab-panel">
                     <div class="apps-grid">
-                        <div class="app-card"><i class="fab fa-instagram" style="color:gray;opacity:.3"></i><span>Coming Soon</span></div>
+                        <div class="app-card ig"><i class="fab fa-instagram"></i><span>Instagram</span></div>
+                        <div class="app-card"><i class="fab fa-facebook" style="color:#1877f2;"></i><span>Facebook</span></div>
                         <div class="app-card"><i class="fab fa-tiktok" style="color:gray;opacity:.3"></i><span>Coming Soon</span></div>
                         <div class="app-card"><i class="fab fa-youtube" style="color:gray;opacity:.3"></i><span>Coming Soon</span></div>
                         <div class="app-card"><i class="fab fa-twitter" style="color:gray;opacity:.3"></i><span>Coming Soon</span></div>
                         <div class="app-card"><i class="fab fa-pinterest" style="color:gray;opacity:.3"></i><span>Coming Soon</span></div>
-                        <div class="app-card"><i class="fab fa-vimeo" style="color:gray;opacity:.3"></i><span>Coming Soon</span></div>
                         <div class="app-card">
                             <a href="page/yt-thumbnail-downloader.html">
                                 <i class="fab fa-youtube-square" style="color:red;opacity:1"></i>
@@ -1134,17 +1064,19 @@
     <footer class="footer">
         <div class="social-icons">
             <a href="https://fb.com/yasingelma" class="social-icon fb" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://instagram.com/yasingelma" class="social-icon ig" target="_blank"><i class="fab fa-instagram"></i></a>
             <a href="https://t.me/anayasingg" class="social-icon telegram" target="_blank"><i class="fab fa-telegram-plane"></i></a>
             <a href="https://api.whatsapp.com/send?phone=251934646971" class="social-icon whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
         </div>
         <div class="footer-links">
-            <a href="page/purchase.html">Purchase</a>
+            <a href="purchase.html">Purchase</a>
+            <a href="blog.html">Blog</a>
             <a href="page/about.html">About</a>
             <a href="page/privacy.html">Privacy</a>
             <a href="page/terms-of-service.html">Terms</a>
             <a href="page/copyright.html">Copyright</a>
         </div>
-        <p class="copyright" id="credit-link">2026 &copy; Ardi Mobile Inc | Developed by <strong><a href="https://www.facebook.com/yasingelma" target="_blank">Yasin Gelma</a></strong></p>
+        <p class="copyright" id="credit-link">2026 &copy; Ardi Mobile Inc | Developed by <strong>Yasin Gelma</strong></p>
     </footer>
 
     <script src="script.js"></script>
