@@ -5,14 +5,13 @@ const dlBtnIcon = document.getElementById('dlBtnIcon');
 const btnLoader = document.getElementById('btnLoader');
 
 const ICON_URL = 'https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png';
+const SITE_URL = 'https://galmee.vercel.app';
 
 const randomAds = [
     { desktop: 'https://picsum.photos/600/400?random=1' },
     { desktop: 'https://picsum.photos/600/400?random=2' },
     { desktop: 'https://picsum.photos/600/400?random=3' },
-    { desktop: 'https://picsum.photos/600/400?random=4' },
-    { desktop: 'https://picsum.photos/600/400?random=5' },
-    { desktop: 'https://picsum.photos/600/400?random=6' }
+    { desktop: 'https://picsum.photos/600/400?random=4' }
 ];
 
 function getRandomAd() {
@@ -66,8 +65,8 @@ function showAutoDetectNotification(platform) {
     preview.innerHTML = `
         <div style="text-align:center;padding:16px;">
             <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;">
-                <img src="${ICON_URL}" style="width:24px;height:24px;border-radius:4px;" alt="">
-                <span style="background:${platformColor};color:#fff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;">
+                <img src="${ICON_URL}" style="width:24px;height:24px;border-radius:6px;" alt="">
+                <span style="background:${platformColor};color:#fff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;">
                     <i class="fab ${platformIcon}"></i> ${platformName}
                 </span>
                 <span style="color:#fff;font-size:13px;font-weight:600;">Link detected!</span>
@@ -102,6 +101,7 @@ function playHistoryVideo(event, videoUrl, historyItem) {
     if (historyItem.classList.contains('playing')) { stopHistoryVideo(historyItem); return; }
     video.src = videoUrl;
     video.style.display = 'block';
+    video.muted = false;
     thumbWrapper.style.display = 'none';
     historyItem.classList.add('playing');
     video.play();
@@ -151,9 +151,11 @@ function downloadVideo(url, quality) {
 }
 
 async function processPreview(url) {
+    // Show spinning icon on button
     dlBtnIcon.style.display = "none";
     btnLoader.style.display = "block";
-    btnLoader.innerHTML = `<span class="btn-spinner"></span>`;
+    btnLoader.innerHTML = `<img src="${ICON_URL}" style="width:22px;height:22px;border-radius:4px;animation:spin 0.8s linear infinite;">`;
+
     const platform = detectPlatform(url);
 
     try {
@@ -174,60 +176,83 @@ async function processPreview(url) {
         const platformColor = platform === 'instagram' ? '#E4405F' : '#1877f2';
         const platformName = platform === 'instagram' ? 'Instagram' : 'Facebook';
 
-        // Quality buttons
+        // Quality buttons in list style with "Download" word
         const qualityColors = {
-            '1080p': 'linear-gradient(135deg, #e74c3c, #c0392b)',
-            '720p': 'linear-gradient(135deg, #f39c12, #e67e22)',
-            '480p': 'linear-gradient(135deg, #009959, #007a47)',
-            '360p': 'linear-gradient(135deg, #2ecc71, #27ae60)',
-            '240p': 'linear-gradient(135deg, #95a5a6, #7f8c8d)'
+            '1080p': { bg: 'linear-gradient(135deg, #009959, #007a47)', border: '#009959' },
+            '720p': { bg: 'linear-gradient(135deg, #007a47, #005a35)', border: '#007a47' },
+            '480p': { bg: 'linear-gradient(135deg, #FEC601, #e6b300)', border: '#FEC601' },
+            '360p': { bg: 'linear-gradient(135deg, #5a8a6a, #4a7a5a)', border: '#5a8a6a' },
+            '240p': { bg: 'linear-gradient(135deg, #8a9a8a, #7a8a7a)', border: '#8a9a8a' }
         };
 
         let qualityButtons = data.formats.map((f, index) => {
-            const bg = qualityColors[f.quality] || 'linear-gradient(135deg, #009959, #007a47)';
+            const style = qualityColors[f.quality] || { bg: 'linear-gradient(135deg, #009959, #007a47)', border: '#009959' };
             const isBest = index === 0;
             return `
                 <button onclick="downloadVideo('${f.url}', '${f.quality}')"
-                   class="quality-btn-small ${isBest ? 'best' : f.quality.includes('1080') || f.quality.includes('720') ? 'hd' : 'sd'}"
-                   style="background:${isBest ? 'linear-gradient(135deg, #FEC601, #e6b300)' : bg};color:${isBest ? '#002611' : '#fff'};">
-                   ${isBest ? '⭐ ' : ''}${f.quality}
+                   style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 14px;margin-bottom:6px;background:${style.bg};color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s ease;border-left:4px solid ${isBest ? '#FEC601' : style.border};"
+                   onmouseover="this.style.transform='translateX(4px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)'"
+                   onmouseout="this.style.transform='translateX(0)';this.style.boxShadow='none'">
+                   <span style="display:flex;align-items:center;gap:8px;">
+                      ${isBest ? '<span style="background:#FEC601;color:#002611;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;">BEST</span>' : ''}
+                      <i class="fas fa-download" style="font-size:13px;"></i>
+                      Download ${f.quality} ${f.format_note ? '(' + f.format_note + ')' : ''}
+                   </span>
+                   <span style="font-size:11px;opacity:0.8;">${f.filesize_approx ? (f.filesize_approx / 1024 / 1024).toFixed(1) + ' MB' : ''}</span>
                 </button>
             `;
         }).join('');
 
-        // Horizontal preview layout
+        // Half-size horizontal preview
         preview.innerHTML = `
-            <div class="video-preview-horizontal" style="background:#fff;padding:14px;border-radius:14px;border:1px solid #d4e6da;">
-                <video controls playsinline style="width:300px;max-width:100%;border-radius:10px;background:#000;" poster="${data.thumbnail || ''}">
-                    <source src="${firstVideo}" type="video/mp4">
-                </video>
-                <div class="video-preview-info" style="flex:1;min-width:200px;">
-                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-                        <img src="${ICON_URL}" style="width:20px;height:20px;border-radius:4px;" alt="">
-                        <span style="background:${platformColor};color:#fff;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:600;">
-                            <i class="fab ${platformIcon}"></i> ${platformName}
-                        </span>
+            <div style="background:#fff;padding:16px;border-radius:14px;border:1px solid #d4e6da;box-shadow:0 2px 12px rgba(0,38,17,0.08);">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                    <img src="${ICON_URL}" style="width:22px;height:22px;border-radius:5px;" alt="">
+                    <span style="background:${platformColor};color:#fff;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:600;">
+                        <i class="fab ${platformIcon}"></i> ${platformName}
+                    </span>
+                </div>
+                <div style="display:flex;gap:14px;flex-wrap:wrap;">
+                    <!-- Half size video -->
+                    <div style="width:320px;max-width:100%;flex-shrink:0;">
+                        <video controls playsinline muted style="width:100%;border-radius:10px;background:#000;max-height:240px;">
+                            <source src="${firstVideo}" type="video/mp4">
+                        </video>
+                        <p style="font-size:11px;color:#999;text-align:center;margin-top:4px;">
+                            <i class="fas fa-volume-mute"></i> Tap to unmute · <span onclick="this.parentElement.previousElementSibling.muted=!this.parentElement.previousElementSibling.muted;this.innerHTML=this.parentElement.previousElementSibling.muted?'<i class=\\'fas fa-volume-mute\\'></i> Tap to unmute':'<i class=\\'fas fa-volume-up\\'></i> Sound on'" style="cursor:pointer;color:var(--primary);">Unmute</span>
+                        </p>
                     </div>
-                    <p class="video-title" style="font-size:15px;font-weight:700;color:#002611;margin-bottom:8px;">${data.title || platformName + ' Video'}</p>
-                    ${data.uploader ? `
-                    <div class="uploader-row" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#e6f5ee;border-radius:8px;margin-bottom:10px;">
-                        <img src="${ICON_URL}" style="width:28px;height:28px;border-radius:50%;">
-                        <span style="font-size:13px;font-weight:600;color:#002611;">${data.uploader}</span>
-                    </div>` : ''}
-                    <div class="quality-buttons-horizontal" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
-                        ${qualityButtons}
-                    </div>
-                    <div class="action-row" style="display:flex;gap:6px;flex-wrap:wrap;">
-                        <button onclick="resetDownloader()" class="btn-sm btn-sm-reset"><i class="fas fa-redo"></i> New</button>
-                        <button onclick="window.location.href='page/purchase.html'" class="btn-sm btn-sm-buy"><i class="fas fa-crown"></i> Buy Tool</button>
+                    <!-- Info and downloads -->
+                    <div style="flex:1;min-width:200px;">
+                        <h4 style="font-size:14px;font-weight:700;color:#002611;margin-bottom:4px;line-height:1.3;">${data.title || platformName + ' Video'}</h4>
+                        ${data.uploader ? `
+                        <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:#e6f5ee;border-radius:8px;margin-bottom:10px;">
+                            <img src="${ICON_URL}" style="width:24px;height:24px;border-radius:50%;">
+                            <span style="font-size:12px;font-weight:600;color:#002611;">${data.uploader}</span>
+                        </div>` : ''}
+                        <!-- List style download buttons -->
+                        <div style="margin-bottom:10px;">
+                            ${qualityButtons}
+                        </div>
+                        <!-- Action buttons -->
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button onclick="resetDownloader()" style="padding:8px 14px;border:1px solid #d4e6da;background:#f5f8f6;color:#002611;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;">
+                                <i class="fas fa-redo"></i> New Video
+                            </button>
+                            <button onclick="window.location.href='page/purchase.html'" style="padding:8px 14px;border:none;background:linear-gradient(135deg,#FEC601,#e6b300);color:#002611;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;">
+                                <i class="fas fa-crown"></i> Buy Tool
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="share-section" style="margin-top:10px;">
-                <span>Share:</span>
-                <a href="https://www.facebook.com/sharer/sharer.php?u=https://fbdownapk.vercel.app/" target="_blank" class="share-btn-sm fb"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://api.whatsapp.com/send?text=${encodeURIComponent('Download ' + platformName + ' videos free: https://fbdownapk.vercel.app/')}" target="_blank" class="share-btn-sm whatsapp"><i class="fab fa-whatsapp"></i></a>
-                <a href="https://t.me/share/url?url=https://fbdownapk.vercel.app/" target="_blank" class="share-btn-sm telegram"><i class="fab fa-telegram-plane"></i></a>
+            <!-- Share -->
+            <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:0 4px;flex-wrap:wrap;">
+                <span style="font-size:11px;font-weight:600;color:#4a6b56;">Share:</span>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}" target="_blank" style="width:30px;height:30px;border-radius:50%;background:#1877f2;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.2s ease;"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://api.whatsapp.com/send?text=${encodeURIComponent('Download Facebook & Instagram videos free: ' + SITE_URL)}" target="_blank" style="width:30px;height:30px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.2s ease;"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://t.me/share/url?url=${encodeURIComponent(SITE_URL)}&text=${encodeURIComponent('Galmee - Free Video Downloader')}" target="_blank" style="width:30px;height:30px;border-radius:50%;background:#0088cc;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.2s ease;"><i class="fab fa-telegram-plane"></i></a>
+                <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(SITE_URL)}&text=${encodeURIComponent('Galmee - Free Facebook & Instagram Video Downloader')}" target="_blank" style="width:30px;height:30px;border-radius:50%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.2s ease;"><i class="fab fa-twitter"></i></a>
             </div>
         `;
 
@@ -267,22 +292,24 @@ async function loadDownloadHistory() {
             let html = data.history.slice(0, 6).map((item, index) => {
                 const platform = item.platform || 'facebook';
                 const platformIcon = platform === 'instagram' ? 'fa-instagram' : 'fa-facebook';
+                const platformColor = platform === 'instagram' ? '#E4405F' : '#1877f2';
                 return `
                 <div class="history-item" id="historyItem${index}">
                     <div class="history-thumb-wrapper" onclick="playHistoryVideo(event, '${item.url}', document.getElementById('historyItem${index}'))">
                         <img src="${item.thumbnail || ICON_URL}" alt="${item.title}" loading="lazy">
                         <div class="play-overlay"><div class="play-btn-circle"><div class="play-triangle"></div></div></div>
+                        <span style="position:absolute;top:6px;left:6px;background:${platformColor};color:#fff;padding:2px 6px;border-radius:8px;font-size:8px;font-weight:600;"><i class="fab ${platformIcon}"></i></span>
                     </div>
-                    <video preload="none" playsinline></video>
+                    <video preload="none" playsinline muted></video>
                     <div class="history-info">
-                        <p class="history-title"><i class="fab ${platformIcon}" style="font-size:9px;"></i> ${item.title ? item.title.substring(0, 25) : 'Video'}</p>
+                        <p class="history-title">${item.title ? item.title.substring(0, 28) : 'Video'}</p>
                         <span class="history-quality">${item.quality || 'HD'}</span>
                     </div>
                 </div>`;
             }).join('');
             historyContainer.innerHTML = html;
         } else {
-            historyContainer.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;"><img src="${ICON_URL}" style="width:40px;height:40px;border-radius:8px;margin-bottom:8px;opacity:0.5;"><p style="color:#999;font-size:12px;">No downloads yet</p></div>`;
+            historyContainer.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;"><img src="${ICON_URL}" style="width:36px;height:36px;border-radius:8px;margin-bottom:8px;opacity:0.5;"><p style="color:#999;font-size:12px;">No downloads yet</p></div>`;
         }
     } catch (err) {
         historyContainer.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:20px;"><p style="color:#999;font-size:12px;">Loading history...</p></div>`;
@@ -310,10 +337,16 @@ function renderSidebar() {
     return `
         <div class="sidebar-card sidebar-ad"><a href="page/purchase.html"><img src="${ad.desktop}" alt="Ad" loading="lazy"></a></div>
         <div class="sidebar-card">
-            <div class="sidebar-title"><img src="${ICON_URL}" alt=""> Supported Platforms</div>
+            <div class="sidebar-title"><img src="${ICON_URL}" style="width:20px;height:20px;border-radius:4px;" alt=""> Supported Platforms</div>
             <div style="display:flex;flex-direction:column;gap:8px;">
-                <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#e6f5ee;border-radius:8px;"><i class="fab fa-facebook" style="color:#1877f2;font-size:18px;"></i><span style="font-size:12px;font-weight:600;">Facebook Videos</span></div>
-                <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fff9e6;border-radius:8px;"><i class="fab fa-instagram" style="color:#E4405F;font-size:18px;"></i><span style="font-size:12px;font-weight:600;">Instagram Videos</span></div>
+                <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#e6f5ee;border-radius:10px;border-left:3px solid #1877f2;">
+                    <i class="fab fa-facebook" style="color:#1877f2;font-size:20px;"></i>
+                    <div><span style="font-size:13px;font-weight:600;color:#002611;display:block;">Facebook</span><span style="font-size:10px;color:#4a6b56;">Videos, Reels, Watch</span></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#fff9e6;border-radius:10px;border-left:3px solid #E4405F;">
+                    <i class="fab fa-instagram" style="color:#E4405F;font-size:20px;"></i>
+                    <div><span style="font-size:13px;font-weight:600;color:#002611;display:block;">Instagram</span><span style="font-size:10px;color:#4a6b56;">Reels, Stories, Posts</span></div>
+                </div>
             </div>
         </div>
         <div class="sidebar-card">
