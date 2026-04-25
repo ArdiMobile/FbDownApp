@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Galmee - Video Downloader Tool</title>
+    <meta name="description" content="Purchase the Galmee video downloader tool. Get full access to Facebook and Instagram video downloading.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://galmee.vercel.app/page/purchase.html">
+    <meta property="og:title" content="Purchase Galmee - Video Downloader Tool">
+    <meta property="og:description" content="Get full access to Galmee video downloader for Facebook and Instagram.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/galmee%20pages%20banner.jpg">
+    <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Purchase Galmee - Video Downloader Tool">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/galmee%20pages%20banner.jpg">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--primary:#009959;--primary-light:#e6f5ee;--gold:#FEC601;--dark:#002611;--white:#FFF;--text:#002611;--text-secondary:#4a6b56;--border:#d4e6da;--shadow:0 2px 4px rgba(0,38,17,.06);--radius:14px;--radius-sm:8px}
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+        body{font-family:'Inter',sans-serif;background:#f5f8f6;color:var(--text);line-height:1.6;min-height:100vh}
+        a{text-decoration:none;color:inherit}a:hover{text-decoration:none}button{cursor:pointer;font-family:inherit}img{max-width:100%}
+        .header{background:var(--dark);position:sticky;top:0;z-index:1000;box-shadow:0 2px 20px rgba(0,38,17,.3)}
+        .header-inner{max-width:1200px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;justify-content:space-between}
+        .logo{display:flex;align-items:center;gap:8px}.logo-icon{width:34px;height:34px;border-radius:8px}
+        .logo-text{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:26px;font-weight:900;background:linear-gradient(135deg,var(--gold),#ffe680,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .logo-dot{color:var(--primary);-webkit-text-fill-color:var(--primary);font-size:30px}
+        .menu-btn{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:var(--gold);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}.menu-btn:hover{background:var(--primary);color:#fff}
+        .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,38,17,.6);z-index:2000}.drawer-overlay.show{display:block}
+        .drawer{position:fixed;top:0;right:-320px;width:300px;max-width:85vw;height:100vh;background:#fff;z-index:2001;transition:right .3s ease;overflow-y:auto}.drawer.show{right:0}
+        .drawer-header{display:flex;justify-content:space-between;align-items:center;padding:18px;border-bottom:2px solid var(--primary-light);position:sticky;top:0;background:#fff;z-index:10}
+        .drawer-close{width:34px;height:34px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;display:flex;align-items:center;justify-content:center}.drawer-close:hover{background:#e74c3c;color:#fff}
+        .drawer-menu{padding:8px 12px}
+        .drawer-menu a{display:flex;align-items:center;gap:10px;padding:12px 14px;color:var(--text);border-radius:var(--radius-sm);font-weight:500;font-size:14px;margin-bottom:2px;border:2px solid transparent;transition:all .15s ease}
+        .drawer-menu a:hover,.drawer-menu a.active{background:var(--primary-light);color:var(--primary);border-color:var(--primary)}
+        .main{max-width:900px;margin:0 auto;padding:20px 16px}
+        .page-header{background:linear-gradient(135deg,var(--dark),#003d1b);border-radius:var(--radius);padding:28px 20px;text-align:center;color:#fff;margin-bottom:20px}
+        .page-header img{width:50px;height:50px;border-radius:10px;margin-bottom:10px}.page-header h1{font-size:22px;font-weight:800}
+        .content-card{background:#fff;border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);text-align:center}
+        .content-card h2{font-size:20px;font-weight:700;margin-bottom:12px;color:var(--dark)}
+        .content-card p{margin-bottom:14px;color:var(--text-secondary);font-size:14px}
+        .price-tag{font-size:36px;font-weight:800;color:var(--primary);margin:16px 0}.price-tag span{font-size:16px;color:var(--text-secondary)}
+        .btn-purchase{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg,var(--gold),#e6b300);color:var(--dark);border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all .2s ease;text-decoration:none}
+        .btn-purchase:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(254,198,1,.3)}
+        .features-list{text-align:left;max-width:400px;margin:20px auto}
+        .features-list li{padding:6px 0;color:var(--text-secondary);font-size:13px;list-style:none;display:flex;align-items:center;gap:8px}
+        .features-list li i{color:var(--primary)}
+        .footer{background:var(--dark);padding:24px 16px;text-align:center;margin-top:36px;color:rgba(255,255,255,.7)}
+        .footer-logo{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px}.footer-logo img{width:32px;height:32px;border-radius:6px}.footer-logo span{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:22px;font-weight:900;color:var(--gold)}
+        .social-icons{display:flex;justify-content:center;gap:14px;margin-bottom:14px}
+        .social-icon{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;font-size:16px;border:1px solid rgba(255,255,255,.15);transition:all .2s ease}
+        .social-icon:hover{transform:translateY(-2px)}.social-icon.fb:hover{background:#1877f2;color:#fff}.social-icon.ig:hover{background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);color:#fff}.social-icon.telegram:hover{background:#0088cc;color:#fff}.social-icon.whatsapp:hover{background:#25D366;color:#fff}
+        .footer-links{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}.footer-links a{font-size:12px;color:rgba(255,255,255,.6)}.footer-links a:hover{color:var(--gold)}
+        .copyright{font-size:11px;color:rgba(255,255,255,.4);margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1)}.copyright strong{color:var(--gold)}
+        .share-section{display:flex;align-items:center;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);flex-wrap:wrap;justify-content:center}
+        .share-section span{font-size:12px;font-weight:600;color:var(--text-secondary)}
+        .share-btn-sm{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;transition:all .2s ease}
+        .share-btn-sm.fb{background:#1877f2}.share-btn-sm.whatsapp{background:#25D366}.share-btn-sm.telegram{background:#0088cc}.share-btn-sm.twitter{background:#000}.share-btn-sm:hover{transform:translateY(-2px)}
+        @media(max-width:768px){.content-card{padding:16px}.page-header{padding:22px 16px}.price-tag{font-size:28px}}
+        @media(min-width:1025px){.main{padding:28px 32px}.page-header{padding:36px 32px}.page-header h1{font-size:28px}.content-card{padding:32px}}
+    </style>
+</head>
+<body>
+    <header class="header"><div class="header-inner"><a href="../index.html" class="logo"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee" class="logo-icon"><span class="logo-text">Galmee</span><span class="logo-dot">.</span></a><button class="menu-btn" onclick="toggleDrawer()"><i class="fas fa-bars"></i></button></div></header>
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
+    <nav class="drawer" id="drawer"><div class="drawer-header"><h3><i class="fa fa-bars"></i> MENU</h3><button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button></div><div class="drawer-menu"><a href="../index.html"><i class="fas fa-home"></i> Home</a><a href="../blog.html"><i class="fas fa-rss"></i> Blog</a><a href="purchase.html" class="active"><i class="fa-solid fa-crown"></i> Purchase</a><a href="about.html"><i class="fa-solid fa-user"></i> About</a><a href="copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a><a href="contact.html"><i class="fa-solid fa-envelope"></i> Contact</a></div></nav>
+    <main class="main">
+        <div class="page-header"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""><h1><i class="fa-solid fa-crown"></i> Purchase Galmee</h1><p style="opacity:.8;font-size:13px;">Get the full source code and deploy your own video downloader</p></div>
+        <div class="content-card">
+            <h2>Galmee Video Downloader Tool</h2>
+            <p>Complete source code with Facebook & Instagram support</p>
+            <div class="price-tag">$49<span>/one-time</span></div>
+            <ul class="features-list">
+                <li><i class="fas fa-check-circle"></i> Full Source Code (HTML, CSS, JS)</li>
+                <li><i class="fas fa-check-circle"></i> Facebook Video Downloads</li>
+                <li><i class="fas fa-check-circle"></i> Instagram Video Downloads</li>
+                <li><i class="fas fa-check-circle"></i> HD Quality up to 1080p</li>
+                <li><i class="fas fa-check-circle"></i> Auto-detect Clipboard Links</li>
+                <li><i class="fas fa-check-circle"></i> Responsive Design</li>
+                <li><i class="fas fa-check-circle"></i> Easy to Deploy</li>
+                <li><i class="fas fa-check-circle"></i> Lifetime Updates</li>
+            </ul>
+            <a href="https://t.me/anayasingg" target="_blank" class="btn-purchase"><i class="fab fa-telegram-plane"></i> Contact on Telegram to Purchase</a>
+            <p style="font-size:12px;color:var(--text-secondary);margin-top:10px;">Or email: contact@yasing.com.et</p>
+        </div>
+        <div class="share-section"><span>Share:</span><a href="https://www.facebook.com/sharer/sharer.php?u=https://galmee.vercel.app/" target="_blank" class="share-btn-sm fb"><i class="fab fa-facebook-f"></i></a><a href="https://api.whatsapp.com/send?text=Galmee%20-%20Free%20Video%20Downloader%3A%20https://galmee.vercel.app/" target="_blank" class="share-btn-sm whatsapp"><i class="fab fa-whatsapp"></i></a><a href="https://t.me/share/url?url=https://galmee.vercel.app/" target="_blank" class="share-btn-sm telegram"><i class="fab fa-telegram-plane"></i></a><a href="https://twitter.com/intent/tweet?url=https://galmee.vercel.app/" target="_blank" class="share-btn-sm twitter"><i class="fab fa-twitter"></i></a></div>
+    </main>
+    <footer class="footer"><div class="footer-logo"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""><span>Galmee</span></div><div class="social-icons"><a href="https://fb.com/yasingelma" class="social-icon fb" target="_blank"><i class="fab fa-facebook-f"></i></a><a href="https://instagram.com/yasingelma" class="social-icon ig" target="_blank"><i class="fab fa-instagram"></i></a><a href="https://t.me/anayasingg" class="social-icon telegram" target="_blank"><i class="fab fa-telegram-plane"></i></a><a href="https://api.whatsapp.com/send?phone=251934646971" class="social-icon whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a></div><div class="footer-links"><a href="purchase.html">Purchase</a><a href="../blog.html">Blog</a><a href="about.html">About</a><a href="copyright.html">Copyright</a><a href="contact.html">Contact</a></div><p class="copyright">2026 &copy; Ardi Mobile Inc | Developed by <strong>Yasin Gelma</strong></p></footer>
+    <script>function toggleDrawer(){document.getElementById('drawer').classList.toggle('show');document.getElementById('drawerOverlay').classList.toggle('show');}</script>
+</body>
+</html>
