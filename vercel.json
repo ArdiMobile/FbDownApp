@@ -23,6 +23,8 @@
   ],
   "rewrites": [
     { "source": "/api/info", "destination": "/api/index.py" },
-    { "source": "/api/history", "destination": "/api/history.py" }
-  ]
+    { "source": "/api/history", "destination": "/api/history.py" },
+    { "source": "/page/:page", "destination": "/page/:page.html" }
+  ],
+  "cleanUrls": true
 }
