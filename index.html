@@ -94,8 +94,8 @@
         }
 
         .logo-icon {
-            width: 34px;
-            height: 34px;
+            width: 26px;
+            height: 26px;
             border-radius: 8px;
         }
 
@@ -157,7 +157,7 @@
 
         .drawer-header h3 { font-size: 16px; color: var(--dark); display: flex; align-items: center; gap: 8px; }
         .drawer-header h3 i { color: var(--primary); }
-.drawer-header img { width: 32px; height: 32px; border-radius: 6px; }
+.drawer-header img { width: 26px; height: 26px; border-radius: 6px; }
         .drawer-close {
             width: 34px; height: 34px; border-radius: 50%; border: none;
             background: #f0f2f5; cursor: pointer; display: flex;
@@ -175,6 +175,14 @@
         .drawer-menu a:hover, .drawer-menu a.active {
             background: var(--primary-light); color: var(--primary); border-color: var(--primary);
         }
+        .menusocial-icons { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
+        .menusocial-icons h3 { font-size: 16px; color: var(--dark); display: flex; align-items: center; gap: 8px; }
+        .menusocial-icon { width: 38px; height: 38px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 16px; border: 1px solid rgba(255,255,255,0.15); transition: all 0.2s ease; }
+        .menusocial-icon:hover { transform: translateY(-2px); }
+        .menusocial-icon.fb:hover { background: #1877f2; color: #fff; border-color: #1877f2; }
+        .menusocial-icon.ig:hover { background: linear-gradient(135deg, #f09433, #dc2743, #bc1888); color: #fff; }
+        .menusocial-icon.telegram:hover { background: #0088cc; color: #fff; border-color: #0088cc; }
+        .menusocial-icon.whatsapp:hover { background: #25D366; color: #fff; border-color: #25D366; }
 
         /* Main */
         .main { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
@@ -295,7 +303,7 @@
         }
 
         .card-title i { color: var(--primary); }
-        .card-title img { width: 24px; height: 24px; border-radius: 4px; }
+        .card-title img { width: 20px; height: 20px; border-radius: 4px; }
 
         /* Horizontal Video Preview */
         .video-preview-horizontal {
@@ -526,7 +534,7 @@
         /* Footer */
         .footer { background: var(--dark); padding: 24px 16px; text-align: center; margin-top: 36px; color: rgba(255,255,255,0.7); }
         .footer-logo { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; }
-        .footer-logo img { width: 32px; height: 32px; border-radius: 6px; }
+        .footer-logo img { width: 26px; height: 26px; border-radius: 6px; }
         .footer-logo span { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 22px; font-weight: 900; color: var(--gold); }
         .social-icons { display: flex; justify-content: center; gap: 14px; margin-bottom: 14px; }
         .social-icon { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 16px; border: 1px solid rgba(255,255,255,0.15); transition: all 0.2s ease; }
@@ -555,7 +563,7 @@
             .hero-card { padding: 24px 12px; }
             .hero-brand { font-size: 28px; }
             .hero-card h1 { font-size: 15px; }
-            .hero-icon { width: 44px; height: 44px; }
+            .hero-icon { width: 40px; height: 40px; }
             .search-box input { padding: 10px 12px; font-size: 12px; }
             .dl-btn { width: 38px; height: 38px; }
             .video-preview-horizontal { flex-direction: column; }
@@ -606,7 +614,7 @@
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
     <nav class="drawer" id="drawer">
         <div class="drawer-header">
-            <h3>            <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">.</h3>
+            <h3><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee"></h3>
             <button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
         </div>
         <div class="drawer-menu">
@@ -619,7 +627,15 @@
             <a href="page/about.html"><i class="fa-solid fa-user"></i> About</a>
             <a href="page/copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a>
             <a href="page/contact.html"><i class="fa-solid fa-envelope"></i> Contact</a>
+            
+             <div class="menusocial-icons">
+       <a href="https://fb.com/yasingelma" class="menusocial-icon fb" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://instagram.com/yasingelma" class="menusocial-icon ig" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://t.me/anayasingg" class="menusocial-icon telegram" target="_blank"><i class="fab fa-telegram-plane"></i></a>
+            <a href="https://api.whatsapp.com/send?phone=251934646971" class="menusocial-icon whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
         </div>
+        </div>
+        
     </nav>
 
     <main class="main">
