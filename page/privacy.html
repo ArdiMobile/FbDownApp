@@ -7,262 +7,128 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Sekuya&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --blue: #1877f2; --blue-dark: #166fe5; --blue-light: #e8f0fe;
-            --light: #f0f2f5; --card: #ffffff; --text: #1c1e21;
-            --text-secondary: #65676b; --border: #e4e6eb;
-            --shadow: 0 1px 2px rgba(0,0,0,0.1); --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
-            --shadow-lg: 0 8px 24px rgba(0,0,0,0.15); --radius-sm: 8px; --radius: 12px;
-        }
-
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--light); color: var(--text); line-height: 1.6; min-height: 100vh;
-        }
-
-        a { text-decoration: none; color: inherit; }
-        a:hover { text-decoration: none; }
-        button { cursor: pointer; font-family: inherit; }
-
-        /* Header */
-        .header {
-            background: #fff; border-bottom: 1px solid var(--border);
-            position: sticky; top: 0; z-index: 1000;
-        }
-
-        .header-inner {
-            max-width: 1200px; margin: 0 auto; padding: 10px 16px;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-
-        .logo {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 18px; font-weight: 800; color: var(--text);
-        }
-
-        .logo i { color: #1877f2; font-size: 24px; }
-        .logo span { color: #1877f2; font-family: "Bricolage Grotesque", sans-serif; }
-
-        .menu-btn {
-            width: 38px; height: 38px; border-radius: 50%;
-            border: 2px solid var(--border); background: #fff;
-            color: var(--blue); font-size: 16px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
-
-        /* Drawer */
-        .drawer-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.5); z-index: 2000;
-        }
-        .drawer-overlay.show { display: block; }
-
-        .drawer {
-            position: fixed; top: 0; right: -320px; width: 300px; max-width: 85vw;
-            height: 100vh; height: 100dvh; background: #fff; z-index: 2001;
-            transition: right 0.3s ease; overflow-y: auto;
-            box-shadow: -4px 0 24px rgba(0,0,0,0.15);
-        }
-        .drawer.show { right: 0; }
-
-        .drawer-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 16px 18px; border-bottom: 2px solid var(--blue-light);
-            position: sticky; top: 0; background: #fff; z-index: 10;
-        }
-
-        .drawer-header h3 { font-size: 16px; display: flex; align-items: center; gap: 8px; }
-        .drawer-header h3 i { color: var(--blue); }
-
-        .drawer-close {
-            width: 34px; height: 34px; border-radius: 50%;
-            border: none; background: var(--light); cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px; color: var(--text); flex-shrink: 0;
-        }
-        .drawer-close:hover { background: #e74c3c; color: #fff; }
-
-        .drawer-menu { padding: 8px 12px; }
-
-        .drawer-menu a {
-            display: flex; align-items: center; gap: 10px;
-            padding: 12px 14px; color: var(--text); border-radius: var(--radius-sm);
-            font-weight: 500; font-size: 14px; margin-bottom: 2px;
-            border: 2px solid transparent; transition: all 0.15s ease;
-        }
-
-        .drawer-menu a:hover, .drawer-menu a.active {
-            background: var(--blue-light); color: var(--blue); border-color: var(--blue);
-        }
-
-        .drawer-menu a i { width: 20px; text-align: center; }
-
-        /* Main */
-        .main { max-width: 1200px; margin: 0 auto; padding: 16px; }
-
-        /* Page Header */
-        .page-header {
-            background: linear-gradient(135deg, #1877f2, #0d5bbd);
-            border-radius: var(--radius); padding: 28px 20px;
-            text-align: center; color: #fff; margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(24,119,242,0.3);
-        }
-
-        .page-header h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
-        .page-header p { font-size: 14px; opacity: 0.9; }
-
-        /* Content Card */
-        .content-card {
-            background: #fff; border-radius: var(--radius); padding: 24px;
-            box-shadow: var(--shadow); border: 2px solid var(--border);
-            max-width: 800px; margin: 0 auto;
-        }
-
-        .content-card h2 {
-            font-size: 20px; font-weight: 700; margin: 24px 0 12px; color: var(--text);
-        }
-
-        .content-card h2:first-child { margin-top: 0; }
-
-        .content-card p {
-            margin-bottom: 14px; color: var(--text-secondary);
-            line-height: 1.8; font-size: 15px;
-        }
-
-        .content-card ul {
-            margin: 12px 0 12px 24px; color: var(--text-secondary);
-        }
-
-        .content-card ul li {
-            margin-bottom: 8px; list-style: disc; font-size: 15px;
-        }
-
-        /* Footer */
-        .footer {
-            background: #fff; border-top: 2px solid var(--border);
-            padding: 24px 16px; text-align: center; margin-top: 32px;
-        }
-
-        .social-icons {
-            display: flex; justify-content: center; gap: 16px; margin-bottom: 16px;
-        }
-
-        .social-icon {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: var(--light); color: var(--text-secondary);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px; border: 2px solid var(--border);
-        }
-
-        .social-icon.fb:hover { background: #1877f2; color: #fff; border-color: #1877f2; }
-        .social-icon.telegram:hover { background: #0088cc; color: #fff; border-color: #0088cc; }
-        .social-icon.whatsapp:hover { background: #25D366; color: #fff; border-color: #25D366; }
-
-        .footer-links {
-            display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 12px;
-        }
-
-        .footer-links a { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-        .footer-links a:hover { color: var(--blue); }
-
-        .copyright {
-            font-size: 12px; color: var(--text-secondary);
-            margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);
-        }
-        .copyright strong { color: var(--blue); }
-
-        @media (max-width: 480px) {
-            .content-card { padding: 16px; }
-            .page-header { padding: 22px 16px; }
-            .page-header h1 { font-size: 20px; }
-        }
-
-        @media (min-width: 1025px) {
-            .main { padding: 24px 32px; }
-            .page-header { padding: 40px 32px; }
-            .page-header h1 { font-size: 28px; }
-            .content-card { padding: 32px; }
-        }
+        :root{--blue:#1877f2;--instagram:#E4405F;--blue-light:#e8f0fe;--light:#f0f2f5;--card:#fff;--text:#1c1e21;--text-secondary:#65676b;--border:#e4e6eb;--shadow:0 1px 2px rgba(0,0,0,.1);--radius:12px;--radius-sm:8px}
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--light);color:var(--text);line-height:1.6;min-height:100vh}
+        a{text-decoration:none;color:inherit}
+        a:hover{text-decoration:none}
+        button{cursor:pointer;font-family:inherit}
+        .header{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000}
+        .header-inner{max-width:1200px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+        .logo{display:flex;align-items:center;gap:6px;font-size:17px;font-weight:800;color:var(--text)}
+        .logo .fa-facebook-square{color:#1877f2;font-size:24px}
+        .logo .fa-instagram{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:22px}
+        .logo span{background:linear-gradient(135deg,#1877f2,#E4405F);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-family:"Bricolage Grotesque",sans-serif}
+        .menu-btn{width:38px;height:38px;border-radius:50%;border:2px solid var(--border);background:#fff;color:var(--blue);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000}
+        .drawer-overlay.show{display:block}
+        .drawer{position:fixed;top:0;right:-320px;width:300px;max-width:85vw;height:100vh;background:#fff;z-index:2001;transition:right .3s ease;overflow-y:auto;box-shadow:-4px 0 24px rgba(0,0,0,.15)}
+        .drawer.show{right:0}
+        .drawer-header{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:2px solid var(--blue-light);position:sticky;top:0;background:#fff;z-index:10}
+        .drawer-close{width:34px;height:34px;border-radius:50%;border:none;background:var(--light);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+        .drawer-close:hover{background:#e74c3c;color:#fff}
+        .drawer-menu{padding:8px 12px}
+        .drawer-menu a{display:flex;align-items:center;gap:10px;padding:12px 14px;color:var(--text);border-radius:var(--radius-sm);font-weight:500;font-size:14px;margin-bottom:2px;border:2px solid transparent;transition:all .15s ease}
+        .drawer-menu a:hover,.drawer-menu a.active{background:var(--blue-light);color:var(--blue);border-color:var(--blue)}
+        .drawer-menu a i{width:20px;text-align:center}
+        .main{max-width:1200px;margin:0 auto;padding:16px}
+        .main-layout{display:flex;gap:24px;align-items:flex-start}
+        .main-content{flex:1;min-width:0}
+        .page-header{background:linear-gradient(135deg,#1877f2,#E4405F);border-radius:var(--radius);padding:28px 20px;text-align:center;color:#fff;margin-bottom:20px;box-shadow:0 8px 24px rgba(24,119,242,.3)}
+        .page-header h1{font-size:22px;font-weight:800;margin-bottom:6px}
+        .content-card{background:#fff;border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:2px solid var(--border)}
+        .content-card h2{font-size:20px;font-weight:700;margin:24px 0 12px}
+        .content-card h2:first-child{margin-top:0}
+        .content-card p{margin-bottom:14px;color:var(--text-secondary);line-height:1.8;font-size:15px}
+        .content-card ul{margin:12px 0 12px 24px;color:var(--text-secondary)}
+        .content-card ul li{margin-bottom:8px;list-style:disc;font-size:15px}
+        .sidebar{width:320px;flex-shrink:0}
+        .sidebar-sticky{position:sticky;top:80px}
+        .sidebar-card{background:#fff;border-radius:var(--radius);padding:16px;margin-bottom:16px;box-shadow:var(--shadow);border:2px solid var(--border)}
+        .sidebar-title{font-size:16px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--blue-light);display:flex;align-items:center;gap:8px}
+        .sidebar-title i{color:var(--blue)}
+        .sidebar-ad img{width:100%;border-radius:var(--radius);display:block}
+        .tag-list{display:flex;flex-wrap:wrap;gap:8px}
+        .tag-item{padding:6px 14px;background:var(--blue-light);color:var(--blue);border-radius:50px;font-size:12px;font-weight:600;cursor:pointer}
+        .tag-item:hover{background:linear-gradient(135deg,#1877f2,#E4405F);color:#fff}
+        .footer{background:#fff;border-top:2px solid var(--border);padding:28px 16px;text-align:center;margin-top:36px}
+        .social-icons{display:flex;justify-content:center;gap:16px;margin-bottom:18px}
+        .social-icon{width:42px;height:42px;border-radius:50%;background:var(--light);color:var(--text-secondary);display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid var(--border);transition:all .2s ease}
+        .social-icon:hover{transform:translateY(-3px)}
+        .social-icon.fb:hover{background:#1877f2;color:#fff;border-color:#1877f2}
+        .social-icon.ig:hover{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;border-color:#E4405F}
+        .social-icon.telegram:hover{background:#0088cc;color:#fff;border-color:#0088cc}
+        .social-icon.whatsapp:hover{background:#25D366;color:#fff;border-color:#25D366}
+        .footer-links{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-bottom:14px}
+        .footer-links a{font-size:13px;color:var(--text-secondary);font-weight:500}
+        .footer-links a:hover{color:var(--blue)}
+        .copyright{font-size:12px;color:var(--text-secondary);margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+        .copyright strong{background:linear-gradient(135deg,#1877f2,#E4405F);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        @media(max-width:768px){.sidebar{display:none}.content-card{padding:16px}.page-header{padding:22px 16px}}
+        @media(min-width:1025px){.main{padding:24px 32px}.page-header{padding:40px 32px}.page-header h1{font-size:28px}.content-card{padding:32px}}
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-inner">
-            <a href="/" class="logo">
-                <i class="fab fa-facebook-square"></i> VIDEO <span>DOWNLOADER</span>
-            </a>
-            <button class="menu-btn" onclick="toggleDrawer()" aria-label="Menu">
-                <i class="fas fa-bars"></i>
-            </button>
+            <a href="../index.html" class="logo"><i class="fab fa-facebook-square"></i><i class="fab fa-instagram"></i> VIDEO <span>DOWNLOADER</span></a>
+            <button class="menu-btn" onclick="toggleDrawer()"><i class="fas fa-bars"></i></button>
         </div>
     </header>
-
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
     <nav class="drawer" id="drawer">
-        <div class="drawer-header">
-            <h3><i class="fa fa-bars"></i> MENU</h3>
-            <button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
-        </div>
-          <div class="drawer-menu">
-            <a href="index.html"><i class="fas fa-home"></i> Home</a>
-            <a href="blog.html"><i class="fas fa-rss"></i> Blog</a>
-            <a href="purchase.html"><i class="fa-solid fa-dollar"></i> Purchase</a>
-            <a href="page/about.html"><i class="fa-solid fa-user"></i> About</a>
-            <a href="page/copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a>
-            <a href="page/disclaimers.html"><i class="fa-solid fa-hand"></i> Disclaimers</a>
-            <a href="page/privacy.html" class="active"><i class="fa-solid fa-user-secret"></i> Privacy</a>
-            <a href="page/terms-of-service.html"><i class="fa-solid fa-file-contract"></i> Terms</a>
-            <a href="page/bug-report.html"><i class="fa-solid fa-bug"></i> Report</a>
+        <div class="drawer-header"><h3><i class="fa fa-bars"></i> MENU</h3><button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button></div>
+        <div class="drawer-menu">
+            <a href="../index.html"><i class="fas fa-home"></i> Home</a><a href="../blog.html"><i class="fas fa-rss"></i> Blog</a>
+            <a href="../purchase.html"><i class="fa-solid fa-dollar"></i> Purchase</a><a href="about.html"><i class="fa-solid fa-user"></i> About</a>
+            <a href="privacy.html" class="active"><i class="fa-solid fa-user-secret"></i> Privacy</a>
+            <a href="terms-of-service.html"><i class="fa-solid fa-file-contract"></i> Terms</a>
+            <a href="copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a>
+            <a href="disclaimer.html"><i class="fa-solid fa-hand"></i> Disclaimer</a>
+            <a href="bug-report.html"><i class="fa-solid fa-bug"></i> Report</a>
         </div>
     </nav>
     <main class="main">
-        <div class="page-header">
-            <h1><i class="fa-solid fa-hand"></i> Disclaimers</h1>
-            <p>Important legal information</p>
-        </div>
-
-        <div class="content-card">
-            <h2>No Affiliation</h2>
-            <p>YasinG Downloader is <strong>not</strong> associated, affiliated, endorsed, or sponsored by Meta Platforms, Inc. or Facebook. We are an independent service provider.</p>
-
-            <h2>As-Is Basis</h2>
-            <p>Our service is provided "as is" without any warranties of any kind. We do not guarantee that the tool will work with every link, as source platforms frequently update their security protocols.</p>
-
-            <h2>Liability</h2>
-            <p>Yasin Gelma and Ardi Mobile Inc shall not be held liable for any damages arising out of the use or inability to use this service.</p>
+        <div class="page-header"><h1><i class="fa-solid fa-user-secret"></i> Privacy Policy</h1></div>
+        <div class="main-layout">
+            <div class="main-content">
+                <div class="content-card">
+                    <h2>1. Information We Collect</h2>
+                    <p>YasinG Downloader does <strong>not</strong> collect, store, or share any personal information. We don't require registration, names, emails, or any personal details.</p>
+                    <h2>2. Video Processing</h2>
+                    <p>Videos you download are fetched directly from Facebook/Instagram and are never stored on our servers. We only process the URL you provide to fetch the video.</p>
+                    <h2>3. Cookies</h2>
+                    <p>We may use essential cookies for session management and basic functionality. These do not track you personally.</p>
+                    <h2>4. Third-Party Services</h2>
+                    <p>Our website may link to third-party services. We are not responsible for their privacy practices.</p>
+                    <h2>5. Data Security</h2>
+                    <p>All fetching is done through secure HTTPS connections. No personal data is stored.</p>
+                    <h2>6. Contact</h2>
+                    <p><i class="fas fa-envelope" style="color:var(--blue);"></i> contact@yasing.com.et</p>
+                </div>
+            </div>
+            <aside class="sidebar">
+                <div class="sidebar-sticky">
+                    <div class="sidebar-card sidebar-ad"><a href="../purchase.html"><img src="https://picsum.photos/600/400?random=40" alt="Ad" loading="lazy"></a></div>
+                    <div class="sidebar-card"><div class="sidebar-title"><i class="fas fa-file-alt"></i> Pages</div><div class="tag-list"><a href="about.html" class="tag-item">About</a><a href="terms-of-service.html" class="tag-item">Terms</a><a href="copyright.html" class="tag-item">Copyright</a><a href="disclaimer.html" class="tag-item">Disclaimer</a></div></div>
+                    <div class="sidebar-card sidebar-ad"><a href="../purchase.html"><img src="https://picsum.photos/600/400?random=41" alt="Ad" loading="lazy"></a></div>
+                </div>
+            </aside>
         </div>
     </main>
-
     <footer class="footer">
         <div class="social-icons">
             <a href="https://fb.com/yasingelma" class="social-icon fb" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://instagram.com/yasingelma" class="social-icon ig" target="_blank"><i class="fab fa-instagram"></i></a>
             <a href="https://t.me/anayasingg" class="social-icon telegram" target="_blank"><i class="fab fa-telegram-plane"></i></a>
             <a href="https://api.whatsapp.com/send?phone=251934646971" class="social-icon whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
         </div>
-        <div class="footer-links">
-            <a href="/purchase.html">Purchase</a>
-            <a href="about.html">About</a>
-            <a href="privacy.html">Privacy</a>
-            <a href="terms-of-service.html">Terms</a>
-            <a href="copyright.html">Copyright</a>
-        </div>
-        <p class="copyright" id="credit-link">2026 &copy; Ardi Mobile Inc | Developed by <strong><a href="https://www.facebook.com/yasingelma" target="_blank">Yasin Gelma</a></strong></p>
+        <div class="footer-links"><a href="../purchase.html">Purchase</a><a href="../blog.html">Blog</a><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms-of-service.html">Terms</a></div>
+        <p class="copyright">2026 &copy; Ardi Mobile Inc | Developed by <strong>Yasin Gelma</strong></p>
     </footer>
-
-    <script>
-        function toggleDrawer() {
-            const drawer = document.getElementById('drawer');
-            const overlay = document.getElementById('drawerOverlay');
-            if (drawer && overlay) {
-                drawer.classList.toggle('show');
-                overlay.classList.toggle('show');
-            }
-        }
-    </script>
+    <script>function toggleDrawer(){document.getElementById('drawer').classList.toggle('show');document.getElementById('drawerOverlay').classList.toggle('show');}</script>
 </body>
 </html>
