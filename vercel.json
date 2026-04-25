@@ -18,13 +18,12 @@
         "maxDuration": 10
       }
     },
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "script.js", "use": "@vercel/static" }
+    { "src": "**/*.html", "use": "@vercel/static" },
+    { "src": "**/*.js", "use": "@vercel/static" },
+    { "src": "**/*.css", "use": "@vercel/static" }
   ],
   "rewrites": [
     { "source": "/api/info", "destination": "/api/index.py" },
-    { "source": "/api/history", "destination": "/api/history.py" },
-    { "source": "/page/:page", "destination": "/page/:page.html" }
-  ],
-  "cleanUrls": true
+    { "source": "/api/history", "destination": "/api/history.py" }
+  ]
 }
