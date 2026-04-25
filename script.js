@@ -227,7 +227,7 @@ async function processPreview(url) {
                         <h4 style="font-size:14px;font-weight:700;color:#002611;margin-bottom:4px;line-height:1.3;">${data.title || platformName + ' Video'}</h4>
                         ${data.uploader ? `
                         <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:#e6f5ee;border-radius:8px;margin-bottom:10px;">
-                            <img src="${ICON_URL}" style="width:24px;height:24px;border-radius:50%;">
+                            <img src="${ICON_URL}" style="width:20px;height:20px;border-radius:50%;">
                             <span style="font-size:12px;font-weight:600;color:#002611;">${data.uploader}</span>
                         </div>` : ''}
                         <!-- List style download buttons -->
@@ -236,11 +236,12 @@ async function processPreview(url) {
                         </div>
                         <!-- Action buttons -->
                         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <button onclick="resetDownloader()" style="padding:8px 14px;border:1px solid #d4e6da;background:#f5f8f6;color:#002611;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;">
-                                <i class="fas fa-redo"></i> New Video
-                            </button>
+                           <button onclick="resetDownloader()" style="width:40%;padding:8px 14px;border:1px solid #d4e6da;background:#f5f8f6;color:#002611;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
+    <i class="fas fa-redo"></i> New Video
+</button>
+
                             <button onclick="window.location.href='page/purchase.html'" style="padding:8px 14px;border:none;background:linear-gradient(135deg,#FEC601,#e6b300);color:#002611;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;">
-                                <i class="fas fa-crown"></i> Buy Tool
+                                <i class="fas fa-crown"></i> Buy Tool <img src="${ICON_URL}" style="width:20px;height:20px;border-radius:50%;">
                             </button>
                         </div>
                     </div>
@@ -367,7 +368,7 @@ function initSidebar() {
 }
 
 (function () {
-    const REDIRECT_URL = "https://yasing.com.et/purchase.html";
+    const REDIRECT_URL = "https://galmee.vercel.app/page/purchase.html";
     function checkCredit() {
         const credit = document.getElementById("credit-link");
         if (!credit || credit.innerText.trim() === "") {
