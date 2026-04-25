@@ -10,9 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Sekuya&display=swap" rel="stylesheet">
     <style>
         :root {
-            --blue: #1877f2; --blue-dark: #166fe5; --blue-light: #e8f0fe;
-            --light: #f0f2f5; --card: #ffffff; --text: #1c1e21;
-            --text-secondary: #65676b; --border: #e4e6eb;
+            --blue: #1877f2; --blue-light: #e8f0fe; --light: #f0f2f5; --card: #ffffff;
+            --text: #1c1e21; --text-secondary: #65676b; --border: #e4e6eb;
             --shadow: 0 1px 2px rgba(0,0,0,0.1); --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
             --shadow-lg: 0 8px 24px rgba(0,0,0,0.15); --radius-sm: 8px; --radius: 12px;
         }
@@ -58,6 +57,7 @@
         .page-header h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
         .page-header p { font-size: 14px; opacity: 0.9; }
 
+        /* Blog Cards */
         .blog-card { background: #fff; border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; box-shadow: var(--shadow); border: 2px solid var(--border); transition: all 0.2s ease; cursor: pointer; }
         .blog-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); border-color: var(--blue); }
         .blog-thumbnail { width: 100%; height: 200px; object-fit: cover; display: block; background: var(--blue-light); }
@@ -122,8 +122,8 @@
 <body>
     <header class="header">
         <div class="header-inner">
-            <a href="/" class="logo"><i class="fab fa-facebook-square"></i> VIDEO <span>DOWNLOADER</span></a>
-            <button class="menu-btn" onclick="toggleDrawer()"><i class="fas fa-bars"></i></button>
+            <a href="index.html" class="logo"><i class="fab fa-facebook-square"></i> VIDEO <span>DOWNLOADER</span></a>
+            <button class="menu-btn" onclick="toggleDrawer()" aria-label="Menu"><i class="fas fa-bars"></i></button>
         </div>
     </header>
 
@@ -133,19 +133,17 @@
             <h3><i class="fa fa-bars"></i> MENU</h3>
             <button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
         </div>
-  <div class="drawer-menu">
-    <a href="../index.html"><i class="fas fa-home"></i> Home</a> 
-    
-    <a href="blog.html"><i class="fas fa-rss"></i> Blog</a>
-    <a href="purchase.html"><i class="fa-solid fa-dollar"></i> Purchase</a>
-    <a href="about.html"><i class="fa-solid fa-user"></i> About us</a>
-    <a href="copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a>
-    <a href="disclaimer.html"><i class="fa-solid fa-hand"></i> Disclaimers</a>
-    <a href="privacy.html"><i class="fa-solid fa-user-secret"></i> Privacy Policy</a>
-    <a href="terms-of-service.html"><i class="fa-solid fa-file-contract"></i> Terms of service</a>
-    <a href="bug-report.html"><i class="fa-solid fa-bug"></i> Report issue</a>
-</div>
-
+        <div class="drawer-menu">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="blog.html" class="active"><i class="fas fa-rss"></i> Blog</a>
+            <a href="purchase.html"><i class="fa-solid fa-dollar"></i> Purchase</a>
+            <a href="page/about.html"><i class="fa-solid fa-user"></i> About</a>
+            <a href="page/copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a>
+            <a href="page/disclaimer.html"><i class="fa-solid fa-hand"></i> Disclaimer</a>
+            <a href="page/privacy.html"><i class="fa-solid fa-user-secret"></i> Privacy</a>
+            <a href="page/terms-of-service.html"><i class="fa-solid fa-file-contract"></i> Terms</a>
+            <a href="page/bug-report.html"><i class="fa-solid fa-bug"></i> Report</a>
+        </div>
     </nav>
 
     <main class="main">
@@ -191,16 +189,87 @@
             <a href="page/terms-of-service.html">Terms</a>
             <a href="page/copyright.html">Copyright</a>
         </div>
-        <p class="copyright">2026 &copy; Ardi Mobile Inc | <strong>Yasin Gelma</strong></p>
+        <p class="copyright">2026 &copy; Ardi Mobile Inc | Developed by <strong>Yasin Gelma</strong></p>
     </footer>
 
-    <script src="blog-posts.js"></script>
     <script>
+        // ============================================
+        // BLOG DATA - Add new posts here
+        // ============================================
+        const blogPosts = [
+            {
+                id: 1,
+                title: "How to Download Facebook Videos in HD Quality",
+                slug: "how-to-download-facebook-videos",
+                excerpt: "Learn the easiest way to download Facebook videos in Full HD quality with our step-by-step guide.",
+                thumbnail: "https://picsum.photos/800/400?random=1",
+                date: "2026-06-15",
+                author: "Yasin Gelma",
+                views: 12500,
+                readTime: "5 min read",
+                tags: ["Facebook", "HD Video", "Tutorial"],
+                category: "Tutorial"
+            },
+            {
+                id: 2,
+                title: "Top 5 Facebook Video Downloader Tools in 2026",
+                slug: "top-5-downloader-tools-2026",
+                excerpt: "Compare the best Facebook video downloader tools available this year. Features, pros, and cons.",
+                thumbnail: "https://picsum.photos/800/400?random=2",
+                date: "2026-06-10",
+                author: "Yasin Gelma",
+                views: 8200,
+                readTime: "7 min read",
+                tags: ["Tools", "Comparison", "2026"],
+                category: "Review"
+            },
+            {
+                id: 3,
+                title: "Save Facebook Videos Without Installing Any App",
+                slug: "save-facebook-videos-without-app",
+                excerpt: "No app needed! Use our online tool to save Facebook videos directly to your device.",
+                thumbnail: "https://picsum.photos/800/400?random=3",
+                date: "2026-06-05",
+                author: "Yasin Gelma",
+                views: 5100,
+                readTime: "4 min read",
+                tags: ["Online", "No App", "Free"],
+                category: "Guide"
+            },
+            {
+                id: 4,
+                title: "How to Fix Facebook Video Not Downloading",
+                slug: "fix-facebook-video-not-downloading",
+                excerpt: "Having trouble downloading? Here are quick fixes for common Facebook video download issues.",
+                thumbnail: "https://picsum.photos/800/400?random=4",
+                date: "2026-05-28",
+                author: "Yasin Gelma",
+                views: 3400,
+                readTime: "6 min read",
+                tags: ["Troubleshooting", "Fix", "Help"],
+                category: "Support"
+            },
+            {
+                id: 5,
+                title: "Download Facebook Reels in 3 Simple Steps",
+                slug: "download-facebook-reels",
+                excerpt: "Facebook Reels are popular! Here's how to download them easily with our downloader.",
+                thumbnail: "https://picsum.photos/800/400?random=5",
+                date: "2026-05-20",
+                author: "Yasin Gelma",
+                views: 9100,
+                readTime: "3 min read",
+                tags: ["Reels", "Facebook", "Quick Guide"],
+                category: "Tutorial"
+            }
+        ];
+
         function toggleDrawer() {
             document.getElementById('drawer').classList.toggle('show');
             document.getElementById('drawerOverlay').classList.toggle('show');
         }
 
+        // Render blog posts
         function renderBlogPosts() {
             const container = document.getElementById('blogPostsContainer');
             const sorted = [...blogPosts].sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -224,21 +293,27 @@
             `).join('');
         }
 
+        // Render sidebar recent posts
         function renderRecentPosts() {
             const recent = [...blogPosts].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
             document.getElementById('recentPosts').innerHTML = recent.map(post => `
                 <a href="blog/${post.slug}.html" class="related-post">
-                    <div class="related-thumb"><img src="${post.thumbnail}" alt="" loading="lazy" onerror="this.style.display='none'"></div>
-                    <div class="related-info"><h4>${post.title}</h4><span><i class="fas fa-calendar"></i> ${new Date(post.date).toLocaleDateString()}</span></div>
+                    <div class="related-thumb"><img src="${post.thumbnail}" alt="" loading="lazy" onerror="this.src='https://picsum.photos/100/70?random=${post.id}'"></div>
+                    <div class="related-info">
+                        <h4>${post.title}</h4>
+                        <span><i class="fas fa-calendar"></i> ${new Date(post.date).toLocaleDateString()}</span>
+                    </div>
                 </a>
             `).join('');
         }
 
+        // Render categories
         function renderCategories() {
             const cats = [...new Set(blogPosts.map(p => p.category))];
             document.getElementById('categoriesList').innerHTML = cats.map(c => `<span class="tag-item">${c}</span>`).join('');
         }
 
+        // Initialize everything
         renderBlogPosts();
         renderRecentPosts();
         renderCategories();
