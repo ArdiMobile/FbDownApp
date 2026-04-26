@@ -94,8 +94,8 @@
         }
 
         .logo-icon {
-            width: 34px;
-            height: 34px;
+            width: 26px;
+            height: 26px;
             border-radius: 8px;
         }
 
@@ -140,7 +140,6 @@
         /* Drawer */
         .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,38,17,0.6); z-index: 2000; }
         .drawer-overlay.show { display: block; }
-
         .drawer {
             position: fixed; top: 0; right: -320px; width: 300px; max-width: 85vw;
             height: 100vh; background: var(--white); z-index: 2001;
@@ -157,7 +156,19 @@
 
         .drawer-header h3 { font-size: 16px; color: var(--dark); display: flex; align-items: center; gap: 8px; }
         .drawer-header h3 i { color: var(--primary); }
-
+       .drawer-header img { width: 26px;
+            height: 26px;
+            border-radius: 8px;}
+     .drawer-header span {
+       font-family: 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            font-size: 26px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold) 0%, #ffe680 50%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
         .drawer-close {
             width: 34px; height: 34px; border-radius: 50%; border: none;
             background: #f0f2f5; cursor: pointer; display: flex;
@@ -200,7 +211,7 @@
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .hero-icon {
-            width: 60px; height: 60px; border-radius: 14px;
+            width: 40px; height: 40px; border-radius: 14px;
             margin: 0 auto 12px; display: block; position: relative; z-index: 1;
         }
 
@@ -213,11 +224,11 @@
         }
 
         .hero-card h1 { font-size: 18px; font-weight: 700; position: relative; z-index: 1; }
-        .hero-card .subtitle { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 20px; position: relative; z-index: 1; }
+        .hero-card .subtitle { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 20px; position: relative; z-index: 1; }
 
         .platform-badges {
             display: flex; justify-content: center; gap: 10px;
-            margin-bottom: 18px; flex-wrap: wrap; position: relative; z-index: 1;
+            margin: 10px 0px; flex-wrap: wrap; position: relative; z-index: 1;
         }
 
         .platform-badge {
@@ -295,7 +306,7 @@
         }
 
         .card-title i { color: var(--primary); }
-        .card-title img { width: 24px; height: 24px; border-radius: 4px; }
+        .card-title img { width: 20px; height: 20px; border-radius: 4px; }
 
         /* Horizontal Video Preview */
         .video-preview-horizontal {
@@ -480,7 +491,7 @@
         /* Footer */
         .footer { background: var(--dark); padding: 24px 16px; text-align: center; margin-top: 36px; color: rgba(255,255,255,0.7); }
         .footer-logo { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; }
-        .footer-logo img { width: 32px; height: 32px; border-radius: 6px; }
+        .footer-logo img { width: 24px; height: 24px; border-radius: 6px; }
         .footer-logo span { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 22px; font-weight: 900; color: var(--gold); }
         .social-icons { display: flex; justify-content: center; gap: 14px; margin-bottom: 14px; }
         .social-icon { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 16px; border: 1px solid rgba(255,255,255,0.15); transition: all 0.2s ease; }
@@ -559,7 +570,7 @@
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
     <nav class="drawer" id="drawer">
         <div class="drawer-header">
-            <h3><i class="fa fa-bars"></i> MENU</h3>
+             <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee"><span class="menu-text">Galmee</span>
             <button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
         </div>
         <div class="drawer-menu">
@@ -584,11 +595,11 @@
                 <span class="platform-badge"><i class="fab fa-facebook"></i> Facebook</span>
                 <span class="platform-badge"><i class="fab fa-instagram"></i> Instagram</span>
             </div>
-            <p class="subtitle">Fast • Free • HD Quality • No Registration</p>
             <form id="dlForm" class="search-box">
                 <input type="text" id="urlInput" placeholder="Paste Facebook or Instagram link here...">
                 <button type="submit" class="dl-btn" id="dlBtn"><i class="fas fa-download" id="dlBtnIcon"></i><span id="btnLoader" style="display:none;"></span></button>
             </form>
+             <p class="subtitle">Fast • Free • HD Quality • No Registration</p>
             <div id="preview" class="preview-area"></div>
         </div>
 
@@ -607,15 +618,6 @@
                 <div id="tab-updates" class="tab-panel"><div class="update-card"><span class="badge new">New</span><h4>Galmee v3.0</h4><p style="font-size:12px;color:var(--text-secondary);">Fresh design, Instagram support!</p></div><div class="update-card"><span class="badge fix">Fix</span><h4>Speed Boost</h4><p style="font-size:12px;color:var(--text-secondary);">60% faster downloads.</p></div></div>
                 <div id="tab-faq" class="tab-panel"><div class="faq-card" onclick="this.classList.toggle('active')"><div class="faq-question">Is Galmee free? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">100% free. No registration.</div></div><div class="faq-card" onclick="this.classList.toggle('active')"><div class="faq-question">Instagram stories? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes! Stories, reels & posts.</div></div></div>
                 <div id="tab-apps" class="tab-panel"><div class="apps-grid"><div class="app-card"><i class="fab fa-instagram" style="color:#E4405F;"></i><span>Instagram</span></div><div class="app-card"><i class="fab fa-facebook" style="color:#1877f2;"></i><span>Facebook</span></div></div></div>
-
-                <!-- Share Section on main page -->
-                <div class="share-section">
-                    <span>Share Galmee:</span>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://fbdownapk.vercel.app/" target="_blank" class="share-btn-sm fb"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://api.whatsapp.com/send?text=Download%20Facebook%20%26%20Instagram%20videos%20free%3A%20https://fbdownapk.vercel.app/" target="_blank" class="share-btn-sm whatsapp"><i class="fab fa-whatsapp"></i></a>
-                    <a href="https://t.me/share/url?url=https://fbdownapk.vercel.app/&text=Galmee%20-%20Free%20Video%20Downloader" target="_blank" class="share-btn-sm telegram"><i class="fab fa-telegram-plane"></i></a>
-                    <a href="https://twitter.com/intent/tweet?url=https://fbdownapk.vercel.app/&text=Galmee%20-%20Free%20Facebook%20%26%20Instagram%20Video%20Downloader" target="_blank" class="share-btn-sm twitter"><i class="fab fa-twitter"></i></a>
-                </div>
             </div>
             <aside class="sidebar" id="homeSidebar"><div class="sidebar-sticky" id="sidebarContent"></div></aside>
         </div>
@@ -639,7 +641,7 @@
             <a href="page/copyright.html">Copyright</a>
             <a href="page/contact.html">Contact</a>
         </div>
-        <p class="copyright" id="credit-link">2026 &copy; Ardi Mobile Inc | Developed by <strong>Yasin Gelma</strong></p>
+        <p class="copyright" id="credit-link">2026 &copy; Galmee Inc | Developed by <strong>Yasin Gelma</strong></p>
     </footer>
 
     <script src="script.js"></script>
