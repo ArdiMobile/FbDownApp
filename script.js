@@ -213,9 +213,9 @@ async function processPreview(url) {
                     <div style="flex:1;min-width:260px;padding:18px 20px;display:flex;flex-direction:column;justify-content:center;">
                         
                         <!-- Title Section -->
-                        <div style="margin-bottom:12px;">
+                        <div style="border:solid 1px green;background:skyblue;margin-bottom:12px;">
                             <h4 style="font-size:15px;font-weight:700;color:#1a1a1a;line-height:1.3;margin:0 0 4px 0;">${title}</h4>
-                            ${uploader ? `<p style="font-size:12px;color:#666;margin:0;font-weight:500;background:green;">Video Uploaded by ${uploader}</p>` : ''}
+                            ${uploader ? `<p style="font-size:12px;color:#666;margin:0;font-weight:500;">${uploader}</p>` : ''}
                         </div>
                         
                         <!-- Download Buttons -->
