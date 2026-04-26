@@ -199,22 +199,14 @@ async function processPreview(url) {
                         <div class="video-watermark" style="position:absolute;bottom:8px;left:8px;display:flex;align-items:center;gap:5px;
                             background:rgba(0,0,0,0.65);backdrop-filter:blur(6px);padding:5px 10px;border-radius:20px;
                             transition:opacity 0.3s ease;z-index:5;pointer-events:none;">
-                            <img src="${ICON_URL}" style="font-family: 'Playfair Display', Georgia, serif;
-            font-style: italic;
-            font-size: 26px;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--gold) 0%, #ffe680 50%, var(--gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;">GALMEE</span>
+                            <img src="${ICON_URL}" style="width:18px;height:18px;border-radius:4px;" alt="">
+                            <span style="font-size:10px;font-weight:800;color:#009959;letter-spacing:0.5px;"></span>
                         </div>
                         
                         <!-- Platform Badge -->
                         <span style="position:absolute;top:8px;left:8px;background:${platformColor};color:#fff;padding:4px 10px;border-radius:6px;font-size:9px;font-weight:600;z-index:5;">
                             <i class="fab ${platformIcon}"></i> ${platformName}
                         </span>
-                        
-                        ${data.duration ? `<span style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.75);color:#fff;padding:3px 7px;border-radius:4px;font-size:10px;font-weight:500;">${Math.floor(data.duration/60)}:${(data.duration%60).toString().padStart(2,'0')}</span>` : ''}
                     </div>
                     
                     <!-- RIGHT: Info & Downloads -->
@@ -223,7 +215,7 @@ async function processPreview(url) {
                         <!-- Title Section -->
                         <div style="margin-bottom:12px;">
                             <h4 style="font-size:15px;font-weight:700;color:#1a1a1a;line-height:1.3;margin:0 0 4px 0;">${title}</h4>
-                            ${uploader ? `<p style="font-size:12px;color:#666;margin:0;font-weight:500;">${uploader}</p>` : ''}
+                            ${uploader ? `<p style="font-size:12px;color:#666;margin:0;font-weight:500;background:green;">Video Uploaded by ${uploader}</p>` : ''}
                         </div>
                         
                         <!-- Download Buttons -->
