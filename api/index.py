@@ -1,19 +1,9 @@
 from http.server import BaseHTTPRequestHandler
 import json
 from urllib.parse import parse_qs, urlparse
-import traceback
-import sys
 import yt_dlp
 
 class handler(BaseHTTPRequestHandler):
-
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-        self.end_headers()
-
     def do_GET(self):
         query_params = parse_qs(urlparse(self.path).query)
         facebook_url = query_params.get('url', [None])[0]
@@ -24,105 +14,55 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
 
         if not facebook_url:
-            self.wfile.write(json.dumps({
-                "status": "error", 
-                "message": "No URL provided"
-            }).encode())
+            self.wfile.write(json.dumps({"status": "error", "message": "No URL"}).encode())
             return
 
         try:
-            # Normalize URL
-            if "facebook.com" in facebook_url and "m.facebook.com" not in facebook_url:
-                facebook_url = facebook_url.replace("www.facebook.com", "m.facebook.com")
-                facebook_url = facebook_url.replace("web.facebook.com", "m.facebook.com")
-                if not facebook_url.startswith("http"):
-                    facebook_url = "https://" + facebook_url
+            # ✅ Normalize FB
+            if "facebook.com" in facebook_url:
+                facebook_url = facebook_url.replace("www.", "")
+                facebook_url = facebook_url.replace("facebook.com", "m.facebook.com")
 
-            # CRITICAL FIX: Merge best video + best audio for sound
+            # ✅ Normalize IG
+            if "instagram.com" in facebook_url:
+                facebook_url = facebook_url.replace("www.", "")
+                facebook_url = facebook_url.replace("instagram.com", "m.instagram.com")
+
             ydl_opts = {
                 'quiet': True,
                 'noplaylist': True,
-                'no_warnings': True,
-                'extract_flat': False,
-                'force_generic_extractor': False,
-                # This is the key fix - merge video+audio streams
-                'format': 'bestvideo+bestaudio/best',
-                'merge_output_format': 'mp4',
+                'http_headers': {'User-Agent': 'Mozilla/5.0'}
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(facebook_url, download=False)
 
-                if not info:
-                    raise Exception("Failed to extract video information")
-
                 formats = []
-                
-                # Get formats that have BOTH video AND audio (merged)
                 for f in info.get("formats", []):
-                    # Check if format has video codec and resolution
-                    has_video = f.get("vcodec") and f.get("vcodec") != "none" and f.get("height")
-                    # Check if format has audio
-                    has_audio = f.get("acodec") and f.get("acodec") != "none"
-                    
-                    if has_video and f.get("url"):
+                    if f.get("url") and f.get("height"):
                         formats.append({
                             "quality": f"{f.get('height')}p",
-                            "height": f.get("height"),
-                            "url": f.get("url"),
-                            "has_audio": has_audio,
-                            "format_id": f.get("format_id", "")
+                            "url": f.get("url")
                         })
 
-                if not formats:
-                    raise Exception("No downloadable formats found")
-
-                # Sort by height (highest first)
-                formats = sorted(formats, key=lambda x: x["height"], reverse=True)
-
-                # Remove duplicates, prefer formats with audio
                 seen = set()
-                unique = []
+                unique_formats = []
                 for f in formats:
                     if f["quality"] not in seen:
                         seen.add(f["quality"])
-                        unique.append({
-                            "quality": f["quality"],
-                            "url": f["url"]
-                        })
-
-                # If no formats have audio, try getting best format with audio
-                if not any(f.get("has_audio") for f in formats):
-                    # Fallback: get any format that has audio
-                    for f in info.get("formats", []):
-                        if f.get("acodec") and f.get("acodec") != "none" and f.get("url") and f.get("height"):
-                            # Add this audio-capable format
-                            quality = f"{f.get('height')}p"
-                            if quality not in seen:
-                                seen.add(quality)
-                                unique.append({
-                                    "quality": quality,
-                                    "url": f.get("url")
-                                })
+                        unique_formats.append(f)
 
                 response_data = {
                     "status": "success",
-                    "title": info.get("title", "Facebook Video"),
-                    "thumbnail": info.get("thumbnail", ""),
-                    "uploader": info.get("uploader", ""),
-                    "uploader_url": info.get("uploader_url", ""),
-                    "duration": info.get("duration", 0),
-                    "formats": unique[:5]
+                    "title": info.get("title"),
+                    "thumbnail": info.get("thumbnail"),
+                    "formats": unique_formats[:5]
                 }
 
         except Exception as e:
-            error_msg = str(e)
-            print(f"Error: {error_msg}", file=sys.stderr)
-            print(traceback.format_exc(), file=sys.stderr)
-            
-            response_data = {
-                "status": "error", 
-                "message": f"Failed to get video: {error_msg[:100]}"
-            }
+            msg = str(e)
+            if "429" in msg:
+                msg = "Too many requests. Try again later."
+            response_data = {"status": "error", "message": msg}
 
         self.wfile.write(json.dumps(response_data).encode())
