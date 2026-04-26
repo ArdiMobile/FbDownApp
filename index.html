@@ -90,7 +90,7 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 3px;
         }
 
         .logo-icon {
@@ -113,7 +113,13 @@
         .logo-dot {
             color: var(--primary);
             -webkit-text-fill-color: var(--primary);
-            font-size: 30px;
+            font-size: 10px;
+        }
+
+        .logo-dot h4{
+            color: var(--primary);
+            -webkit-text-fill-color: var(--primary);
+            font-size: 10px;
         }
 
         .menu-btn {
@@ -490,7 +496,7 @@
 
         /* Footer */
         .footer { background: var(--dark); padding: 24px 16px; text-align: center; margin-top: 36px; color: rgba(255,255,255,0.7); }
-        .footer-logo { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; }
+        .footer-logo { display: flex; align-items: center; justify-content: center; gap: 3px; margin-bottom: 12px; }
         .footer-logo img { width: 24px; height: 24px; border-radius: 6px; }
         .footer-logo span { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 22px; font-weight: 900; color: var(--gold); }
         .social-icons { display: flex; justify-content: center; gap: 14px; margin-bottom: 14px; }
@@ -561,7 +567,7 @@
         <div class="header-inner">
             <a href="/" class="logo">
                 <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee" class="logo-icon">
-                <span class="logo-text">Galmee</span><span class="logo-dot">.</span>
+                <span class="logo-text">Galmee</span><span class="logo-dot">.et</span>
             </a>
             <button class="menu-btn" onclick="toggleDrawer()" aria-label="Menu"><i class="fas fa-bars"></i></button>
         </div>
@@ -570,7 +576,7 @@
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
     <nav class="drawer" id="drawer">
         <div class="drawer-header">
-             <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee"><span class="menu-text">Galmee</span>
+             <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
             <button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
         </div>
         <div class="drawer-menu">
@@ -626,7 +632,7 @@
     <footer class="footer">
         <div class="footer-logo">
             <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
-            <span>Galmee</span>
+            <span>Galmee</span><h4 class="logo-dot">.et</h4>
         </div>
         <div class="social-icons">
             <a href="https://fb.com/yasingelma" class="social-icon fb" target="_blank"><i class="fab fa-facebook-f"></i></a>
