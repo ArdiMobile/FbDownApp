@@ -35,7 +35,7 @@ let autoDetectEnabled = true;
 document.addEventListener('DOMContentLoaded', () => {
     loadDownloadHistory();
     initSidebar();
-    setTimeout(checkClipboardAndPreview, 1000);
+    setTimeout(checkClipboardAndPreview, 1000000);
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') checkClipboardAndPreview();
     });
@@ -264,7 +264,7 @@ async function processPreview(url) {
                                 <i class="fas fa-redo"></i> New Video
                             </button>
                             <button onclick="window.location.href='page/purchase.html'" style="width:48%;padding:8px 14px;border:none;background:linear-gradient(135deg,#FEC601,#e6b300);color:#002611;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;" id="credit-link">
-                                <i class="fas fa-crown"></i> Buy Tool
+                                <i class="fas fa-crown"></i> Buy this Tool
                             </button>
                         </div>
                     </div>
