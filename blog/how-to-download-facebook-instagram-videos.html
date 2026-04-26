@@ -24,9 +24,40 @@
         a{text-decoration:none;color:inherit}button{cursor:pointer;font-family:inherit}img{max-width:100%}
         .header{background:var(--dark);position:sticky;top:0;z-index:1000;box-shadow:0 2px 20px rgba(0,38,17,.3)}
         .header-inner{max-width:1200px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;justify-content:space-between}
-        .logo{display:flex;align-items:center;gap:8px}.logo-icon{width:26px;height:26px;border-radius:8px}
-        .logo-text{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:26px;font-weight:900;background:linear-gradient(135deg,var(--gold),#ffe680,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .logo-dot{color:var(--primary);-webkit-text-fill-color:var(--primary);font-size:30px}
+               .logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .logo-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            font-size: 26px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold) 0%, #ffe680 50%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-dot {
+            color: var(--primary);
+            -webkit-text-fill-color: var(--primary);
+            font-size: 10px;
+        }
+
+        .logo-dot h4{
+            color: var(--primary);
+            -webkit-text-fill-color: var(--primary);
+            font-size: 10px;
+        }
         .menu-btn{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:var(--gold);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}.menu-btn:hover{background:var(--primary);color:#fff}
         .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,38,17,.6);z-index:2000}.drawer-overlay.show{display:block}
         .drawer{position:fixed;top:0;right:-320px;width:300px;max-width:85vw;height:100vh;background:#fff;z-index:2001;transition:right .3s ease;overflow-y:auto}.drawer.show{right:0}
@@ -55,7 +86,7 @@
         .share-btn-sm{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;transition:all .2s ease}
         .share-btn-sm.fb{background:#1877f2}.share-btn-sm.whatsapp{background:#25D366}.share-btn-sm.telegram{background:#0088cc}.share-btn-sm.twitter{background:#000}.share-btn-sm:hover{transform:translateY(-2px)}
         .footer{background:var(--dark);padding:24px 16px;text-align:center;margin-top:36px;color:rgba(255,255,255,.7)}
-        .footer-logo{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px}.footer-logo img{width:24px;height:24px;border-radius:6px}.footer-logo span{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:22px;font-weight:900;color:var(--gold)}
+        .footer-logo{display:flex;align-items:center;justify-content:center;gap:3px;margin-bottom:12px}.footer-logo img{width:24px;height:24px;border-radius:6px}.footer-logo span{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:22px;font-weight:900;color:var(--gold)}
         .social-icons{display:flex;justify-content:center;gap:14px;margin-bottom:14px}
         .social-icon{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;font-size:16px;border:1px solid rgba(255,255,255,.15);transition:all .2s ease}
         .social-icon:hover{transform:translateY(-2px)}.social-icon.fb:hover{background:#1877f2;color:#fff}.social-icon.ig:hover{background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);color:#fff}.social-icon.telegram:hover{background:#0088cc;color:#fff}.social-icon.whatsapp:hover{background:#25D366;color:#fff}
@@ -66,9 +97,9 @@
     </style>
 </head>
 <body>
-    <header class="header"><div class="header-inner"><a href="../index.html" class="logo"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee" class="logo-icon"><span class="logo-text">Galmee</span><span class="logo-dot">.</span></a><button class="menu-btn" onclick="toggleDrawer()"><i class="fas fa-bars"></i></button></div></header>
+    <header class="header"><div class="header-inner"><a href="../index.html" class="logo"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee" class="logo-icon"><span class="logo-text">Galmee</span><span class="logo-dot">.et</span></a><button class="menu-btn" onclick="toggleDrawer()"><i class="fas fa-bars"></i></button></div></header>
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
-    <nav class="drawer" id="drawer"><div class="drawer-header"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""><span>Galmee</span><button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button></div><div class="drawer-menu"><a href="../index.html"><i class="fas fa-home"></i> Home</a><a href="../blog.html"><i class="fas fa-rss"></i> Blog</a><a href="../page/purchase.html"><i class="fa-solid fa-crown"></i> Purchase</a><a href="../page/about.html"><i class="fa-solid fa-user"></i> About</a><a href="../page/copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a><a href="../page/contact.html"><i class="fa-solid fa-envelope"></i> Contact</a></div></nav>
+    <nav class="drawer" id="drawer"><div class="drawer-header"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""><button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button></div><div class="drawer-menu"><a href="../index.html"><i class="fas fa-home"></i> Home</a><a href="../blog.html"><i class="fas fa-rss"></i> Blog</a><a href="../page/purchase.html"><i class="fa-solid fa-crown"></i> Purchase</a><a href="../page/about.html"><i class="fa-solid fa-user"></i> About</a><a href="../page/copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a><a href="../page/contact.html"><i class="fa-solid fa-envelope"></i> Contact</a></div></nav>
     <main class="main">
         <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fas fa-chevron-right" style="font-size:9px;"></i> <a href="../blog.html">Blog</a> <i class="fas fa-chevron-right" style="font-size:9px;"></i> <span>How to Download Facebook & Instagram Videos</span></div>
         <article class="post">
@@ -91,7 +122,7 @@
             <div class="share-section"><span>Share this post:</span><a href="https://www.facebook.com/sharer/sharer.php?u=https://galmee.vercel.app/blog/how-to-download-facebook-instagram-videos.html" target="_blank" class="share-btn-sm fb"><i class="fab fa-facebook-f"></i></a><a href="https://api.whatsapp.com/send?text=How%20to%20Download%20FB%20%26%20IG%20Videos%3A%20https://galmee.vercel.app/blog/how-to-download-facebook-instagram-videos.html" target="_blank" class="share-btn-sm whatsapp"><i class="fab fa-whatsapp"></i></a><a href="https://t.me/share/url?url=https://galmee.vercel.app/blog/how-to-download-facebook-instagram-videos.html" target="_blank" class="share-btn-sm telegram"><i class="fab fa-telegram-plane"></i></a><a href="https://twitter.com/intent/tweet?url=https://galmee.vercel.app/blog/how-to-download-facebook-instagram-videos.html" target="_blank" class="share-btn-sm twitter"><i class="fab fa-twitter"></i></a></div>
         </article>
     </main>
-    <footer class="footer"><div class="footer-logo"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""><span>Galmee</span></div><div class="social-icons"><a href="https://fb.com/yasingelma" class="social-icon fb" target="_blank"><i class="fab fa-facebook-f"></i></a><a href="https://instagram.com/yasingelma" class="social-icon ig" target="_blank"><i class="fab fa-instagram"></i></a><a href="https://t.me/anayasingg" class="social-icon telegram" target="_blank"><i class="fab fa-telegram-plane"></i></a><a href="https://api.whatsapp.com/send?phone=251934646971" class="social-icon whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a></div><div class="footer-links"><a href="../page/purchase.html">Purchase</a><a href="../blog.html">Blog</a><a href="../page/about.html">About</a><a href="../page/copyright.html">Copyright</a><a href="../page/contact.html">Contact</a></div><p class="copyright">2026 &copy; Galmee Inc | Developed by <strong>Yasin Gelma</strong></p></footer>
+    <footer class="footer"><div class="footer-logo"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""><span>Galmee</span><h4 class="logo-dot">.et</h4></div><div class="social-icons"><a href="https://fb.com/yasingelma" class="social-icon fb" target="_blank"><i class="fab fa-facebook-f"></i></a><a href="https://instagram.com/yasingelma" class="social-icon ig" target="_blank"><i class="fab fa-instagram"></i></a><a href="https://t.me/anayasingg" class="social-icon telegram" target="_blank"><i class="fab fa-telegram-plane"></i></a><a href="https://api.whatsapp.com/send?phone=251934646971" class="social-icon whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a></div><div class="footer-links"><a href="../page/purchase.html">Purchase</a><a href="../blog.html">Blog</a><a href="../page/about.html">About</a><a href="../page/copyright.html">Copyright</a><a href="../page/contact.html">Contact</a></div><p class="copyright">2026 &copy; Galmee Inc | Developed by <strong>Yasin Gelma</strong></p></footer>
     <script>function toggleDrawer(){document.getElementById('drawer').classList.toggle('show');document.getElementById('drawerOverlay').classList.toggle('show');}</script>
 </body>
 </html>
