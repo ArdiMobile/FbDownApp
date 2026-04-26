@@ -70,7 +70,7 @@ function showAutoDetectNotification(platform) {
                 </span>
                 <span style="color:#fff;font-size:13px;font-weight:600;">Link detected!</span>
             </div>
-            <div style="width:28px;height:28px;border:3px solid rgba(255,255,255,0.2);border-top:3px solid #FEC601;border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 8px;"></div>
+            <div class="btn-spinner" style="margin:0 auto 8px;"></div>
             <p style="color:rgba(255,255,255,0.8);font-size:12px;">Fetching ${platformName} video...</p>
         </div>
     `;
@@ -100,7 +100,6 @@ function playHistoryVideo(event, videoUrl, historyItem) {
     if (historyItem.classList.contains('playing')) { stopHistoryVideo(historyItem); return; }
     video.src = videoUrl;
     video.style.display = 'block';
-    video.muted = false;
     thumbWrapper.style.display = 'none';
     historyItem.classList.add('playing');
     video.play();
@@ -150,9 +149,10 @@ function downloadVideo(url, quality) {
 }
 
 async function processPreview(url) {
+    // Default spinner on button
     dlBtnIcon.style.display = "none";
     btnLoader.style.display = "block";
-    btnLoader.innerHTML = `<img src="${ICON_URL}" style="width:22px;height:22px;border-radius:4px;animation:spin 0.8s linear infinite;">`;
+    btnLoader.innerHTML = `<span class="btn-spinner"></span>`;
 
     const platform = detectPlatform(url);
     const platformName = platform === 'instagram' ? 'Instagram' : 'Facebook';
@@ -175,7 +175,7 @@ async function processPreview(url) {
             if (errorMessage.toLowerCase().includes('rate-limit') || errorMessage.toLowerCase().includes('rate limit')) {
                 errorIcon = 'fa-clock';
                 errorTitle = 'Too Many Requests';
-                suggestions = ['Wait 5-10 minutes and try again', 'Make sure the video is from a public account', 'Try using a different link'];
+                suggestions = ['Wait a few minutes and try again', 'Make sure the video is from a public account', 'Try a different video link', 'This is a temporary limitation'];
             } else if (errorMessage.toLowerCase().includes('login')) {
                 errorIcon = 'fa-lock';
                 errorTitle = 'Login Required';
@@ -183,7 +183,7 @@ async function processPreview(url) {
             } else if (errorMessage.toLowerCase().includes('not available') || errorMessage.toLowerCase().includes('not found')) {
                 errorIcon = 'fa-eye-slash';
                 errorTitle = 'Content Not Available';
-                suggestions = ['This video may be private or deleted', 'Check if the link is correct', 'Try copying the link again'];
+                suggestions = ['This video may be private or deleted', 'Check if the link is correct', 'Try copying the link again from the app'];
             } else if (errorMessage.toLowerCase().includes('private')) {
                 errorIcon = 'fa-lock';
                 errorTitle = 'Private Content';
@@ -192,8 +192,7 @@ async function processPreview(url) {
             
             preview.innerHTML = `
                 <div style="background:#fff;padding:18px;border-radius:14px;border:1px solid #d4e6da;text-align:center;">
-                    <img src="${ICON_URL}" style="width:32px;height:32px;border-radius:8px;margin-bottom:8px;opacity:0.6;">
-                    <i class="fas ${errorIcon}" style="font-size:40px;color:#e74c3c;display:block;margin-bottom:8px;"></i>
+                    <i class="fas ${errorIcon}" style="font-size:44px;color:#e74c3c;display:block;margin-bottom:10px;"></i>
                     <h4 style="color:#e74c3c;font-weight:700;font-size:14px;margin-bottom:4px;">${errorTitle}</h4>
                     <p style="color:#666;font-size:12px;margin-bottom:10px;">${errorMessage}</p>
                     ${suggestions.length > 0 ? `
@@ -211,7 +210,6 @@ async function processPreview(url) {
 
         saveToHistory(data, platform);
         const firstVideo = data.formats[0]?.url;
-        const randomAd = getRandomAd();
 
         const qualityColors = {
             '1080p': 'linear-gradient(135deg, #009959, #007a47)',
@@ -249,18 +247,15 @@ async function processPreview(url) {
                 </div>
                 <div style="display:flex;gap:14px;flex-wrap:wrap;">
                     <div style="width:320px;max-width:100%;flex-shrink:0;">
-                        <video controls playsinline muted style="width:100%;border-radius:10px;background:#000;max-height:240px;">
+                        <video controls playsinline style="width:100%;border-radius:10px;background:#000;max-height:240px;">
                             <source src="${firstVideo}" type="video/mp4">
                         </video>
-                        <p style="font-size:11px;color:#999;text-align:center;margin-top:4px;">
-                            <i class="fas fa-volume-mute"></i> Muted · <span onclick="const v=this.parentElement.previousElementSibling;v.muted=!v.muted;this.innerHTML=v.muted?'<i class=\\'fas fa-volume-mute\\'></i> Muted':'<i class=\\'fas fa-volume-up\\'></i> Sound on'" style="cursor:pointer;color:#009959;font-weight:600;">Unmute</span>
-                        </p>
                     </div>
                     <div style="flex:1;min-width:200px;">
                         <h4 style="font-size:14px;font-weight:700;color:#002611;margin-bottom:4px;line-height:1.3;">${data.title || platformName + ' Video'}</h4>
                         ${data.uploader ? `
                         <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:#e6f5ee;border-radius:8px;margin-bottom:10px;">
-                            <img src="${ICON_URL}" style="width:20px;height:20px;border-radius:50%;">
+                            <i class="fas fa-user-circle" style="font-size:24px;color:#009959;"></i>
                             <span style="font-size:12px;font-weight:600;color:#002611;">${data.uploader}</span>
                         </div>` : ''}
                         <div style="margin-bottom:10px;">${qualityButtons}</div>
@@ -289,10 +284,9 @@ async function processPreview(url) {
         console.log('Error:', err);
         preview.innerHTML = `
             <div style="background:#fff;padding:18px;border-radius:14px;border:1px solid #d4e6da;text-align:center;">
-                <img src="${ICON_URL}" style="width:32px;height:32px;border-radius:8px;margin-bottom:8px;opacity:0.6;">
-                <i class="fas fa-wifi" style="font-size:40px;color:#e74c3c;display:block;margin-bottom:8px;"></i>
+                <i class="fas fa-wifi" style="font-size:44px;color:#e74c3c;display:block;margin-bottom:10px;"></i>
                 <h4 style="color:#e74c3c;font-weight:700;font-size:14px;margin-bottom:4px;">Connection Error</h4>
-                <p style="color:#666;font-size:12px;margin-bottom:10px;">Please check your internet connection and try again.</p>
+                <p style="color:#666;font-size:12px;margin-bottom:10px;">Please check your internet and try again.</p>
                 <button onclick="resetDownloader()" style="padding:10px 20px;background:#009959;color:#fff;border:none;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;">
                     <i class="fas fa-redo"></i> Try Again
                 </button>
@@ -339,7 +333,7 @@ async function loadDownloadHistory() {
                         <div class="play-overlay"><div class="play-btn-circle"><div class="play-triangle"></div></div></div>
                         <span style="position:absolute;top:6px;left:6px;background:${platformColor};color:#fff;padding:2px 6px;border-radius:8px;font-size:8px;font-weight:600;"><i class="fab ${platformIcon}"></i></span>
                     </div>
-                    <video preload="none" playsinline muted></video>
+                    <video preload="none" playsinline></video>
                     <div class="history-info">
                         <p class="history-title">${item.title ? item.title.substring(0, 28) : 'Video'}</p>
                         <span class="history-quality">${item.quality || 'HD'}</span>
