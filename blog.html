@@ -24,9 +24,40 @@
         a{text-decoration:none;color:inherit}a:hover{text-decoration:none}button{cursor:pointer;font-family:inherit}img{max-width:100%}
         .header{background:var(--dark);position:sticky;top:0;z-index:1000;box-shadow:0 2px 20px rgba(0,38,17,.3)}
         .header-inner{max-width:1200px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;justify-content:space-between}
-        .logo{display:flex;align-items:center;gap:8px}.logo-icon{width:26px;height:26px;border-radius:8px}
-        .logo-text{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:26px;font-weight:900;background:linear-gradient(135deg,var(--gold),#ffe680,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .logo-dot{color:var(--primary);-webkit-text-fill-color:var(--primary);font-size:30px}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .logo-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            font-size: 26px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold) 0%, #ffe680 50%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-dot {
+            color: var(--primary);
+            -webkit-text-fill-color: var(--primary);
+            font-size: 10px;
+        }
+
+        .logo-dot h4{
+            color: var(--primary);
+            -webkit-text-fill-color: var(--primary);
+            font-size: 10px;
+        }
         .menu-btn{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:var(--gold);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}.menu-btn:hover{background:var(--primary);color:#fff}
         .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,38,17,.6);z-index:2000}.drawer-overlay.show{display:block}
         .drawer{position:fixed;top:0;right:-320px;width:300px;max-width:85vw;height:100vh;background:#fff;z-index:2001;transition:right .3s ease;overflow-y:auto}.drawer.show{right:0}
@@ -43,7 +74,7 @@
         .page-header p{font-size:13px;opacity:.8}
         .blog-card{background:#fff;border-radius:var(--radius);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow);border:1px solid var(--border);transition:all .2s ease;cursor:pointer}
         .blog-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);border-color:var(--primary)}
-        .blog-thumbnail{width:100%;height:200px;object-fit:cover;display:block}
+        .blog-thumbnail{width:100%;height:100%;object-fit:cover;display:block}
         .blog-card-body{padding:18px}
         .blog-card h2{font-size:18px;font-weight:700;margin-bottom:8px;color:var(--dark)}
         .blog-meta{display:flex;gap:12px;font-size:11px;color:var(--text-secondary);margin-bottom:10px;flex-wrap:wrap}
@@ -66,7 +97,7 @@
         .tag-item{padding:5px 12px;background:var(--primary-light);color:var(--primary);border-radius:50px;font-size:11px;font-weight:600;cursor:pointer}
         .tag-item:hover{background:var(--primary);color:#fff}
         .footer{background:var(--dark);padding:24px 16px;text-align:center;margin-top:36px;color:rgba(255,255,255,.7)}
-        .footer-logo{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px}.footer-logo img{width:24px;height:24px;border-radius:6px}.footer-logo span{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:22px;font-weight:900;color:var(--gold)}
+        .footer-logo{display:flex;align-items:center;justify-content:center;gap:3px;margin-bottom:12px}.footer-logo img{width:24px;height:24px;border-radius:6px}.footer-logo span{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:22px;font-weight:900;color:var(--gold)}
         .social-icons{display:flex;justify-content:center;gap:14px;margin-bottom:14px}
         .social-icon{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;font-size:16px;border:1px solid rgba(255,255,255,.15);transition:all .2s ease}
         .social-icon:hover{transform:translateY(-2px)}.social-icon.fb:hover{background:#1877f2;color:#fff}.social-icon.ig:hover{background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);color:#fff}.social-icon.telegram:hover{background:#0088cc;color:#fff}.social-icon.whatsapp:hover{background:#25D366;color:#fff}
@@ -76,20 +107,20 @@
         .share-section span{font-size:12px;font-weight:600;color:var(--text-secondary)}
         .share-btn-sm{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;transition:all .2s ease}
         .share-btn-sm.fb{background:#1877f2}.share-btn-sm.whatsapp{background:#25D366}.share-btn-sm.telegram{background:#0088cc}.share-btn-sm.twitter{background:#000}.share-btn-sm:hover{transform:translateY(-2px)}
-        @media(max-width:768px){.sidebar{display:none}.blog-thumbnail{height:150px}.page-header{padding:22px 16px}}
-        @media(min-width:1025px){.main{padding:28px 32px}.page-header{padding:36px 32px}.page-header h1{font-size:28px}.blog-thumbnail{height:220px}}
+        @media(max-width:768px){.sidebar{display:none}.blog-thumbnail{height:100%}.page-header{padding:22px 16px}}
+        @media(min-width:1025px){.main{padding:28px 32px}.page-header{padding:36px 32px}.page-header h1{font-size:28px}.blog-thumbnail{height:100%}}
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-inner">
-            <a href="index.html" class="logo"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee" class="logo-icon"><span class="logo-text">Galmee</span><span class="logo-dot">.</span></a>
+            <a href="index.html" class="logo"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee" class="logo-icon"><span class="logo-text">Galmee</span><span class="logo-dot">.et</span></a>
             <button class="menu-btn" onclick="toggleDrawer()"><i class="fas fa-bars"></i></button>
         </div>
     </header>
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
     <nav class="drawer" id="drawer">
-        <div class="drawer-header"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""><span>Galmee</span><button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button></div>
+        <div class="drawer-header"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""><button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button></div>
         <div class="drawer-menu">
             <a href="index.html"><i class="fas fa-home"></i> Home</a>
             <a href="blog.html" class="active"><i class="fas fa-rss"></i> Blog</a>
@@ -131,7 +162,7 @@
         </div>
     </main>
     <footer class="footer">
-        <div class="footer-logo"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""><span>Galmee</span></div>
+        <div class="footer-logo"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""><span>Galmee</span><h4 class="logo-dot">.et</h4></div>
         <div class="social-icons">
             <a href="https://fb.com/yasingelma" class="social-icon fb" target="_blank"><i class="fab fa-facebook-f"></i></a>
             <a href="https://instagram.com/yasingelma" class="social-icon ig" target="_blank"><i class="fab fa-instagram"></i></a>
