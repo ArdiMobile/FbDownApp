@@ -199,8 +199,14 @@ async function processPreview(url) {
                         <div class="video-watermark" style="position:absolute;bottom:8px;left:8px;display:flex;align-items:center;gap:5px;
                             background:rgba(0,0,0,0.65);backdrop-filter:blur(6px);padding:5px 10px;border-radius:20px;
                             transition:opacity 0.3s ease;z-index:5;pointer-events:none;">
-                            <img src="${ICON_URL}" style="width:18px;height:18px;border-radius:4px;" alt="">
-                            <span style="font-size:10px;font-weight:800;color:#009959;letter-spacing:0.5px;">GALMEE</span>
+                            <img src="${ICON_URL}" style="font-family: 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            font-size: 26px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold) 0%, #ffe680 50%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;">GALMEE</span>
                         </div>
                         
                         <!-- Platform Badge -->
