@@ -193,11 +193,7 @@ async function processPreview(url) {
     btnLoader.style.display = "block";
     btnLoader.innerHTML = `<span class="btn-spinner"></span>`;
 
-    const platform = detectPlatform(url);
-    const platformName = platform === 'instagram' ? 'Instagram' : 'Facebook';
-    const platformIcon = platform === 'instagram' ? 'fa-instagram' : 'fa-facebook';
-    const platformColor = platform === 'instagram' ? '#E4405F' : '#1877f2';
-
+    
     try {
         const res = await fetch(`/api/info?url=${encodeURIComponent(url)}`);
         const data = await res.json();
@@ -479,7 +475,7 @@ async function loadDownloadHistory() {
                 <div class="history-item" style="cursor:pointer;border-radius:10px;overflow:hidden;background:#fff;border:1px solid #e0e0e0;transition:all 0.2s ease;"
                      onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 15px rgba(0,0,0,0.1)'"
                      onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
-                    <div style="position:relative;width:100%;height:150px;overflow:hidden;background:#000;">
+                    <div style="position:relative;width:50%;height:150px;overflow:hidden;background:#000;">
                         <img src="${item.thumbnail || ICON_URL}" alt="${item.title || 'Video'}" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
                         <!-- Play Button -->
                         <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
