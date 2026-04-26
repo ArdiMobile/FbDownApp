@@ -213,9 +213,9 @@ async function processPreview(url) {
                     <div style="flex:1;min-width:260px;padding:18px 20px;display:flex;flex-direction:column;justify-content:center;">
                         
                         <!-- Title Section -->
-                        <div style="border:solid 1px green;background:skyblue;margin-bottom:12px;">
+                        <div style="border-radius:10px;border:solid 2px green;background:skyblue;margin-bottom:12px;">
                             <h4 style="font-size:15px;font-weight:700;color:#1a1a1a;line-height:1.3;margin:0 0 4px 0;">${title}</h4>
-                            ${uploader ? `<p style="font-size:12px;color:#666;margin:0;font-weight:500;">${uploader}</p>` : ''}
+                            ${uploader ? `<p style="border-radius:10px;border:solid 1px gray;background:green;font-size:12px;color:#fff;margin:0;font-weight:500;">${uploader}</p>` : ''}
                         </div>
                         
                         <!-- Download Buttons -->
@@ -226,12 +226,12 @@ async function processPreview(url) {
                         <!-- Actions -->
                         <div style="display:flex;gap:8px;">
                             <button onclick="resetDownloader()"
-                                style="flex:1;padding:10px;border:2px solid #e0e0e0;background:#fff;color:#555;border-radius:10px;
+                                style="flex:1;padding:10px;border:2px solid #e0e0e0;background:orange;color:#555;border-radius:10px;
                                 font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;
                                 transition:all 0.2s;"
                                 onmouseover="this.style.background='#f5f5f5';this.style.borderColor='#ccc'"
                                 onmouseout="this.style.background='#fff';this.style.borderColor='#e0e0e0'">
-                                <i class="fas fa-plus-circle"></i> New Link
+                                <i class="fas fa-plus-circle"></i> New Video
                             </button>
                             <a href="page/purchase.html"
                                 style="flex:1;padding:10px;border:none;background:linear-gradient(135deg,#FEC601,#e6b300);color:#1a1a1a;border-radius:10px;
@@ -240,7 +240,7 @@ async function processPreview(url) {
                                 onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(254,198,1,0.5)'"
                                 onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 15px rgba(254,198,1,0.3)'"
                                 id="credit-link">
-                                <i class="fas fa-crown"></i> Premium
+                                <i class="fas fa-crown"></i> Buy Galmee
                             </a>
                         </div>
                     </div>
@@ -250,7 +250,7 @@ async function processPreview(url) {
             <!-- Share Bar -->
             <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;flex-wrap:wrap;">
                 <span style="font-size:11px;font-weight:600;color:#888;">Share:</span>
-                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}" target="_blank" style="width:34px;height:34px;border-radius:50%;background:#1877f2;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.2s;box-shadow:0 2px 8px rgba(24,119,242,0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}" target="_blank" style="width:50px;height:34px;border-radius:10%;background:#1877f2;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.2s;box-shadow:0 2px 8px rgba(24,119,242,0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-facebook-f"></i></a>
                 <a href="https://api.whatsapp.com/send?text=${encodeURIComponent('Download FB & IG videos free: ' + SITE_URL)}" target="_blank" style="width:34px;height:34px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.2s;box-shadow:0 2px 8px rgba(37,211,102,0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-whatsapp"></i></a>
                 <a href="https://t.me/share/url?url=${encodeURIComponent(SITE_URL)}" target="_blank" style="width:34px;height:34px;border-radius:50%;background:#0088cc;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,136,204,0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-telegram-plane"></i></a>
                 <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(SITE_URL)}" target="_blank" style="width:34px;height:34px;border-radius:50%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-twitter"></i></a>
