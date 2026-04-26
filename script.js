@@ -34,29 +34,26 @@ let autoDetectEnabled = true;
 document.addEventListener('DOMContentLoaded', () => {
     loadDownloadHistory();
     initSidebar();
-    // Start clipboard checking
     startClipboardWatcher();
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') checkClipboardOnce();
     });
 });
 
-// ============ IMPROVED AUTO-PASTE & DETECTION ============
+// ============ AUTO-PASTE & DETECTION ============
 
 let lastClipboardText = '';
 let clipboardCheckInterval = null;
 
 function startClipboardWatcher() {
-    // Check clipboard every 2 seconds
     if (clipboardCheckInterval) clearInterval(clipboardCheckInterval);
     clipboardCheckInterval = setInterval(checkClipboardOnce, 2000);
-    // Initial check
     checkClipboardOnce();
 }
 
 async function checkClipboardOnce() {
     if (!autoDetectEnabled) return;
-    if (document.activeElement === urlInput) return; // Don't steal focus
+    if (document.activeElement === urlInput) return;
     
     try {
         const text = await navigator.clipboard.readText();
@@ -66,12 +63,11 @@ async function checkClipboardOnce() {
         
         if (isValidUrl(text)) {
             const lastUrl = sessionStorage.getItem('lastAutoDetectUrl');
-            if (lastUrl === text) return; // Already processed this URL
+            if (lastUrl === text) return;
             
             sessionStorage.setItem('lastAutoDetectUrl', text);
             urlInput.value = text;
             
-            // Visual feedback on input
             urlInput.style.background = '#e6f5ee';
             urlInput.style.borderColor = '#009959';
             setTimeout(() => { 
@@ -82,7 +78,6 @@ async function checkClipboardOnce() {
             const platform = detectPlatform(text);
             showAutoDetectNotification(platform);
             
-            // Auto-submit after short delay
             setTimeout(() => {
                 if (urlInput.value === text) {
                     processPreview(text);
@@ -94,7 +89,6 @@ async function checkClipboardOnce() {
     }
 }
 
-// Focus event - manual paste support
 urlInput.addEventListener('focus', async () => {
     try {
         const text = await navigator.clipboard.readText();
@@ -108,7 +102,6 @@ urlInput.addEventListener('focus', async () => {
     }
 });
 
-// Paste event - handle manual paste
 urlInput.addEventListener('paste', (e) => {
     setTimeout(() => {
         const pastedText = urlInput.value.trim();
@@ -189,7 +182,6 @@ function downloadVideo(url, quality) {
 // ============ PREVIEW PROCESSING ============
 
 async function processPreview(url) {
-    // Show spinner on button
     dlBtnIcon.style.display = "none";
     btnLoader.style.display = "block";
     btnLoader.innerHTML = `<span class="btn-spinner"></span>`;
@@ -270,117 +262,115 @@ async function processPreview(url) {
             return `
                 <button onclick="downloadVideo('${f.url}', '${f.quality}')"
                    style="display:flex;align-items:center;justify-content:space-between;width:100%;
-                   padding:${isBest ? '14px 16px' : '12px 14px'};margin-bottom:8px;
+                   padding:${isBest ? '13px 14px' : '11px 12px'};margin-bottom:7px;
                    background:${isBest ? 'linear-gradient(135deg, #FEC601, #e6b300)' : config.gradient};
                    color:${isBest ? '#002611' : '#fff'};
-                   border:none;border-radius:10px;font-size:${isBest ? '14px' : '12px'};
+                   border:none;border-radius:10px;font-size:${isBest ? '13px' : '11px'};
                    font-weight:${isBest ? '700' : '600'};cursor:pointer;
                    transition:all 0.2s ease;
                    border-left:4px solid ${isBest ? '#002611' : config.borderColor};
-                   box-shadow:${isBest ? '0 4px 15px rgba(254,198,1,0.3)' : '0 2px 8px rgba(0,0,0,0.1)'};
-                   position:relative;overflow:hidden;"
+                   box-shadow:${isBest ? '0 4px 15px rgba(254,198,1,0.3)' : '0 2px 8px rgba(0,0,0,0.1)'};"
                    onmouseover="this.style.transform='translateX(4px)';this.style.boxShadow='${isBest ? '0 6px 20px rgba(254,198,1,0.5)' : '0 4px 15px rgba(0,0,0,0.2)'}'"
                    onmouseout="this.style.transform='translateX(0)';this.style.boxShadow='${isBest ? '0 4px 15px rgba(254,198,1,0.3)' : '0 2px 8px rgba(0,0,0,0.1)'}'">
-                   <span style="display:flex;align-items:center;gap:8px;">
-                      ${isBest ? '<span style="background:#002611;color:#FEC601;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:0.5px;">⭐ BEST</span>' : ''}
-                      <i class="fas fa-download" style="font-size:${isBest ? '15px' : '13px'};"></i>
+                   <span style="display:flex;align-items:center;gap:6px;">
+                      ${isBest ? '<span style="background:#002611;color:#FEC601;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:0.5px;">⭐ BEST</span>' : ''}
+                      <i class="fas fa-download" style="font-size:${isBest ? '14px' : '12px'};"></i>
                       <span>${f.quality} <span style="opacity:0.8;font-weight:400;">${config.label}</span></span>
                    </span>
-                   ${f.filesize_approx ? `<span style="font-size:11px;opacity:0.8;">${(f.filesize_approx / 1024 / 1024).toFixed(1)} MB</span>` : '<span style="font-size:11px;opacity:0.8;"><i class="fas fa-arrow-right"></i></span>'}
+                   ${f.filesize_approx ? `<span style="font-size:10px;opacity:0.8;">${(f.filesize_approx / 1024 / 1024).toFixed(1)} MB</span>` : '<span style="font-size:10px;opacity:0.8;"><i class="fas fa-arrow-right"></i></span>'}
                 </button>
             `;
         }).join('');
 
-        // Build preview with THUMBNAIL instead of video player (no sound issue)
+        // THUMBNAIL ON LEFT, BUTTONS ON RIGHT layout
         preview.innerHTML = `
             <div style="background:#fff;padding:0;border-radius:16px;border:1px solid #d4e6da;box-shadow:0 4px 20px rgba(0,38,17,0.08);overflow:hidden;">
                 
-                <!-- Thumbnail Section with Green Play Button -->
-                <div style="position:relative;background:#000;min-height:200px;display:flex;align-items:center;justify-content:center;
-                    ${thumbnail ? `background-image:url('${thumbnail}');background-size:cover;background-position:center;` : 'background:linear-gradient(135deg, #001a0d, #00331a);'}">
-                    ${!thumbnail ? `<img src="${ICON_URL}" style="width:60px;height:60px;border-radius:12px;opacity:0.8;" alt="">` : ''}
+                <!-- Main Layout: Thumbnail Left | Content Right -->
+                <div style="display:flex;gap:0;flex-wrap:wrap;">
                     
-                    <!-- Green Play Button Overlay -->
-                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-                        width:70px;height:70px;background:rgba(0,153,89,0.9);border-radius:50%;
-                        display:flex;align-items:center;justify-content:center;
-                        border:3px solid #fff;box-shadow:0 4px 20px rgba(0,153,89,0.5);
-                        cursor:pointer;transition:transform 0.3s ease;"
-                        onmouseover="this.style.transform='translate(-50%,-50%) scale(1.1)'"
-                        onmouseout="this.style.transform='translate(-50%,-50%) scale(1)'">
-                        <div style="width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:5px;"></div>
-                    </div>
-                    
-                    <!-- Platform Badge -->
-                    <span style="position:absolute;top:12px;left:12px;background:${platformColor};color:#fff;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;">
-                        <i class="fab ${platformIcon}"></i> ${platformName}
-                    </span>
-                    
-                    <!-- Duration Badge -->
-                    ${data.duration ? `<span style="position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.7);color:#fff;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:600;">${Math.floor(data.duration/60)}:${(data.duration%60).toString().padStart(2,'0')}</span>` : ''}
-                    
-                    <!-- Galmee Watermark -->
-                    <div style="position:absolute;bottom:12px;left:12px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.6);padding:4px 10px;border-radius:20px;">
-                        <img src="${ICON_URL}" style="width:16px;height:16px;border-radius:4px;" alt="">
-                        <span style="font-size:9px;color:#fff;font-weight:600;">GALMEE</span>
-                    </div>
-                </div>
-                
-                <!-- Content Section -->
-                <div style="padding:16px;">
-                    <!-- Title & Uploader -->
-                    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;">
-                        <img src="${ICON_URL}" style="width:32px;height:32px;border-radius:8px;flex-shrink:0;" alt="Galmee">
-                        <div style="flex:1;">
-                            <h4 style="font-size:15px;font-weight:700;color:#002611;margin-bottom:2px;line-height:1.4;">${title}</h4>
-                            ${uploader ? `
-                            <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
-                                <i class="fas fa-user-circle" style="color:#009959;font-size:14px;"></i>
-                                <span style="font-size:11px;color:#4a6b56;font-weight:500;">${uploader}</span>
-                            </div>` : ''}
+                    <!-- LEFT: Thumbnail (280px width, full height on mobile) -->
+                    <div style="position:relative;width:280px;min-height:280px;flex-shrink:0;
+                        ${thumbnail ? `background-image:url('${thumbnail}');background-size:cover;background-position:center;` : 'background:linear-gradient(135deg, #001a0d, #00331a);display:flex;align-items:center;justify-content:center;'}">
+                        
+                        ${!thumbnail ? `<img src="${ICON_URL}" style="width:60px;height:60px;border-radius:12px;opacity:0.8;" alt="">` : ''}
+                        
+                        <!-- Green Play Button -->
+                        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+                            width:60px;height:60px;background:rgba(0,153,89,0.9);border-radius:50%;
+                            display:flex;align-items:center;justify-content:center;
+                            border:3px solid #fff;box-shadow:0 4px 20px rgba(0,153,89,0.5);">
+                            <div style="width:0;height:0;border-left:20px solid #fff;border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:5px;"></div>
+                        </div>
+                        
+                        <!-- Platform Badge -->
+                        <span style="position:absolute;top:10px;left:10px;background:${platformColor};color:#fff;padding:4px 10px;border-radius:20px;font-size:9px;font-weight:600;">
+                            <i class="fab ${platformIcon}"></i> ${platformName}
+                        </span>
+                        
+                        <!-- Duration Badge -->
+                        ${data.duration ? `<span style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:3px 8px;border-radius:6px;font-size:9px;font-weight:600;">${Math.floor(data.duration/60)}:${(data.duration%60).toString().padStart(2,'0')}</span>` : ''}
+                        
+                        <!-- GALMEE Watermark - Beautiful styled -->
+                        <div style="position:absolute;bottom:10px;left:10px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.65);padding:5px 10px;border-radius:20px;backdrop-filter:blur(4px);">
+                            <span style="font-size:11px;font-weight:800;color:#009959;letter-spacing:0.5px;text-shadow:0 1px 2px rgba(0,0,0,0.3);">GALMEE</span>
                         </div>
                     </div>
                     
-                    <!-- Download Buttons -->
-                    <div style="margin-bottom:12px;">
-                        <p style="font-size:12px;font-weight:700;color:#002611;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
-                            <i class="fas fa-arrow-down" style="color:#009959;"></i> Available Downloads:
-                        </p>
-                        ${qualityButtons}
-                    </div>
-                    
-                    <!-- Action Buttons -->
-                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                        <button onclick="resetDownloader()" 
-                            style="flex:1;min-width:120px;padding:10px 14px;border:2px solid #d4e6da;
-                            background:#f5f8f6;color:#002611;border-radius:24px;font-size:12px;
-                            font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
-                            transition:all 0.2s ease;"
-                            onmouseover="this.style.background='#e6f5ee';this.style.borderColor='#009959'"
-                            onmouseout="this.style.background='#f5f8f6';this.style.borderColor='#d4e6da'">
-                            <i class="fas fa-redo"></i> New Video
-                        </button>
-                        <a href="page/purchase.html" 
-                            style="flex:1;min-width:120px;padding:10px 14px;border:none;
-                            background:linear-gradient(135deg,#FEC601,#e6b300);color:#002611;border-radius:24px;
-                            font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
-                            text-decoration:none;transition:all 0.2s ease;"
-                            onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(254,198,1,0.4)'"
-                            onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'"
-                            id="credit-link">
-                            <i class="fas fa-crown"></i> Buy this Tool
-                        </a>
+                    <!-- RIGHT: Content Area -->
+                    <div style="flex:1;min-width:240px;padding:16px;">
+                        
+                        <!-- Galmee Icon + Title -->
+                        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
+                            <img src="${ICON_URL}" style="width:28px;height:28px;border-radius:7px;flex-shrink:0;margin-top:2px;" alt="Galmee">
+                            <div style="flex:1;">
+                                <h4 style="font-size:14px;font-weight:700;color:#002611;margin-bottom:2px;line-height:1.3;">${title}</h4>
+                                ${uploader ? `
+                                <p style="font-size:11px;color:#4a6b56;font-weight:500;margin:0;">${uploader}</p>` : ''}
+                            </div>
+                        </div>
+                        
+                        <!-- Download Buttons -->
+                        <div style="margin-bottom:10px;">
+                            <p style="font-size:11px;font-weight:700;color:#002611;margin-bottom:6px;display:flex;align-items:center;gap:5px;">
+                                <i class="fas fa-arrow-down" style="color:#009959;font-size:10px;"></i> Downloads:
+                            </p>
+                            ${qualityButtons}
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <button onclick="resetDownloader()" 
+                                style="flex:1;min-width:100px;padding:9px 12px;border:2px solid #d4e6da;
+                                background:#f5f8f6;color:#002611;border-radius:20px;font-size:11px;
+                                font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;
+                                transition:all 0.2s ease;"
+                                onmouseover="this.style.background='#e6f5ee';this.style.borderColor='#009959'"
+                                onmouseout="this.style.background='#f5f8f6';this.style.borderColor='#d4e6da'">
+                                <i class="fas fa-redo" style="font-size:10px;"></i> New Video
+                            </button>
+                            <a href="page/purchase.html" 
+                                style="flex:1;min-width:100px;padding:9px 12px;border:none;
+                                background:linear-gradient(135deg,#FEC601,#e6b300);color:#002611;border-radius:20px;
+                                font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;
+                                text-decoration:none;transition:all 0.2s ease;"
+                                onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(254,198,1,0.4)'"
+                                onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'"
+                                id="credit-link">
+                                <i class="fas fa-crown" style="font-size:10px;"></i> Buy this Tool
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <!-- Share Buttons -->
-            <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:0 4px;flex-wrap:wrap;">
-                <span style="font-size:11px;font-weight:600;color:#4a6b56;">Share:</span>
-                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}" target="_blank" style="width:32px;height:32px;border-radius:50%;background:#1877f2;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://api.whatsapp.com/send?text=${encodeURIComponent('Download FB & IG videos free: ' + SITE_URL)}" target="_blank" style="width:32px;height:32px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-whatsapp"></i></a>
-                <a href="https://t.me/share/url?url=${encodeURIComponent(SITE_URL)}" target="_blank" style="width:32px;height:32px;border-radius:50%;background:#0088cc;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-telegram-plane"></i></a>
-                <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(SITE_URL)}" target="_blank" style="width:32px;height:32px;border-radius:50%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-twitter"></i></a>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:0 4px;flex-wrap:wrap;">
+                <span style="font-size:10px;font-weight:600;color:#4a6b56;">Share:</span>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}" target="_blank" style="width:30px;height:30px;border-radius:50%;background:#1877f2;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://api.whatsapp.com/send?text=${encodeURIComponent('Download FB & IG videos free: ' + SITE_URL)}" target="_blank" style="width:30px;height:30px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://t.me/share/url?url=${encodeURIComponent(SITE_URL)}" target="_blank" style="width:30px;height:30px;border-radius:50%;background:#0088cc;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-telegram-plane"></i></a>
+                <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(SITE_URL)}" target="_blank" style="width:30px;height:30px;border-radius:50%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-twitter"></i></a>
             </div>
         `;
 
@@ -403,17 +393,15 @@ async function processPreview(url) {
     }
 }
 
-// Form submit handler
 dlForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const url = urlInput.value.trim();
     if (!url) return alert("Please paste a Facebook or Instagram link");
     if (!isValidUrl(url)) return alert("Please enter a valid Facebook or Instagram URL");
-    lastClipboardText = url; // Prevent re-detection
+    lastClipboardText = url;
     await processPreview(url);
 });
 
-// Reset
 function resetDownloader() {
     preview.innerHTML = "";
     urlInput.value = "";
@@ -440,25 +428,27 @@ async function loadDownloadHistory() {
                 const platformIcon = platform === 'instagram' ? 'fa-instagram' : 'fa-facebook';
                 const platformColor = platform === 'instagram' ? '#E4405F' : '#1877f2';
                 return `
-                <div class="history-item" style="cursor:pointer;border-radius:10px;overflow:hidden;background:#fff;border:1px solid #d4e6da;transition:all 0.2s ease;"
+                <div class="history-item" style="cursor:pointer;border-radius:12px;overflow:hidden;background:#fff;border:1px solid #d4e6da;transition:all 0.2s ease;"
                      onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.1)'"
                      onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
-                    <div class="history-thumb-wrapper" style="position:relative;overflow:hidden;aspect-ratio:16/10;background:#000;">
+                    <div class="history-thumb-wrapper" style="position:relative;width:100%;height:160px;overflow:hidden;background:#000;">
                         <img src="${item.thumbnail || ICON_URL}" alt="${item.title || 'Video'}" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
                         <!-- Green Play Button -->
                         <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-                            width:40px;height:40px;background:rgba(0,153,89,0.9);border-radius:50%;
+                            width:38px;height:38px;background:rgba(0,153,89,0.9);border-radius:50%;
                             display:flex;align-items:center;justify-content:center;
                             border:2px solid #fff;box-shadow:0 2px 10px rgba(0,153,89,0.4);">
-                            <div style="width:0;height:0;border-left:12px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:3px;"></div>
+                            <div style="width:0;height:0;border-left:11px solid #fff;border-top:7px solid transparent;border-bottom:7px solid transparent;margin-left:3px;"></div>
                         </div>
                         <!-- Platform Badge -->
-                        <span style="position:absolute;top:6px;left:6px;background:${platformColor};color:#fff;padding:2px 8px;border-radius:10px;font-size:8px;font-weight:600;">
+                        <span style="position:absolute;top:6px;left:6px;background:${platformColor};color:#fff;padding:2px 7px;border-radius:8px;font-size:8px;font-weight:600;">
                             <i class="fab ${platformIcon}"></i>
                         </span>
+                        <!-- GALMEE Watermark -->
+                        <span style="position:absolute;bottom:6px;left:6px;font-size:9px;font-weight:800;color:#009959;background:rgba(0,0,0,0.6);padding:2px 7px;border-radius:10px;letter-spacing:0.5px;">GALMEE</span>
                     </div>
                     <div class="history-info" style="padding:8px 10px;">
-                        <p class="history-title" style="font-size:11px;font-weight:600;color:#002611;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.title ? item.title.substring(0, 25) : 'Video'}</p>
+                        <p class="history-title" style="font-size:11px;font-weight:600;color:#002611;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.title ? item.title.substring(0, 25) : 'Video'}</p>
                         <span class="history-quality" style="font-size:9px;color:#fff;background:#009959;padding:2px 8px;border-radius:8px;font-weight:600;">${item.quality || 'HD'}</span>
                     </div>
                 </div>`;
