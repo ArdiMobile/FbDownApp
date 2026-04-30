@@ -1,29 +1,26 @@
 {
   "builds": [
-    { 
-      "src": "api/index.py", 
-      "use": "@vercel/python",
-      "config": {
-        "pythonVersion": "3.12",
-        "installCommand": "pip install --no-cache-dir -r requirements.txt",
-        "maxDuration": 30
-      }
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
     },
-    { 
-      "src": "api/history.py", 
-      "use": "@vercel/python",
-      "config": {
-        "pythonVersion": "3.12",
-        "installCommand": "pip install --no-cache-dir -r requirements.txt",
-        "maxDuration": 10
-      }
+    {
+      "src": "**/*.html",
+      "use": "@vercel/static"
     },
-    { "src": "**/*.html", "use": "@vercel/static" },
-    { "src": "**/*.js", "use": "@vercel/static" },
-    { "src": "**/*.css", "use": "@vercel/static" }
+    {
+      "src": "**/*.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "**/*.css",
+      "use": "@vercel/static"
+    }
   ],
   "rewrites": [
-    { "source": "/api/info", "destination": "/api/index.py" },
-    { "source": "/api/history", "destination": "/api/history.py" }
+    {
+      "source": "/api/info",
+      "destination": "/api/index.py"
+    }
   ]
 }
