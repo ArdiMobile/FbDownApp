@@ -38,30 +38,24 @@ class handler(BaseHTTPRequestHandler):
             if not video_url.startswith("http"):
                 video_url = "https://" + video_url
 
-            # Detect platform
+            # Detect platform for format strategy
             is_instagram = "instagram.com" in video_url or "instagr.am" in video_url
-            
+
+            # Format selection based on platform
             if is_instagram:
-                # Instagram: Try multiple format strategies
-                ydl_opts = {
-                    'quiet': True,
-                    'noplaylist': True,
-                    'no_warnings': True,
-                    'extract_flat': False,
-                    # Try all possible format combinations for Instagram
-                    'format': 'bestvideo+bestaudio/bestvideo+bestaudio/best',
-                    'merge_output_format': 'mp4',
-                }
+                format_str = 'bestvideo+bestaudio/best'
             else:
-                # Facebook: Standard merged format
-                ydl_opts = {
-                    'quiet': True,
-                    'noplaylist': True,
-                    'no_warnings': True,
-                    'extract_flat': False,
-                    'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-                    'merge_output_format': 'mp4',
-                }
+                format_str = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
+
+            ydl_opts = {
+                'quiet': True,
+                'noplaylist': True,
+                'no_warnings': True,
+                'extract_flat': False,
+                'force_generic_extractor': False,
+                'format': format_str,
+                'merge_output_format': 'mp4',
+            }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(video_url, download=False)
@@ -70,70 +64,96 @@ class handler(BaseHTTPRequestHandler):
                     raise Exception("Failed to extract video information")
 
                 formats = []
+                seen_urls = set()
+
+                # Check if we got a merged format (video+audio)
                 requested_formats = info.get("requested_formats", [])
-                
-                # Check if we got merged formats (video+audio combined)
-                if requested_formats and len(requested_formats) > 1:
-                    # Success! We have a merged video+audio format
+                has_merged = len(requested_formats) > 1
+
+                # If merged format exists, add it as the primary option
+                if has_merged:
                     merged_url = info.get("url")
                     if merged_url:
-                        best_height = max([f.get("height", 0) or 0 for f in requested_formats])
+                        # Get the best height from the merged formats
+                        heights = [f.get("height", 0) or 0 for f in requested_formats]
+                        best_height = max(heights) if heights else 0
+                        total_size = sum([f.get("filesize", 0) or f.get("filesize_approx", 0) or 0 for f in requested_formats])
+                        
                         formats.append({
-                            "quality": f"{best_height}p" if best_height else "HD",
-                            "height": best_height,
+                            "quality": f"{best_height}p" if best_height > 0 else "HD",
+                            "height": best_height if best_height > 0 else 1080,
                             "url": merged_url,
                             "has_audio": True,
-                            "format_note": "Merged (Video + Audio)",
-                            "filesize_approx": sum([f.get("filesize", 0) or f.get("filesize_approx", 0) or 0 for f in requested_formats]),
+                            "format_note": "Video + Audio",
+                            "filesize": total_size,
+                            "filesize_approx": total_size,
                         })
+                        seen_urls.add(merged_url)
 
-                # Also add individual formats as fallback
+                # Add individual formats
                 for f in info.get("formats", []):
+                    url = f.get("url", "")
+                    height = f.get("height")
                     vcodec = f.get("vcodec", "none")
                     acodec = f.get("acodec", "none")
                     has_video = vcodec and vcodec != "none"
                     has_audio = acodec and acodec != "none"
-                    height = f.get("height")
-                    url = f.get("url", "")
                     
-                    if url and height:
-                        # Skip if already added as merged
-                        if not any(existing["url"] == url for existing in formats):
-                            formats.append({
-                                "quality": f"{height}p",
-                                "height": height,
-                                "url": url,
-                                "has_video": has_video,
-                                "has_audio": has_audio,
-                                "format_id": f.get("format_id", ""),
-                                "ext": f.get("ext", ""),
-                                "filesize": f.get("filesize", 0),
-                                "filesize_approx": f.get("filesize_approx", 0),
-                                "format_note": f.get("format_note", ""),
-                            })
+                    if url and height and url not in seen_urls:
+                        seen_urls.add(url)
+                        formats.append({
+                            "quality": f"{height}p",
+                            "height": height,
+                            "url": url,
+                            "has_video": has_video,
+                            "has_audio": has_audio,
+                            "format_id": f.get("format_id", ""),
+                            "ext": f.get("ext", ""),
+                            "filesize": f.get("filesize", 0),
+                            "filesize_approx": f.get("filesize_approx", 0),
+                            "format_note": f.get("format_note", ""),
+                            "vcodec": vcodec,
+                            "acodec": acodec,
+                        })
 
                 if not formats:
-                    raise Exception("No downloadable formats found")
+                    raise Exception("No downloadable formats found. The video may be private or deleted.")
 
-                # Sort: merged formats first, then by height
-                formats = sorted(formats, key=lambda x: (
-                    not x.get("has_audio", False),  # Audio formats first
-                    -(x.get("height", 0) or 0)      # Highest quality first
+                # Sort: formats with audio first, then by height (highest first)
+                formats.sort(key=lambda x: (
+                    not x.get("has_audio", False),
+                    -(x.get("height", 0) or 0)
                 ))
 
-                # Remove duplicates by URL
-                seen_urls = set()
+                # Remove duplicate qualities (keep the one with audio if available)
+                seen_qualities = {}
                 unique = []
                 for f in formats:
-                    if f["url"] not in seen_urls:
-                        seen_urls.add(f["url"])
-                        unique.append({
-                            "quality": f["quality"],
-                            "url": f["url"],
-                            "has_audio": f.get("has_audio", False),
-                            "format_note": f.get("format_note", ""),
-                            "filesize_approx": f.get("filesize_approx", 0) or f.get("filesize", 0),
-                        })
+                    quality = f["quality"]
+                    if quality not in seen_qualities:
+                        seen_qualities[quality] = f
+                        unique.append(f)
+                    else:
+                        # If this one has audio and the existing one doesn't, replace it
+                        existing = seen_qualities[quality]
+                        if f.get("has_audio") and not existing.get("has_audio"):
+                            # Replace the existing one
+                            for i, item in enumerate(unique):
+                                if item["quality"] == quality:
+                                    unique[i] = f
+                                    seen_qualities[quality] = f
+                                    break
+
+                # Build final response formats
+                response_formats = []
+                for f in unique[:6]:
+                    response_formats.append({
+                        "quality": f["quality"],
+                        "url": f["url"],
+                        "has_audio": f.get("has_audio", False),
+                        "format_note": f.get("format_note", ""),
+                        "filesize_approx": f.get("filesize_approx", 0) or f.get("filesize", 0),
+                    })
 
                 response_data = {
                     "status": "success",
@@ -146,7 +166,7 @@ class handler(BaseHTTPRequestHandler):
                     "like_count": info.get("like_count", 0),
                     "description": info.get("description", "") or "",
                     "tags": info.get("tags", []) or [],
-                    "formats": unique[:6]
+                    "formats": response_formats
                 }
 
         except Exception as e:
