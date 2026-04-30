@@ -29,6 +29,7 @@ class handler(BaseHTTPRequestHandler):
             return
 
         try:
+            # Normalize FB URL
             if "facebook.com" in url and "m.facebook.com" not in url:
                 url = url.replace("www.facebook.com", "m.facebook.com")
                 url = url.replace("web.facebook.com", "m.facebook.com")
@@ -45,26 +46,44 @@ class handler(BaseHTTPRequestHandler):
                 formats = []
                 seen = set()
 
+                # ✅ STEP 1: Try progressive formats (BEST - already has audio)
                 for f in info.get("formats", []):
-                    has_video = f.get("vcodec") != "none"
-                    has_audio = f.get("acodec") != "none"
-                    height = f.get("height")
-
-                    if has_video and has_audio and height and f.get("url"):
-                        quality = f"{height}p"
-
-                        if quality not in seen:
-                            seen.add(quality)
+                    if (
+                        f.get("vcodec") != "none" and
+                        f.get("acodec") != "none" and
+                        f.get("ext") == "mp4" and
+                        f.get("height") and
+                        f.get("url")
+                    ):
+                        q = f"{f.get('height')}p"
+                        if q not in seen:
+                            seen.add(q)
                             formats.append({
-                                "quality": quality,
+                                "quality": q,
                                 "url": f.get("url")
                             })
 
-                # Sort highest quality first
-                formats = sorted(formats, key=lambda x: int(x["quality"].replace("p", "")), reverse=True)
+                # ✅ STEP 2: If none found → fallback to ANY playable format
+                if not formats:
+                    for f in info.get("formats", []):
+                        if f.get("vcodec") != "none" and f.get("url") and f.get("height"):
+                            q = f"{f.get('height')}p"
+                            if q not in seen:
+                                seen.add(q)
+                                formats.append({
+                                    "quality": q,
+                                    "url": f.get("url")
+                                })
+
+                # Sort highest first
+                formats = sorted(
+                    formats,
+                    key=lambda x: int(x["quality"].replace("p", "")),
+                    reverse=True
+                )
 
                 if not formats:
-                    raise Exception("No formats with audio found")
+                    raise Exception("No playable formats found")
 
                 response = {
                     "status": "success",
