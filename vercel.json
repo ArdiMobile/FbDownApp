@@ -18,24 +18,12 @@
         "maxDuration": 10
       }
     },
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "script.js", "use": "@vercel/static" },
-    { "src": "blog.html", "use": "@vercel/static" },
-    { "src": "blog/**/*.html", "use": "@vercel/static" },
-    { "src": "page/**/*.html", "use": "@vercel/static" },
-    { "src": "sitemap.xml", "use": "@vercel/static" },
-    { "src": "robots.txt", "use": "@vercel/static" },
-    { "src": "favicon.ico", "use": "@vercel/static" }
+    { "src": "**/*.html", "use": "@vercel/static" },
+    { "src": "**/*.js", "use": "@vercel/static" },
+    { "src": "**/*.css", "use": "@vercel/static" }
   ],
   "rewrites": [
     { "source": "/api/info", "destination": "/api/index.py" },
     { "source": "/api/history", "destination": "/api/history.py" }
-  ],
-  "routes": [
-    { "src": "/blog/(.*)", "dest": "/blog/$1" },
-    { "src": "/page/(.*)", "dest": "/page/$1" },
-    { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
-    { "src": "/robots.txt", "dest": "/robots.txt" },
-    { "src": "/(.*)", "dest": "/$1" }
   ]
 }
