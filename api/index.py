@@ -38,14 +38,15 @@ class handler(BaseHTTPRequestHandler):
                 if not facebook_url.startswith("http"):
                     facebook_url = "https://" + facebook_url
 
-            # IMPROVED OPTIONS - Better chance of getting audio
+            # CRITICAL FIX: Merge best video + best audio for sound
             ydl_opts = {
                 'quiet': True,
                 'noplaylist': True,
                 'no_warnings': True,
                 'extract_flat': False,
                 'force_generic_extractor': False,
-                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',  # Prioritize combined MP4
+                # This is the key fix - merge video+audio streams
+                'format': 'bestvideo+bestaudio/best',
                 'merge_output_format': 'mp4',
             }
 
@@ -55,75 +56,63 @@ class handler(BaseHTTPRequestHandler):
                 if not info:
                     raise Exception("Failed to extract video information")
 
-                formats_list = []
+                formats = []
                 
+                # Get formats that have BOTH video AND audio (merged)
                 for f in info.get("formats", []):
-                    if not f.get("url"):
-                        continue
-                        
-                    vcodec = f.get("vcodec", "none")
-                    acodec = f.get("acodec", "none")
-                    height = f.get("height") or 0
+                    # Check if format has video codec and resolution
+                    has_video = f.get("vcodec") and f.get("vcodec") != "none" and f.get("height")
+                    # Check if format has audio
+                    has_audio = f.get("acodec") and f.get("acodec") != "none"
                     
-                    has_video = vcodec != "none" and height > 0
-                    has_audio = acodec != "none"
-                    
-                    if has_video:
-                        formats_list.append({
-                            "quality": f"{height}p",
-                            "height": height,
+                    if has_video and f.get("url"):
+                        formats.append({
+                            "quality": f"{f.get('height')}p",
+                            "height": f.get("height"),
                             "url": f.get("url"),
                             "has_audio": has_audio,
-                            "format_id": f.get("format_id", ""),
-                            "ext": f.get("ext", "")
+                            "format_id": f.get("format_id", "")
                         })
 
-                if not formats_list:
+                if not formats:
                     raise Exception("No downloadable formats found")
 
-                # Sort by height descending
-                formats_list = sorted(formats_list, key=lambda x: x["height"], reverse=True)
+                # Sort by height (highest first)
+                formats = sorted(formats, key=lambda x: x["height"], reverse=True)
 
-                # Remove duplicates, prefer formats WITH audio
+                # Remove duplicates, prefer formats with audio
                 seen = set()
                 unique = []
-                for f in formats_list:
-                    quality = f["quality"]
-                    if quality not in seen:
-                        seen.add(quality)
-                        label = quality
-                        if f["has_audio"]:
-                            label += " 🔊"
-                        else:
-                            label += " 🔇"
+                for f in formats:
+                    if f["quality"] not in seen:
+                        seen.add(f["quality"])
                         unique.append({
-                            "quality": label,
-                            "url": f["url"],
-                            "has_audio": f["has_audio"]
+                            "quality": f["quality"],
+                            "url": f["url"]
                         })
 
-                # Fallback if no audio formats found
-                if not any(f.get("has_audio") for f in unique):
+                # If no formats have audio, try getting best format with audio
+                if not any(f.get("has_audio") for f in formats):
+                    # Fallback: get any format that has audio
                     for f in info.get("formats", []):
-                        if (f.get("acodec") and f.get("acodec") != "none" and 
-                            f.get("height") and f.get("url")):
-                            quality = f"{f.get('height')}p 🔊"
+                        if f.get("acodec") and f.get("acodec") != "none" and f.get("url") and f.get("height"):
+                            # Add this audio-capable format
+                            quality = f"{f.get('height')}p"
                             if quality not in seen:
                                 seen.add(quality)
                                 unique.append({
                                     "quality": quality,
-                                    "url": f.get("url"),
-                                    "has_audio": True
+                                    "url": f.get("url")
                                 })
 
                 response_data = {
                     "status": "success",
-                    "title": info.get("title", "Facebook/Instagram Video"),
+                    "title": info.get("title", "Facebook Video"),
                     "thumbnail": info.get("thumbnail", ""),
                     "uploader": info.get("uploader", ""),
                     "uploader_url": info.get("uploader_url", ""),
                     "duration": info.get("duration", 0),
-                    "formats": unique[:6]   # Up to 6 qualities
+                    "formats": unique[:5]
                 }
 
         except Exception as e:
@@ -133,7 +122,7 @@ class handler(BaseHTTPRequestHandler):
             
             response_data = {
                 "status": "error", 
-                "message": f"Failed to get video: {error_msg[:150]}"
+                "message": f"Failed to get video: {error_msg[:100]}"
             }
 
         self.wfile.write(json.dumps(response_data).encode())
