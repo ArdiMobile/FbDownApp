@@ -99,12 +99,31 @@ async function processPreview(url) {
             '360p':{gradient:'linear-gradient(145deg,#95a5a6,#7f8c8d)',emoji:'📶'}
         };
 
-        let qualityButtons = data.formats.map((f, index) => {
-            const q = qConfig[f.quality] || {gradient:'linear-gradient(145deg,#009959,#006b3d)',emoji:'📥'};
+                let qualityButtons = data.formats.map((f, index) => {
+            const qConfig = {
+                '2160p':{gradient:'linear-gradient(145deg,#8B0000,#5c0000)',emoji:'👑'},
+                '1080p':{gradient:'linear-gradient(145deg,#e67e22,#c0651f)',emoji:'🔥'},
+                '720p':{gradient:'linear-gradient(145deg,#8e44ad,#6c3483)',emoji:'✨'},
+                '480p':{gradient:'linear-gradient(145deg,#2ecc71,#27ae60)',emoji:'📱'},
+            };
+            
+            const baseQ = f.quality.replace(/ 🔊| 🔇/g, '').trim();
+            const q = qConfig[baseQ] || {gradient:'linear-gradient(145deg,#009959,#006b3d)',emoji:'📥'};
             const isBest = index === 0;
-            return `<button onclick="downloadVideo('${f.url}','${f.quality}')" style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:${isBest?'13px 14px':'11px 12px'};margin-bottom:6px;background:${q.gradient};color:#fff;border:none;border-radius:10px;font-size:${isBest?'13px':'11px'};font-weight:600;cursor:pointer;transition:all 0.2s;box-shadow:${isBest?'0 4px 15px rgba(0,0,0,0.25)':'0 2px 6px rgba(0,0,0,0.1)'};" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='${isBest?'0 4px 15px rgba(0,0,0,0.25)':'0 2px 6px rgba(0,0,0,0.1)'}'"><span style="display:flex;align-items:center;gap:6px;"><span style="font-size:15px;">${q.emoji}</span><span>${f.quality} ${isBest?'<span style="opacity:0.8;font-weight:400;font-size:11px;">· Best</span>':''}</span></span><span style="display:flex;align-items:center;gap:4px;">${f.filesize_approx?`<span style="font-size:9px;opacity:0.9;background:rgba(255,255,255,0.2);padding:2px 7px;border-radius:8px;">${(f.filesize_approx/1024/1024).toFixed(1)}MB</span>`:''}<i class="fas fa-download" style="font-size:12px;"></i></span></button>`;
+            
+            return `<button onclick="downloadVideo('${f.url}','${f.quality}')" 
+                style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:${isBest?'13px 14px':'11px 12px'};margin-bottom:6px;background:${q.gradient};color:#fff;border:none;border-radius:10px;font-size:${isBest?'13px':'12px'};font-weight:600;cursor:pointer;transition:all 0.2s;box-shadow:${isBest?'0 4px 15px rgba(0,0,0,0.25)':'0 2px 6px rgba(0,0,0,0.1)'};" 
+                onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3)'" 
+                onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='${isBest?'0 4px 15px rgba(0,0,0,0.25)':'0 2px 6px rgba(0,0,0,0.1)'}'">
+                <span style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-size:15px;">${q.emoji}</span>
+                    <span>${f.quality} ${isBest?'<span style="opacity:0.8;font-weight:400;font-size:11px;">· Best</span>':''}</span>
+                </span>
+                <span style="display:flex;align-items:center;gap:4px;">
+                    <i class="fas fa-download" style="font-size:13px;"></i>
+                </span>
+            </button>`;
         }).join('');
-
         preview.innerHTML = `
             <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.1);border:1px solid #f0f0f0;">
                 <div style="display:flex;flex-wrap:wrap;">
