@@ -4,6 +4,7 @@ from urllib.parse import parse_qs, urlparse
 import traceback, sys
 import yt_dlp
 
+
 class handler(BaseHTTPRequestHandler):
 
     def _set_headers(self):
@@ -14,15 +15,16 @@ class handler(BaseHTTPRequestHandler):
 
     def do_OPTIONS(self):
         self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin','*')
-        self.send_header('Access-Control-Allow-Methods','GET,OPTIONS')
-        self.send_header('Access-Control-Allow-Headers','Content-Type')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET,OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
 
     def do_GET(self):
         self._set_headers()
 
         try:
+            # ✅ Get URL
             q = parse_qs(urlparse(self.path).query)
             url = q.get('url', [None])[0]
 
@@ -36,7 +38,7 @@ class handler(BaseHTTPRequestHandler):
             if not url.startswith('http'):
                 url = 'https://' + url
 
-            # ✅ FORCE formats WITH audio (NO MERGE)
+            # ✅ ONLY formats with audio (NO merging)
             ydl_opts = {
                 'quiet': True,
                 'noplaylist': True,
@@ -54,13 +56,17 @@ class handler(BaseHTTPRequestHandler):
             formats = []
             seen = set()
 
+            # ✅ Extract ONLY valid formats
             for f in info.get('formats', []):
                 u = f.get('url')
                 h = f.get('height')
                 acodec = f.get('acodec', 'none')
 
-                # ✅ Only formats WITH audio
-                if not u or not h or acodec == 'none':
+                if not u or not h:
+                    continue
+
+                # ❗ VERY IMPORTANT: skip no-audio formats
+                if acodec == 'none':
                     continue
 
                 if u in seen:
@@ -76,18 +82,19 @@ class handler(BaseHTTPRequestHandler):
                     "filesize_approx": f.get('filesize') or f.get('filesize_approx')
                 })
 
-            # ✅ Sort best quality first
-            formats.sort(key=lambda x: -int(x['quality'].replace('p','')))
+            # ✅ Sort highest quality first
+            formats.sort(key=lambda x: -int(x['quality'].replace('p', '')))
 
-            # ✅ Remove duplicate qualities
+            # ✅ Remove duplicate quality labels
             unique = []
-            used_q = set()
+            used = set()
 
             for f in formats:
-                if f['quality'] not in used_q:
-                    used_q.add(f['quality'])
+                if f['quality'] not in used:
+                    used.add(f['quality'])
                     unique.append(f)
 
+            # ✅ Response
             response = {
                 "status": "success",
                 "title": info.get('title', 'Video'),
