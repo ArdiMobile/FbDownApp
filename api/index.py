@@ -24,7 +24,7 @@ class handler(BaseHTTPRequestHandler):
         self._set_headers()
 
         try:
-            # ✅ Get URL
+            # 🔹 Get URL
             q = parse_qs(urlparse(self.path).query)
             url = q.get('url', [None])[0]
 
@@ -38,13 +38,15 @@ class handler(BaseHTTPRequestHandler):
             if not url.startswith('http'):
                 url = 'https://' + url
 
-            # ✅ ONLY formats with audio (NO merging)
+            # 🔥 Optimized yt-dlp config (Vercel safe)
             ydl_opts = {
                 'quiet': True,
                 'noplaylist': True,
                 'no_warnings': True,
                 'format': 'best[ext=mp4][acodec!=none]',
-                'nocheckcertificate': True
+                'nocheckcertificate': True,
+                'socket_timeout': 10,
+                'retries': 2
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -56,7 +58,7 @@ class handler(BaseHTTPRequestHandler):
             formats = []
             seen = set()
 
-            # ✅ Extract ONLY valid formats
+            # ✅ Extract ONLY formats with audio
             for f in info.get('formats', []):
                 u = f.get('url')
                 h = f.get('height')
@@ -65,7 +67,7 @@ class handler(BaseHTTPRequestHandler):
                 if not u or not h:
                     continue
 
-                # ❗ VERY IMPORTANT: skip no-audio formats
+                # ❗ skip formats without audio
                 if acodec == 'none':
                     continue
 
@@ -82,10 +84,13 @@ class handler(BaseHTTPRequestHandler):
                     "filesize_approx": f.get('filesize') or f.get('filesize_approx')
                 })
 
-            # ✅ Sort highest quality first
-            formats.sort(key=lambda x: -int(x['quality'].replace('p', '')))
+            # ✅ Safe sorting (prevents crash)
+            formats.sort(
+                key=lambda x: -int(x['quality'].replace('p', ''))
+                if x['quality'].replace('p', '').isdigit() else 0
+            )
 
-            # ✅ Remove duplicate quality labels
+            # ✅ Remove duplicate qualities
             unique = []
             used = set()
 
@@ -94,14 +99,13 @@ class handler(BaseHTTPRequestHandler):
                     used.add(f['quality'])
                     unique.append(f)
 
-            # ✅ Response
             response = {
                 "status": "success",
                 "title": info.get('title', 'Video'),
                 "thumbnail": info.get('thumbnail', ''),
                 "uploader": info.get('uploader', ''),
                 "duration": info.get('duration', 0),
-                "formats": unique[:5]
+                "formats": unique   # 🔥 no limit (better UX)
             }
 
             self.wfile.write(json.dumps(response).encode())
