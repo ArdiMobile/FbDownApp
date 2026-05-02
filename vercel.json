@@ -1,6 +1,18 @@
 {
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index.py" },
-    { "src": "/(.*)", "dest": "/$1" }
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": {
+        "pythonVersion": "3.12",
+        "installCommand": "pip install --no-cache-dir -r requirements.txt",
+        "maxDuration": 30
+      }
+    },
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "script.js", "use": "@vercel/static" }
+  ],
+  "rewrites": [
+    { "source": "/api/info", "destination": "/api/index.py" }
   ]
 }
