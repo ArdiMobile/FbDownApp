@@ -286,6 +286,9 @@ function displayVideoInfo(data) {
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 
+    // Check if it's YouTube
+    const isYouTube = url.includes('youtube.com') || url.includes('youtu.be');
+    
     // Build quality options
     let qualityOptions = '';
     if (data.formats && data.formats.length > 0) {
@@ -296,29 +299,62 @@ function displayVideoInfo(data) {
         `).join('');
     }
 
-    document.getElementById("videoBox").innerHTML = `
-        <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
-
-            <!-- VIDEO PLAYER -->
-            <div style="border-radius:10px;overflow:hidden;position:relative;margin-bottom:15px;">
+    // Video player HTML based on platform
+    let playerHTML = '';
+    if (isYouTube) {
+        const videoId = getVideoId(url);
+        playerHTML = `
+            <div style="border-radius:10px;overflow:hidden;position:relative;margin-bottom:15px;background:#000;">
                 <iframe 
                     width="100%" 
                     height="250"
-                    src="https://www.youtube.com/embed/${getVideoId(url)}?autoplay=0"
+                    src="https://www.youtube.com/embed/${videoId}?origin=${window.location.origin}&showinfo=0&rel=0"
                     frameborder="0"
                     allowfullscreen
-                    allow="autoplay; encrypted-media"
-                    style="border-radius:10px;background:#000;">
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    style="border-radius:10px;">
                 </iframe>
             </div>
+        `;
+    } else if (data.thumbnail) {
+        // For Facebook/Instagram, show thumbnail with play button
+        playerHTML = `
+            <div style="border-radius:10px;overflow:hidden;position:relative;margin-bottom:15px;background:#000;cursor:pointer;" onclick="window.open('${url}', '_blank')">
+                <img src="${data.thumbnail}" alt="Video thumbnail" style="width:100%;height:250px;object-fit:cover;">
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;background:rgba(0,0,0,0.7);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-play" style="color:white;font-size:24px;"></i>
+                </div>
+                <div style="position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.7);color:white;padding:4px 8px;border-radius:4px;font-size:12px;">
+                    Click to view on ${data.uploader || 'platform'}
+                </div>
+            </div>
+        `;
+    } else {
+        playerHTML = `
+            <div style="border-radius:10px;overflow:hidden;position:relative;margin-bottom:15px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);height:250px;display:flex;align-items:center;justify-content:center;">
+                <div style="text-align:center;color:white;">
+                    <i class="fas fa-video" style="font-size:48px;margin-bottom:10px;"></i>
+                    <p>Video Preview Available</p>
+                </div>
+            </div>
+        `;
+    }
+
+    document.getElementById("videoBox").innerHTML = `
+        <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+
+            ${playerHTML}
 
             <!-- VIDEO INFO -->
             <div style="margin-bottom:20px;">
-                <h3 style="font-size:18px;margin-bottom:8px;color:#002611;">${data.title}</h3>
+                <h3 style="font-size:18px;margin-bottom:8px;color:#002611;">${data.title || 'Video'}</h3>
                 <div style="display:flex;gap:15px;color:#666;font-size:13px;flex-wrap:wrap;">
                     ${data.uploader ? `<span><i class="fas fa-user"></i> ${data.uploader}</span>` : ''}
                     ${data.duration ? `<span><i class="fas fa-clock"></i> ${formatDuration(data.duration)}</span>` : ''}
-                    <span><i class="fas fa-check-circle" style="color:#009959;"></i> With Sound</span>
+                    <span style="color:#009959;"><i class="fas fa-check-circle"></i> With Sound</span>
+                    ${isYouTube ? '<span><i class="fab fa-youtube" style="color:#FF0000;"></i> YouTube</span>' : ''}
+                    ${url.includes('facebook') ? '<span><i class="fab fa-facebook" style="color:#1877f2;"></i> Facebook</span>' : ''}
+                    ${url.includes('instagram') ? '<span><i class="fab fa-instagram" style="color:#E4405F;"></i> Instagram</span>' : ''}
                 </div>
             </div>
 
