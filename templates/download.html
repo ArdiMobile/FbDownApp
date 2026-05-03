@@ -208,7 +208,7 @@
         </div>
         <p class="copyright">2026 &copy; Galmee Inc | Developed by <a href="https://fb.com/yasingelma" id="credit-link"><strong>Yasin Gelma</strong></a></p>
     </footer>
-    <script src="script.js"></script>
+    <script src="/static/script.js"></script>
     <script>
 const params = new URLSearchParams(window.location.search);
 const url = params.get("url");
@@ -224,23 +224,47 @@ fetch(`/api/info?url=${encodeURIComponent(url)}`)
 
   document.getElementById("videoBox").innerHTML = `
     <div style="background:#fff;padding:15px;border-radius:12px;">
-      <img src="${data.thumbnail}" style="width:100%;border-radius:10px;">
-      <h3>${data.title}</h3>
+
+      <!-- VIDEO PLAYER -->
+      <div style="border-radius:10px;overflow:hidden;">
+        <iframe 
+          width="100%" 
+          height="200"
+          src="https://www.youtube.com/embed/${getVideoId(url)}"
+          frameborder="0"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <!-- INFO -->
+      <h3 style="margin-top:10px;">${data.title}</h3>
       <p>${data.uploader}</p>
 
-      <button onclick="download('${url}')" style="width:100%;padding:12px;margin-top:10px;background:#009959;color:#fff;border:none;border-radius:8px;">
-        Download MP4
+      <!-- BUTTONS -->
+      <button onclick="downloadVideo('${url}')" 
+        style="width:100%;padding:14px;margin-top:15px;background:#009959;color:#fff;border:none;border-radius:10px;font-size:16px;">
+        ⬇ Download MP4
       </button>
 
-      <button onclick="download('${url}')" style="width:100%;padding:12px;margin-top:10px;background:#222;color:#fff;border:none;border-radius:8px;">
-        Download MP3
+      <button onclick="downloadVideo('${url}')" 
+        style="width:100%;padding:14px;margin-top:10px;background:#222;color:#fff;border:none;border-radius:10px;font-size:16px;">
+        🎵 Download MP3
       </button>
+
     </div>
   `;
 });
 
-function download(url){
-    window.open(url, "_blank");
+// Extract YouTube ID
+function getVideoId(url){
+  const regExp = /(?:youtube\.com.*v=|youtu\.be\/)([^&]+)/;
+  const match = url.match(regExp);
+  return match ? match[1] : "";
+}
+
+// TEMP download (still basic)
+function downloadVideo(url){
+  window.open(url, "_blank");
 }
 </script>
     <script>
