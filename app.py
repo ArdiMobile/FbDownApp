@@ -17,8 +17,8 @@ def home():
     return render_template("index.html")
 
 # DOWNLOAD PAGE
-@app.route("/download")
-def download_page():
+@app.route("/download.html")
+def download():
     return render_template("download.html")
 
 # API - Get video info
