@@ -213,192 +213,300 @@
 const params = new URLSearchParams(window.location.search);
 const url = params.get("url");
 
-// Loading state
-document.getElementById("videoBox").innerHTML = `
-    <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;">
-        <i class="fas fa-spinner fa-spin" style="font-size:40px;color:#009959;"></i>
-        <p style="margin-top:10px;">Loading video information...</p>
-    </div>
-`;
-
-fetch(`/api/info?url=${encodeURIComponent(url)}`)
-.then(res => res.json())
-.then(data => {
-
-  if(data.status !== "success"){
+if (!url) {
     document.getElementById("videoBox").innerHTML = `
         <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;">
             <i class="fas fa-exclamation-triangle" style="font-size:40px;color:#e74c3c;"></i>
-            <p style="margin-top:10px;">Failed to load video. Please check the URL and try again.</p>
+            <p style="margin-top:10px;">No video URL provided</p>
         </div>
     `;
-    return;
-  }
-
-  // Format file sizes
-  function formatSize(bytes) {
-    if (bytes === 0 || !bytes) return 'Unknown size';
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
-  }
-
-  // Format duration
-  function formatDuration(seconds) {
-    if (!seconds) return 'Unknown';
-    const hrs = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${hrs ? hrs + ':' : ''}${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  }
-
-  // Build quality options
-  let qualityOptions = '';
-  if (data.formats && data.formats.length > 0) {
-    data.formats.forEach(f => {
-      qualityOptions += `
-        <option value="${f.format_id}">
-          ${f.resolution ? f.resolution + ' (' + formatSize(f.filesize) + ')' : 'Audio only'}
-        </option>
-      `;
-    });
-  }
-
-  document.getElementById("videoBox").innerHTML = `
-    <div style="background:#fff;padding:20px;border-radius:12px;">
-
-      <!-- VIDEO PLAYER -->
-      <div style="border-radius:10px;overflow:hidden;position:relative;">
-        <iframe 
-          width="100%" 
-          height="250"
-          src="https://www.youtube.com/embed/${getVideoId(url)}"
-          frameborder="0"
-          allowfullscreen
-          style="border-radius:10px;">
-        </iframe>
-      </div>
-
-      <!-- VIDEO INFO -->
-      <div style="margin-top:15px;">
-        <h3 style="font-size:18px;margin-bottom:5px;">${data.title}</h3>
-        <div style="display:flex;gap:15px;color:#666;font-size:13px;flex-wrap:wrap;">
-          <span><i class="fas fa-user"></i> ${data.uploader || 'Unknown'}</span>
-          <span><i class="fas fa-clock"></i> ${formatDuration(data.duration)}</span>
-        </div>
-      </div>
-
-      <!-- QUALITY SELECTOR -->
-      ${qualityOptions ? `
-      <div style="margin-top:15px;">
-        <label style="font-weight:600;font-size:14px;margin-bottom:8px;display:block;">
-          <i class="fas fa-video"></i> Select Quality:
-        </label>
-        <select id="qualitySelect" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;margin-bottom:15px;">
-          ${qualityOptions}
-        </select>
-      </div>
-      ` : ''}
-
-      <!-- DOWNLOAD BUTTONS -->
-      <div style="display:grid;gap:10px;">
-        <button onclick="downloadVideo('${url}')" 
-          style="width:100%;padding:14px;background:#009959;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s ease;"
-          onmouseover="this.style.background='#007a47'"
-          onmouseout="this.style.background='#009959'">
-          <i class="fas fa-download"></i> Download Video
-        </button>
-
-        <button onclick="downloadAudio('${url}')" 
-          style="width:100%;padding:14px;background:#333;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s ease;"
-          onmouseover="this.style.background='#555'"
-          onmouseout="this.style.background='#333'">
-          <i class="fas fa-music"></i> Download MP3 (Audio Only)
-        </button>
-      </div>
-
-      <!-- LOADING OVERLAY -->
-      <div id="downloadOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:1000;display:none;align-items:center;justify-content:center;">
+} else {
+    // Loading state
+    document.getElementById("videoBox").innerHTML = `
         <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;">
-          <i class="fas fa-spinner fa-spin" style="font-size:40px;color:#009959;"></i>
-          <p style="margin-top:10px;font-weight:600;">Preparing your download...</p>
-          <p style="font-size:12px;color:#666;">This may take a moment</p>
+            <i class="fas fa-spinner fa-spin" style="font-size:40px;color:#009959;"></i>
+            <p style="margin-top:10px;font-weight:500;">Fetching video information...</p>
         </div>
-      </div>
+    `;
 
-    </div>
-  `;
-})
-.catch(err => {
-  document.getElementById("videoBox").innerHTML = `
-    <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;">
-      <i class="fas fa-exclamation-triangle" style="font-size:40px;color:#e74c3c;"></i>
-      <p style="margin-top:10px;">Connection error. Please try again.</p>
-    </div>
-  `;
-});
+    fetchVideoInfo();
+}
+
+async function fetchVideoInfo() {
+    try {
+        const res = await fetch(`/api/info?url=${encodeURIComponent(url)}`);
+        const data = await res.json();
+
+        if(data.status !== "success"){
+            document.getElementById("videoBox").innerHTML = `
+                <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;">
+                    <i class="fas fa-exclamation-triangle" style="font-size:40px;color:#e74c3c;"></i>
+                    <p style="margin-top:10px;">Failed to load video</p>
+                    <p style="font-size:12px;color:#666;">Please check the URL and try again</p>
+                    <a href="/" style="display:inline-block;margin-top:15px;padding:10px 20px;background:#009959;color:#fff;border-radius:8px;text-decoration:none;">
+                        Try Another Video
+                    </a>
+                </div>
+            `;
+            return;
+        }
+
+        displayVideoInfo(data);
+    } catch(err) {
+        document.getElementById("videoBox").innerHTML = `
+            <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;">
+                <i class="fas fa-exclamation-triangle" style="font-size:40px;color:#e74c3c;"></i>
+                <p style="margin-top:10px;">Connection error</p>
+                <p style="font-size:12px;color:#666;">Please check your internet connection and try again</p>
+                <button onclick="fetchVideoInfo()" style="margin-top:15px;padding:10px 20px;background:#009959;color:#fff;border:none;border-radius:8px;cursor:pointer;">
+                    Retry
+                </button>
+            </div>
+        `;
+    }
+}
+
+function displayVideoInfo(data) {
+    // Helper functions
+    function formatSize(bytes) {
+        if (!bytes || bytes === 0) return 'Unknown size';
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(1024));
+        return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+    }
+
+    function formatDuration(seconds) {
+        if (!seconds) return 'Unknown';
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        if (hrs > 0) {
+            return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Build quality options
+    let qualityOptions = '';
+    if (data.formats && data.formats.length > 0) {
+        qualityOptions = data.formats.map(f => `
+            <option value="${f.format_id}">
+                ${f.resolution} - ${formatSize(f.filesize)} (${f.fps}fps)
+            </option>
+        `).join('');
+    }
+
+    document.getElementById("videoBox").innerHTML = `
+        <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+
+            <!-- VIDEO PLAYER -->
+            <div style="border-radius:10px;overflow:hidden;position:relative;margin-bottom:15px;">
+                <iframe 
+                    width="100%" 
+                    height="250"
+                    src="https://www.youtube.com/embed/${getVideoId(url)}?autoplay=0"
+                    frameborder="0"
+                    allowfullscreen
+                    allow="autoplay; encrypted-media"
+                    style="border-radius:10px;background:#000;">
+                </iframe>
+            </div>
+
+            <!-- VIDEO INFO -->
+            <div style="margin-bottom:20px;">
+                <h3 style="font-size:18px;margin-bottom:8px;color:#002611;">${data.title}</h3>
+                <div style="display:flex;gap:15px;color:#666;font-size:13px;flex-wrap:wrap;">
+                    ${data.uploader ? `<span><i class="fas fa-user"></i> ${data.uploader}</span>` : ''}
+                    ${data.duration ? `<span><i class="fas fa-clock"></i> ${formatDuration(data.duration)}</span>` : ''}
+                    <span><i class="fas fa-check-circle" style="color:#009959;"></i> With Sound</span>
+                </div>
+            </div>
+
+            <!-- QUALITY SELECTOR -->
+            ${qualityOptions ? `
+            <div style="margin-bottom:20px;">
+                <label style="font-weight:600;font-size:14px;margin-bottom:8px;display:block;color:#002611;">
+                    <i class="fas fa-video"></i> Select Quality:
+                </label>
+                <select id="qualitySelect" style="width:100%;padding:12px;border-radius:8px;border:2px solid #d4e6da;background:#fff;font-size:14px;cursor:pointer;">
+                    <option value="">Best Available (with audio)</option>
+                    ${qualityOptions}
+                </select>
+                <p style="font-size:11px;color:#666;margin-top:5px;">
+                    <i class="fas fa-info-circle"></i> All downloads include audio (video + sound merged)
+                </p>
+            </div>
+            ` : ''}
+
+            <!-- DOWNLOAD BUTTONS -->
+            <div style="display:grid;gap:10px;">
+                <button onclick="downloadVideo('${url}')" id="videoDownloadBtn"
+                    style="width:100%;padding:15px;background:#009959;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s ease;display:flex;align-items:center;justify-content:center;gap:8px;"
+                    onmouseover="this.style.background='#007a47';this.style.transform='translateY(-1px)';"
+                    onmouseout="this.style.background='#009959';this.style.transform='translateY(0)';">
+                    <i class="fas fa-download"></i> Download Video (with Sound)
+                </button>
+
+                <button onclick="downloadAudio('${url}')" id="audioDownloadBtn"
+                    style="width:100%;padding:15px;background:#333;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s ease;display:flex;align-items:center;justify-content:center;gap:8px;"
+                    onmouseover="this.style.background='#555';this.style.transform='translateY(-1px)';"
+                    onmouseout="this.style.background='#333';this.style.transform='translateY(0)';">
+                    <i class="fas fa-music"></i> Download MP3 (Audio Only)
+                </button>
+            </div>
+
+            <!-- LOADING OVERLAY -->
+            <div id="downloadOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:1000;align-items:center;justify-content:center;">
+                <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;max-width:350px;width:90%;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:40px;color:#009959;"></i>
+                    <p style="margin-top:15px;font-weight:600;font-size:16px;">Preparing Download...</p>
+                    <p style="font-size:12px;color:#666;margin-top:5px;">Merging video with audio for best quality</p>
+                    <div style="margin-top:15px;width:100%;height:4px;background:#eee;border-radius:2px;overflow:hidden;">
+                        <div style="width:100%;height:100%;background:linear-gradient(90deg,#009959,#00cc75);animation:slide 1.5s ease-in-out infinite;"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    `;
+}
 
 // Extract YouTube ID
 function getVideoId(url){
-  const regExp = /(?:youtube\.com.*v=|youtu\.be\/)([^&]+)/;
-  const match = url.match(regExp);
-  return match ? match[1] : "";
+    if (!url) return '';
+    const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s]+)/,
+        /^([a-zA-Z0-9_-]{11})$/
+    ];
+    
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match) return match[1];
+    }
+    return '';
 }
 
-// Download Video
-async function downloadVideo(url) {
-  const overlay = document.getElementById('downloadOverlay');
-  const formatId = document.getElementById('qualitySelect')?.value || '';
-  
-  if (overlay) overlay.style.display = 'flex';
-  
-  try {
-    const response = await fetch(`/api/download?url=${encodeURIComponent(url)}&format_id=${formatId}`);
-    const data = await response.json();
+// Download Video with Audio
+async function downloadVideo(videoUrl) {
+    const overlay = document.getElementById('downloadOverlay');
+    const formatId = document.getElementById('qualitySelect')?.value || '';
+    const downloadBtn = document.getElementById('videoDownloadBtn');
     
-    if (data.status === 'success') {
-      // Trigger actual download
-      window.open(data.download_url, '_blank');
-      
-      // Show success message
-      setTimeout(() => {
-        if (overlay) overlay.style.display = 'none';
-        alert('Download started! If it doesn\'t start automatically, check your popup blocker.');
-      }, 1000);
-    } else {
-      throw new Error(data.message || 'Download failed');
+    if (overlay) overlay.style.display = 'flex';
+    if (downloadBtn) {
+        downloadBtn.disabled = true;
+        downloadBtn.style.opacity = '0.7';
     }
-  } catch (err) {
-    if (overlay) overlay.style.display = 'none';
-    alert('Download failed: ' + err.message);
-  }
+    
+    try {
+        const response = await fetch(`/api/download?url=${encodeURIComponent(videoUrl)}&format_id=${formatId}&type=video`);
+        const data = await response.json();
+        
+        if (data.status === 'success' && data.file_path) {
+            // Trigger download
+            const downloadUrl = `/api/serve-file?path=${encodeURIComponent(data.file_path)}`;
+            window.location.href = downloadUrl;
+            
+            // Success feedback
+            setTimeout(() => {
+                if (overlay) {
+                    overlay.innerHTML = `
+                        <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;max-width:350px;width:90%;">
+                            <i class="fas fa-check-circle" style="font-size:50px;color:#009959;"></i>
+                            <p style="margin-top:15px;font-weight:600;font-size:16px;">Download Started! 🎉</p>
+                            <p style="font-size:12px;color:#666;margin-top:5px;">Your video is downloading with full audio</p>
+                            <button onclick="document.getElementById('downloadOverlay').style.display='none'" 
+                                style="margin-top:15px;padding:10px 30px;background:#009959;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">
+                                Done
+                            </button>
+                        </div>
+                    `;
+                }
+            }, 500);
+        } else {
+            throw new Error(data.message || 'Download failed');
+        }
+    } catch (err) {
+        console.error('Download error:', err);
+        if (overlay) {
+            overlay.innerHTML = `
+                <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;max-width:350px;width:90%;">
+                    <i class="fas fa-exclamation-triangle" style="font-size:50px;color:#e74c3c;"></i>
+                    <p style="margin-top:15px;font-weight:600;font-size:16px;">Download Failed</p>
+                    <p style="font-size:12px;color:#666;margin-top:5px;">${err.message || 'Please try again'}</p>
+                    <button onclick="document.getElementById('downloadOverlay').style.display='none'" 
+                        style="margin-top:15px;padding:10px 30px;background:#e74c3c;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">
+                        Close
+                    </button>
+                </div>
+            `;
+        }
+    } finally {
+        if (downloadBtn) {
+            downloadBtn.disabled = false;
+            downloadBtn.style.opacity = '1';
+        }
+    }
 }
 
-// Download Audio
-async function downloadAudio(url) {
-  const overlay = document.getElementById('downloadOverlay');
-  
-  if (overlay) overlay.style.display = 'flex';
-  
-  try {
-    // Request best audio format
-    const response = await fetch(`/api/download?url=${encodeURIComponent(url)}&format_id=bestaudio`);
-    const data = await response.json();
+// Download Audio Only
+async function downloadAudio(videoUrl) {
+    const overlay = document.getElementById('downloadOverlay');
+    const audioBtn = document.getElementById('audioDownloadBtn');
     
-    if (data.status === 'success') {
-      window.open(data.download_url, '_blank');
-      
-      setTimeout(() => {
-        if (overlay) overlay.style.display = 'none';
-        alert('Audio download started!');
-      }, 1000);
-    } else {
-      throw new Error(data.message || 'Download failed');
+    if (overlay) overlay.style.display = 'flex';
+    if (audioBtn) {
+        audioBtn.disabled = true;
+        audioBtn.style.opacity = '0.7';
     }
-  } catch (err) {
-    if (overlay) overlay.style.display = 'none';
-    alert('Audio download failed: ' + err.message);
-  }
+    
+    try {
+        const response = await fetch(`/api/download?url=${encodeURIComponent(videoUrl)}&type=audio`);
+        const data = await response.json();
+        
+        if (data.status === 'success' && data.file_path) {
+            const downloadUrl = `/api/serve-file?path=${encodeURIComponent(data.file_path)}`;
+            window.location.href = downloadUrl;
+            
+            setTimeout(() => {
+                if (overlay) {
+                    overlay.innerHTML = `
+                        <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;max-width:350px;width:90%;">
+                            <i class="fas fa-check-circle" style="font-size:50px;color:#009959;"></i>
+                            <p style="margin-top:15px;font-weight:600;font-size:16px;">MP3 Download Started! 🎵</p>
+                            <p style="font-size:12px;color:#666;margin-top:5px;">High quality 192kbps MP3</p>
+                            <button onclick="document.getElementById('downloadOverlay').style.display='none'" 
+                                style="margin-top:15px;padding:10px 30px;background:#009959;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">
+                                Done
+                            </button>
+                        </div>
+                    `;
+                }
+            }, 500);
+        } else {
+            throw new Error(data.message || 'Audio extraction failed');
+        }
+    } catch (err) {
+        console.error('Audio download error:', err);
+        if (overlay) {
+            overlay.innerHTML = `
+                <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;max-width:350px;width:90%;">
+                    <i class="fas fa-exclamation-triangle" style="font-size:50px;color:#e74c3c;"></i>
+                    <p style="margin-top:15px;font-weight:600;font-size:16px;">MP3 Extraction Failed</p>
+                    <p style="font-size:12px;color:#666;margin-top:5px;">${err.message || 'Please try again'}</p>
+                    <button onclick="document.getElementById('downloadOverlay').style.display='none'" 
+                        style="margin-top:15px;padding:10px 30px;background:#e74c3c;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">
+                        Close
+                    </button>
+                </div>
+            `;
+        }
+    } finally {
+        if (audioBtn) {
+            audioBtn.disabled = false;
+            audioBtn.style.opacity = '1';
+        }
+    }
 }
 
 function toggleDrawer(){document.getElementById('drawer').classList.toggle('show');document.getElementById('drawerOverlay').classList.toggle('show');}
