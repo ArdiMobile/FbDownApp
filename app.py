@@ -4,10 +4,6 @@ import os
 
 app = Flask(__name__)
 
-# =========================
-# PAGE ROUTES (IMPORTANT)
-# =========================
-
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -16,72 +12,61 @@ def home():
 def youtube():
     return render_template("YouTube.html")
 
-@app.route("/blog")
-def blog():
-    return render_template("blog.html")
+@app.route("/download")
+def download_page():
+    return render_template("download.html")
 
 
-# =========================
-# API ROUTE
-# =========================
+# ================= API =================
 
 @app.route("/api/info")
 def get_video():
     url = request.args.get("url")
 
     if not url:
-        return jsonify({
-            "status": "error",
-            "message": "No URL provided"
-        })
+        return jsonify({"status": "error", "message": "No URL"})
 
     try:
-        ydl_opts = {
-            'quiet': True,
-            'noplaylist': True,
-            'format': 'bestvideo+bestaudio/best',
-        }
+        ydl_opts = {'quiet': True, 'noplaylist': True}
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
-
-            formats = []
-            for f in info.get("formats", []):
-                if f.get("url") and f.get("height"):
-                    formats.append({
-                        "quality": f"{f.get('height')}p",
-                        "url": f["url"]
-                    })
-
-            # Sort highest quality first
-            formats = sorted(
-                formats,
-                key=lambda x: int(x["quality"].replace("p", "")),
-                reverse=True
-            )[:6]
 
             return jsonify({
                 "status": "success",
                 "title": info.get("title"),
                 "thumbnail": info.get("thumbnail"),
                 "uploader": info.get("uploader"),
-                "formats": formats
+                "video_url": url
             })
 
     except Exception as e:
-        print("ERROR:", str(e))
-        return jsonify({
-            "status": "error",
-            "message": "Failed to fetch video"
-        })
+        print(e)
+        return jsonify({"status": "error", "message": "Failed"})
 
 
-# =========================
-# RUN APP (RAILWAY)
-# =========================
+# 🔍 SEARCH API
+@app.route("/api/search")
+def search():
+    query = request.args.get("q")
+
+    try:
+        ydl = yt_dlp.YoutubeDL({'quiet': True})
+        results = ydl.extract_info(f"ytsearch5:{query}", download=False)
+
+        videos = []
+        for e in results['entries']:
+            videos.append({
+                "title": e["title"],
+                "url": e["webpage_url"],
+                "thumbnail": e["thumbnail"]
+            })
+
+        return jsonify({"status": "success", "results": videos})
+
+    except:
+        return jsonify({"status": "error"})
+
 
 if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=int(os.environ.get("PORT", 5000))
-    )
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
