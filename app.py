@@ -4,18 +4,19 @@ import os
 
 app = Flask(__name__)
 
+# ================= ROUTES =================
+
 @app.route("/")
 def home():
     return render_template("index.html")
 
-@app.route("/youtube")
-def youtube():
-    return render_template("YouTube.html")
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 @app.route("/download")
 def download_page():
     return render_template("download.html")
-
 
 # ================= API =================
 
@@ -24,10 +25,13 @@ def get_video():
     url = request.args.get("url")
 
     if not url:
-        return jsonify({"status": "error", "message": "No URL"})
+        return jsonify({"status": "error", "message": "No URL provided"})
 
     try:
-        ydl_opts = {'quiet': True, 'noplaylist': True}
+        ydl_opts = {
+            'quiet': True,
+            'noplaylist': True,
+        }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
@@ -37,12 +41,12 @@ def get_video():
                 "title": info.get("title"),
                 "thumbnail": info.get("thumbnail"),
                 "uploader": info.get("uploader"),
-                "video_url": url
+                "url": url
             })
 
     except Exception as e:
-        print(e)
-        return jsonify({"status": "error", "message": "Failed"})
+        print("ERROR:", str(e))
+        return jsonify({"status": "error", "message": "Failed to fetch"})
 
 
 # 🔍 SEARCH API
@@ -51,22 +55,24 @@ def search():
     query = request.args.get("q")
 
     try:
-        ydl = yt_dlp.YoutubeDL({'quiet': True})
-        results = ydl.extract_info(f"ytsearch5:{query}", download=False)
+        with yt_dlp.YoutubeDL({'quiet': True}) as ydl:
+            results = ydl.extract_info(f"ytsearch5:{query}", download=False)
 
-        videos = []
-        for e in results['entries']:
-            videos.append({
-                "title": e["title"],
-                "url": e["webpage_url"],
-                "thumbnail": e["thumbnail"]
-            })
+            videos = []
+            for v in results['entries']:
+                videos.append({
+                    "title": v["title"],
+                    "url": v["webpage_url"],
+                    "thumbnail": v["thumbnail"]
+                })
 
-        return jsonify({"status": "success", "results": videos})
+            return jsonify({"status": "success", "results": videos})
 
     except:
         return jsonify({"status": "error"})
 
+
+# ================= RUN =================
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
