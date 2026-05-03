@@ -1,95 +1,51 @@
-import json
 from http.server import BaseHTTPRequestHandler
-from urllib.parse import urlparse, parse_qs
+import json
+from urllib.parse import parse_qs, urlparse
 import yt_dlp
 
 class handler(BaseHTTPRequestHandler):
-    def _set_headers(self):
+    def do_GET(self):
+        query_params = parse_qs(urlparse(self.path).query)
+        facebook_url = query_params.get('url', [None])[0]
+
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
 
-    def do_GET(self):
-        self._set_headers()
-        
+        if not facebook_url:
+            self.wfile.write(json.dumps({"status":"error","message":"No URL"}).encode())
+            return
+
         try:
-            # 🔹 Get URL from query params
-            q = parse_qs(urlparse(self.path).query)
-            url = q.get('url', [None])[0]
+            with yt_dlp.YoutubeDL({'quiet': True}) as ydl:
+                info = ydl.extract_info(facebook_url, download=False)
 
-            # 🛑 Improved Error Handling for missing URL
-            if not url:
-                self.wfile.write(json.dumps({"error": "No URL provided"}).encode())
-                return
-
-            if not url.startswith('http'):
-                url = 'https://' + url
-
-            # 🔥 Optimized yt-dlp config (Vercel safe)
-            ydl_opts = {
-                'quiet': True,
-                'noplaylist': True,
-                'no_warnings': True,
-                # Select best mp4 with audio, avoiding formats that require merging
-                'format': 'best[ext=mp4][acodec!=none]',
-                'nocheckcertificate': True,
-                'socket_timeout': 10,
-                'retries': 2,
-            }
-
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(url, download=False)
-                
                 formats = []
-                # ✅ Extract ONLY formats with audio
-                for f in info.get('formats', []):
-                    u = f.get('url')
-                    h = f.get('height')
-                    acodec = f.get('acodec', 'none')
+                for f in info.get("formats", []):
+                    if f.get("url") and f.get("height"):
+                        formats.append({
+                            "quality": f"{f.get('height')}p",
+                            "url": f.get("url")
+                        })
 
-                    # skip if URL or height is missing
-                    if not u or not h:
-                        continue
-                    
-                    # ❗ skip formats without audio (prevents silent videos)
-                    if acodec == 'none':
-                        continue
-
-                    formats.append({
-                        "quality": f"{h}p",
-                        "url": u,
-                        "has_audio": True,
-                        "format_note": f.get('format_note', ''),
-                        "filesize_approx": f.get('filesize') or f.get('filesize_approx')
-                    })
-
-                # ✅ Safe sorting (prevents crash on non-standard quality strings)
-                formats.sort(
-                    key=lambda x: -int(x['quality'].replace('p', '')) 
-                    if x['quality'].replace('p', '').isdigit() else 0
-                )
-
-                # ✅ Remove duplicate qualities (Keep the best one for each resolution)
-                unique = []
-                used = set()
+                seen = set()
+                unique_formats = []
                 for f in formats:
-                    if f['quality'] not in used:
-                        used.add(f['quality'])
-                        unique.append(f)
+                    if f["quality"] not in seen:
+                        seen.add(f["quality"])
+                        unique_formats.append(f)
 
-                # ✅ Construct Final Response
-                response = {
+                response_data = {
                     "status": "success",
-                    "title": info.get('title', 'Video'),
-                    "thumbnail": info.get('thumbnail', ''),
-                    "uploader": info.get('uploader', ''),
-                    "duration": info.get('duration', 0),
-                    "formats": unique # 🔥 no limit (better UX)
+                    "title": info.get("title"),
+                    "thumbnail": info.get("thumbnail"),
+                    "formats": unique_formats[:5],
+                    "uploader": info.get("uploader"),
+                    "uploader_url": info.get("uploader_url")
                 }
 
-                self.wfile.write(json.dumps(response).encode())
-
         except Exception as e:
-            # Catch-all for yt-dlp errors or network issues
-            self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode())
+            response_data = {"status":"error","message":str(e)}
+
+        self.wfile.write(json.dumps(response_data).encode())
