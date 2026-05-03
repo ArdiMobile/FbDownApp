@@ -1,14 +1,38 @@
 {
   "builds": [
-    {
-      "src": "api/index.py",
-      "use": "@vercel/python"
-    }
+    { 
+      "src": "api/index.py", 
+      "use": "@vercel/python",
+      "config": {
+        "pythonVersion": "3.12",
+        "installCommand": "pip install --no-cache-dir -r requirements.txt",
+        "maxDuration": 30
+      }
+    },
+    { 
+      "src": "api/history.py", 
+      "use": "@vercel/python",
+      "config": {
+        "pythonVersion": "3.12",
+        "installCommand": "pip install --no-cache-dir -r requirements.txt",
+        "maxDuration": 10
+      }
+    },
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "script.js", "use": "@vercel/static" },
+    { "src": "blog.html", "use": "@vercel/static" },
+    { "src": "blog/**/*.html", "use": "@vercel/static" },
+    { "src": "page/**/*.html", "use": "@vercel/static" },
+    { "src": "*.xml", "use": "@vercel/static" },
+    { "src": "*.txt", "use": "@vercel/static" },
+    { "src": "*.json", "use": "@vercel/static" },
+    { "src": "*.webmanifest", "use": "@vercel/static" },
+    { "src": "*.png", "use": "@vercel/static" },
+    { "src": "*.jpg", "use": "@vercel/static" },
+    { "src": "*.ico", "use": "@vercel/static" }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "api/index.py"
-    }
+  "rewrites": [
+    { "source": "/api/info", "destination": "/api/index.py" },
+    { "source": "/api/history", "destination": "/api/history.py" }
   ]
 }
