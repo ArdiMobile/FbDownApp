@@ -1,303 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galmee - Free Facebook & Instagram Video Downloader | HD Quality</title>
-    <meta name="description" content="Download Facebook and Instagram videos in HD quality for free. No registration required. Fast, secure, and unlimited downloads with Galmee.">
-    <meta name="keywords" content="Galmee, facebook video downloader, instagram video downloader, free video downloader, HD video download, fb video saver, instagram reel downloader">
-    <meta name="author" content="Yasin Gelma">
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-    
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://yasing.com.et/">
-    <meta property="og:title" content="Galmee - Free Facebook & Instagram Video Downloader | HD Quality">
-    <meta property="og:description" content="Download Facebook & Instagram videos in HD quality. Fast, free, no registration required.">
-    <meta property="og:image" content="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/galmee%20pages%20banner.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="Galmee">
-    <meta property="og:locale" content="en_US">
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://yasing.com.et/">
-    <meta name="twitter:title" content="Galmee - Free Facebook & Instagram Video Downloader">
-    <meta name="twitter:description" content="Download Facebook & Instagram videos in HD quality. Fast, free, no registration.">
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/galmee%20pages%20banner.jpg">
-    
-    <link rel="canonical" href="https://yasing.com.et/">
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <script>window.si=window.si||function(){(window.siq=window.siq||[]).push(arguments)};</script>
-    <script defer src="/_vercel/speed-insights/script.js"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6017531796888844" crossorigin="anonymous"></script>
-    
-    <style>
-        :root{
-            --bg:#0a0e0c;
-            --surface:#111915;
-            --surface2:#1a241e;
-            --border:#1f2e26;
-            --text:#e8f5ee;
-            --text2:#7a9e8a;
-            --primary:#00cc6a;
-            --primary-glow:rgba(0,204,106,.25);
-            --gold:#f5c842;
-            --gold-glow:rgba(245,200,66,.3);
-            --fb:#1877f2;
-            --ig:#e4405f;
-            --radius:18px;
-            --radius-sm:12px;
-        }
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center}
-        .container{width:100%;max-width:620px;padding:20px 16px 40px}
-        
-        /* Header */
-        .header{text-align:center;padding:24px 0 8px}
-        .logo-img{width:44px;height:44px;border-radius:12px;margin-bottom:10px}
-        .logo-text{font-size:34px;font-weight:800;letter-spacing:-1px}
-        .logo-text span{background:linear-gradient(135deg,var(--gold),#ffe680,var(--primary));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .tagline{color:var(--text2);font-size:13px;margin-top:2px}
-        
-        /* Drawer Menu Button */
-        .menu-btn{position:fixed;top:16px;right:16px;width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:999;transition:all .2s}
-        .menu-btn:hover{background:var(--surface2);color:var(--primary);border-color:var(--primary)}
-        
-        /* Drawer */
-        .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000}
-        .drawer-overlay.show{display:block}
-        .drawer{position:fixed;top:0;right:-300px;width:280px;height:100vh;background:var(--surface);z-index:2001;transition:right .3s ease;overflow-y:auto;border-left:1px solid var(--border)}.drawer.show{right:0}
-        .drawer-header{display:flex;justify-content:space-between;align-items:center;padding:18px;border-bottom:1px solid var(--border)}
-        .drawer-header img{width:28px;height:28px;border-radius:8px}
-        .drawer-close{width:34px;height:34px;border-radius:50%;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:14px}.drawer-close:hover{background:#e74c3c;color:#fff}
-        .drawer-menu{padding:8px 12px}
-        .drawer-menu a{display:flex;align-items:center;gap:10px;padding:12px 14px;color:var(--text2);border-radius:var(--radius-sm);font-weight:500;font-size:13px;margin-bottom:2px;transition:all .15s;text-decoration:none}
-        .drawer-menu a:hover,.drawer-menu a.active{background:var(--surface2);color:var(--primary)}
-        
-        /* Platform Toggle */
-        .platform-toggle{display:flex;gap:8px;justify-content:center;margin:18px 0}
-        .plat-btn{padding:9px 18px;border-radius:50px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-weight:600;font-size:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;font-family:inherit}
-        .plat-btn.active.fb{background:var(--fb);border-color:var(--fb);color:#fff}
-        .plat-btn.active.ig{background:var(--ig);border-color:var(--ig);color:#fff}
-        .plat-btn:hover:not(.active){border-color:var(--primary)}
-        
-        /* Search */
-        .search-box{display:flex;gap:6px;background:var(--surface);border-radius:50px;padding:5px;border:1px solid var(--border);transition:all .3s}
-        .search-box:focus-within{border-color:var(--primary);box-shadow:0 0 24px var(--primary-glow)}
-        .search-box input{flex:1;border:none;padding:14px 18px;background:transparent;color:var(--text);font-size:14px;outline:none;font-family:inherit}
-        .search-box input::placeholder{color:#3d5446}
-        .dl-btn{width:48px;height:48px;border-radius:50%;border:none;background:var(--primary);color:#000;font-size:18px;cursor:pointer;transition:all .2s;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700}
-        .dl-btn:hover{transform:scale(1.05);box-shadow:0 0 28px var(--primary-glow)}
-        
-        /* Result */
-        .result{margin-top:20px;display:none}
-        .result.show{display:block;animation:fadeUp .3s ease}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-        
-        .video-card{background:var(--surface);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
-        .video-wrapper{position:relative;background:#000}
-        .video-wrapper video{width:100%;max-height:360px;display:block}
-        .video-wrapper .watermark{position:absolute;bottom:10px;left:10px;font-size:10px;font-weight:800;color:var(--primary);background:rgba(0,0,0,.65);padding:4px 10px;border-radius:20px;letter-spacing:.5px}
-        .video-wrapper .plat-badge{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:20px;font-size:9px;font-weight:600;color:#fff}
-        .video-wrapper .plat-badge.fb{background:var(--fb)}.video-wrapper .plat-badge.ig{background:var(--ig)}
-        
-        .video-info{padding:16px 18px}
-        .video-info h3{font-size:15px;font-weight:700;margin-bottom:4px;line-height:1.3}
-        .video-info .uploader{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px;margin-bottom:14px}
-        
-        .dl-options{display:flex;flex-direction:column;gap:7px}
-        .dl-option{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:var(--radius-sm);border:none;color:#fff;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;font-family:inherit}
-        .dl-option:hover{transform:translateX(3px)}
-        .dl-option.best{background:linear-gradient(135deg,var(--primary),#00994d)}
-        .dl-option.hd{background:var(--surface2)}
-        .dl-option.sd{background:rgba(255,255,255,.04)}
-        .dl-option .audio-badge{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:700}
-        .dl-option .audio-badge.sound{background:rgba(0,204,106,.2);color:var(--primary)}
-        .dl-option .audio-badge.muted{background:rgba(255,255,255,.08);color:var(--text2)}
-        
-        .actions{display:flex;gap:8px;margin-top:14px}
-        .btn{flex:1;padding:10px;border-radius:50px;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;border:none;transition:all .2s}
-        .btn-reset{background:var(--surface2);color:var(--text2)}.btn-reset:hover{background:var(--border)}
-        .btn-buy{background:linear-gradient(135deg,var(--gold),#e6b800);color:#000;font-weight:700}.btn-buy:hover{transform:translateY(-1px);box-shadow:0 4px 18px var(--gold-glow)}
-        
-        /* Loading / Error */
-        .loading-state{text-align:center;padding:40px 20px}
-        .spinner{width:38px;height:38px;border:3px solid var(--border);border-top:3px solid var(--primary);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        .loading-state p{color:var(--text2);font-size:13px}
-        .error-state{text-align:center;padding:24px;background:rgba(255,0,0,.04);border-radius:var(--radius);border:1px solid rgba(255,0,0,.15)}
-        .error-state i{font-size:36px;color:#e74c3c;margin-bottom:8px;display:block}
-        
-        /* Share */
-        .share-bar{display:flex;align-items:center;gap:10px;margin-top:14px;justify-content:center}
-        .share-bar span{font-size:10px;color:var(--text2)}
-        .share-btn-sm{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;transition:all .2s}
-        .share-btn-sm:hover{transform:scale(1.1)}.share-btn-sm.fb{background:var(--fb)}.share-btn-sm.wa{background:#25d366}.share-btn-sm.tg{background:#08c}.share-btn-sm.x{background:#222;border:1px solid #444}
-        
-        /* Tabs */
-        .tabs-scroll{display:flex;gap:6px;overflow-x:auto;padding:4px 0 14px;scrollbar-width:none}.tabs-scroll::-webkit-scrollbar{display:none}
-        .tab-btn{padding:8px 16px;border:none;background:var(--surface);border-radius:50px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .2s;border:1px solid var(--border);display:flex;align-items:center;gap:5px;font-family:inherit}
-        .tab-btn.active{background:var(--primary);color:#000;border-color:var(--primary)}
-        .tab-panel{display:none;animation:fadeUp .3s ease}.tab-panel.active{display:block}
-        
-        /* Cards */
-        .card{background:var(--surface);border-radius:var(--radius);padding:18px;margin-bottom:14px;border:1px solid var(--border)}
-        .card-title{font-size:15px;font-weight:700;margin-bottom:14px;color:var(--text);display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--border)}
-        .card-title i{color:var(--primary)}.card-title img{width:18px;height:18px;border-radius:4px}
-        
-        /* Blog Cards */
-        .blog-card{background:var(--surface);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;border:1px solid var(--border);transition:all .2s;cursor:pointer}
-        .blog-card:hover{border-color:var(--primary);box-shadow:0 4px 20px var(--primary-glow);transform:translateY(-2px)}
-        .blog-thumbnail{width:100%;height:160px;object-fit:cover;display:block;border-bottom:2px solid var(--primary)}
-        .blog-card-body{padding:16px}
-        .blog-card h2{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed var(--border)}
-        .blog-meta{display:flex;gap:10px;font-size:10px;color:var(--text2);margin-bottom:8px;flex-wrap:wrap}
-        .blog-meta span{display:flex;align-items:center;gap:3px}.blog-meta i{color:var(--primary)}
-        .blog-excerpt{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:8px}
-        .blog-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
-        .tag{padding:3px 8px;background:rgba(0,204,106,.1);color:var(--primary);border-radius:50px;font-size:9px;font-weight:600}
-        .read-more{display:inline-flex;align-items:center;gap:5px;color:#000;font-weight:600;font-size:11px;padding:6px 12px;background:var(--primary);border-radius:50px;transition:all .2s}
-        .read-more:hover{background:var(--gold);transform:translateY(-1px)}
-        
-        /* Step Cards */
-        .step-item{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--surface);border-radius:var(--radius-sm);margin-bottom:8px;border:1px solid var(--border)}
-        .step-num{width:34px;height:34px;border-radius:50%;background:var(--primary);color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
-        .step-content strong{font-size:13px;color:var(--text);display:block;margin-bottom:2px}.step-content p{font-size:11px;color:var(--text2)}
-        
-        /* Footer */
-        .footer{text-align:center;padding:20px;margin-top:30px;border-top:1px solid var(--border);color:var(--text2);font-size:10px}
-        .footer img{width:20px;height:20px;border-radius:5px;vertical-align:middle;margin:0 4px}
-        .footer a{color:var(--primary);text-decoration:none}.footer a:hover{text-decoration:underline}
-        .footer .social-icons{display:flex;justify-content:center;gap:12px;margin:12px 0}
-        .footer .social-icon{width:34px;height:34px;border-radius:50%;background:var(--surface2);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;text-decoration:none}
-        .footer .social-icon:hover{transform:translateY(-2px)}.footer .social-icon.fb:hover{background:var(--fb);color:#fff}.footer .social-icon.ig:hover{background:var(--ig);color:#fff}.footer .social-icon.tg:hover{background:#08c;color:#fff}.footer .social-icon.wa:hover{background:#25d366;color:#fff}
-        .footer-links{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:8px 0}.footer-links a{font-size:10px;color:var(--text2)}
-        
-        /* Sidebar */
-        .sidebar{width:280px;flex-shrink:0;display:none}
-        .sidebar-sticky{position:sticky;top:20px}
-        .sidebar-card{background:var(--surface);border-radius:var(--radius);padding:14px;margin-bottom:14px;border:1px solid var(--border)}
-        .sidebar-title{font-size:13px;font-weight:700;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);color:var(--text);display:flex;align-items:center;gap:6px}.sidebar-title i{color:var(--primary)}
-        .related-post{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;text-decoration:none}.related-post:last-child{border-bottom:none}.related-post:hover{background:var(--surface2);margin:0 -8px;padding:8px;border-radius:var(--radius-sm)}
-        .related-thumb{width:60px;height:44px;border-radius:6px;overflow:hidden;flex-shrink:0;background:var(--surface2)}.related-thumb img{width:100%;height:100%;object-fit:cover}
-        .related-info h4{font-size:11px;font-weight:600;color:var(--text)}.related-info span{font-size:9px;color:var(--text2)}
-        .tag-item{padding:4px 10px;background:rgba(0,204,106,.1);color:var(--primary);border-radius:50px;font-size:10px;font-weight:600;cursor:pointer;display:inline-block;margin:2px}.tag-item:hover{background:var(--primary);color:#000}
-        
-        .btn-spinner{width:18px;height:18px;border:2px solid rgba(0,0,0,.3);border-top:2px solid #000;border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
-        
-        @media(max-width:480px){
-            .logo-text{font-size:28px}.video-wrapper video{max-height:240px}.blog-thumbnail{height:130px}
-        }
-        @media(min-width:1025px){
-            .container{max-width:1000px}.main-layout{display:flex;gap:24px;align-items:flex-start}.main-content{flex:1;min-width:0}.sidebar{display:block}.blog-thumbnail{height:180px}
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YasinG Downloader</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+:root {
+    --blue:#1877f2;
+    --dark:#0b0d11;
+    --light:#f5f7fa;
+    --green:#00c853;
+}
+
+body { margin:0; font-family:Segoe UI; background:var(--light); }
+
+/* NAV */
+.nav {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:15px 8%; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo { font-weight:800; font-size:22px; color:var(--blue); }
+
+.menu { display:flex; gap:20px; }
+.menu a { text-decoration:none; color:#555; font-weight:600; }
+
+.menu-toggle { display:none; font-size:22px; cursor:pointer; }
+
+/* MOBILE MENU */
+@media(max-width:768px){
+    .menu { display:none; flex-direction:column; background:#fff; position:absolute; top:60px; right:20px; padding:15px; border-radius:10px; }
+    .menu.show { display:flex; }
+    .menu-toggle { display:block; }
+}
+
+/* HERO */
+.hero {
+    background:linear-gradient(135deg,#1877f2,#2d6df6);
+    color:white; text-align:center; padding:80px 20px;
+}
+
+.search-area {
+    background:white; display:flex; padding:6px;
+    border-radius:50px; max-width:600px; margin:20px auto;
+}
+
+.search-area input { flex:1; border:none; padding:15px; outline:none; }
+.btn-dl { background:var(--blue); color:white; border:none; width:55px; border-radius:50%; }
+
+/* PREVIEW */
+#preview { max-width:700px; margin:20px auto; }
+
+/* AD */
+.ad {
+    background:#ddd; text-align:center; padding:20px;
+    margin:20px auto; border-radius:10px;
+}
+
+/* SECTION */
+.section { padding:60px 8%; text-align:center; }
+
+.grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card {
+    background:white; padding:20px;
+    border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* FAQ */
+.faq-item {
+    background:white; margin:10px auto; padding:15px;
+    max-width:700px; border-radius:10px; cursor:pointer;
+}
+.faq-answer { display:none; margin-top:10px; }
+.faq-item.active .faq-answer { display:block; }
+
+/* SHARE */
+.share {
+    margin-top:15px;
+}
+.share a {
+    margin:5px;
+    display:inline-block;
+    padding:10px 15px;
+    border-radius:6px;
+    color:white;
+    text-decoration:none;
+}
+.fb { background:#1877f2; }
+.tg { background:#0088cc; }
+.wa { background:#25D366; }
+
+/* FOOTER */
+.footer {
+    background:var(--dark);
+    color:white;
+    padding:50px 8%;
+}
+
+.footer-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:20px;
+}
+
+.footer a { color:#aaa; text-decoration:none; display:block; margin:5px 0; }
+
+.social i {
+    font-size:20px;
+    margin-right:10px;
+}
+</style>
 </head>
+
 <body>
-    <!-- MENU BUTTON -->
-    <button class="menu-btn" onclick="toggleDrawer()" aria-label="Menu"><i class="fas fa-bars"></i></button>
-    
-    <!-- DRAWER -->
-    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
-    <nav class="drawer" id="drawer">
-        <div class="drawer-header">
-            <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
-            <button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="drawer-menu">
-            <a href="#" class="active" onclick="switchTab(event,'tab-home');toggleDrawer()"><i class="fas fa-home"></i> Home</a>
-            <a href="#" onclick="switchTab(event,'tab-how');toggleDrawer()"><i class="fas fa-download"></i> How to Use</a>
-            <a href="#" onclick="switchTab(event,'tab-updates');toggleDrawer()"><i class="fas fa-bell"></i> Updates</a>
-            <a href="#" onclick="switchTab(event,'tab-faq');toggleDrawer()"><i class="fas fa-question-circle"></i> FAQ</a>
-            <a href="page/purchase.html"><i class="fa-solid fa-crown"></i> Purchase</a>
-            <a href="blog.html"><i class="fas fa-rss"></i> Blog</a>
-            <a href="page/about.html"><i class="fa-solid fa-user"></i> About</a>
-            <a href="page/privacy.html"><i class="fa-solid fa-shield-haltered"></i> Privacy</a>
-            <a href="page/terms.html"><i class="fa-solid fa-file-contract"></i> Terms</a>
-            <a href="page/copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a>
-            <a href="page/contact.html"><i class="fa-solid fa-envelope"></i> Contact</a>
-        </div>
-    </nav>
 
-    <div class="container">
-        <!-- HEADER -->
-        <div class="header">
-            <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee" class="logo-img">
-            <div class="logo-text"><span>Galmee</span></div>
-            <p class="tagline">Free Facebook & Instagram Video Downloader</p>
-        </div>
+<!-- NAV -->
+<div class="nav">
+    <div class="logo">YasinG</div>
 
-        <!-- PLATFORM TOGGLE -->
-        <div class="platform-toggle" style="display:none;">
-            <button class="plat-btn active fb"><i class="fab fa-facebook"></i> Facebook</button>
-            <button class="plat-btn ig"><i class="fab fa-instagram"></i> Instagram</button>
-        </div>
-
-        <!-- SEARCH -->
-        <form id="dlForm" class="search-box">
-            <input type="text" id="urlInput" placeholder="Paste Facebook or Instagram link here...">
-            <button type="submit" class="dl-btn" id="dlBtn"><i class="fas fa-download" id="dlBtnIcon"></i><span id="btnLoader" style="display:none;"></span></button>
-        </form>
-
-        <!-- RESULT -->
-        <div class="result" id="preview"></div>
-
-        <!-- MAIN LAYOUT -->
-        <div class="main-layout" style="margin-top:20px;">
-            <div class="main-content">
-                <!-- TABS -->
-                <div class="tabs-scroll" id="tabBar">
-                    <button class="tab-btn active" onclick="switchTab(event,'tab-home')"><i class="fas fa-home"></i> Home</button>
-                    <button class="tab-btn" onclick="switchTab(event,'tab-how')"><i class="fas fa-download"></i> Steps</button>
-                    <button class="tab-btn" onclick="switchTab(event,'tab-updates')"><i class="fas fa-bell"></i> News</button>
-                    <button class="tab-btn" onclick="switchTab(event,'tab-faq')"><i class="fas fa-question-circle"></i> FAQ</button>
-                </div>
-
-                <div id="tab-home" class="tab-panel active">
-                    <div class="card"><div class="card-title"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""> Latest Articles</div><div id="blogPostsContainer"></div></div>
-                </div>
-                <div id="tab-how" class="tab-panel">
-                    <div class="step-item"><div class="step-num">1</div><div class="step-content"><strong>Copy Video Link</strong><p>Open Facebook or Instagram, tap Share → Copy Link</p></div></div>
-                    <div class="step-item"><div class="step-num">2</div><div class="step-content"><strong>Paste in Search Box</strong><p>Tap the input field - auto-pastes from clipboard</p></div></div>
-                    <div class="step-item"><div class="step-num">3</div><div class="step-content"><strong>Download in HD</strong><p>Choose quality & save instantly</p></div></div>
-                </div>
-                <div id="tab-updates" class="tab-panel">
-                    <div class="card"><span class="tag" style="margin-bottom:6px;display:inline-block;">New</span><h4 style="color:var(--text);margin-bottom:4px;">Galmee v3.0</h4><p style="font-size:11px;color:var(--text2);">Fresh dark design, Instagram support, faster downloads!</p></div>
-                    <div class="card"><span class="tag" style="margin-bottom:6px;display:inline-block;">Fix</span><h4 style="color:var(--text);margin-bottom:4px;">Speed Boost</h4><p style="font-size:11px;color:var(--text2);">60% faster video processing.</p></div>
-                </div>
-                <div id="tab-faq" class="tab-panel">
-                    <div class="card" onclick="this.classList.toggle('active')" style="cursor:pointer;"><div style="display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:13px;">Is Galmee really free? <i class="fas fa-chevron-down" style="font-size:10px;"></i></div><p style="font-size:11px;color:var(--text2);margin-top:8px;display:none;">Yes! 100% free. No registration, unlimited downloads.</p></div>
-                    <div class="card" onclick="this.classList.toggle('active')" style="cursor:pointer;"><div style="display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:13px;">Can I download stories? <i class="fas fa-chevron-down" style="font-size:10px;"></i></div><p style="font-size:11px;color:var(--text2);margin-top:8px;display:none;">Yes! Stories, reels & posts supported.</p></div>
-                </div>
-            </div>
-            <aside class="sidebar" id="homeSidebar"><div class="sidebar-sticky" id="sidebarContent"></div></aside>
-        </div>
-
-        <!-- FOOTER -->
-        <div class="footer">
-            <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""> <strong>Galmee</strong>
-            <div class="social-icons">
-                <a href="https://fb.com/yasingelma" class="social-icon fb" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://instagram.com/yasingelma" class="social-icon ig" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="https://t.me/anayasingg" class="social-icon tg" target="_blank"><i class="fab fa-telegram-plane"></i></a>
-                <a href="https://api.whatsapp.com/send?phone=251934646971" class="social-icon wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
-            </div>
-            <div class="footer-links">
-                <a href="page/purchase.html">Purchase</a><a href="blog.html">Blog</a><a href="page/about.html">About</a><a href="page/privacy.html">Privacy</a><a href="page/terms.html">Terms</a><a href="page/contact.html">Contact</a>
-            </div>
-            <p>2026 &copy; Galmee Inc | Developed by <a href="https://fb.com/yasingelma"><strong>Yasin Gelma</strong></a></p>
-        </div>
+    <div class="menu" id="menu">
+        <a href="#how">How</a>
+        <a href="#news">Updates</a>
+        <a href="#faq">FAQ</a>
     </div>
 
-    <script src="script.js"></script>
-    <script>
-        function toggleDrawer(){document.getElementById('drawer').classList.toggle('show');document.getElementById('drawerOverlay').classList.toggle('show');}
-        const blogPosts=[{id:1,title:"How to Download Facebook & Instagram Videos",slug:"how-to-download-facebook-instagram-videos",excerpt:"Complete step-by-step guide to download videos from Facebook and Instagram in HD quality.",thumbnail:"https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/how%20to%20download%20fb%20and%20ig%20videos.jpg",date:"2026-06-20",author:"Yasin Gelma",views:18200,readTime:"5 min read",tags:["Facebook","Instagram","Tutorial"]},{id:2,title:"Top Video Downloaders 2026",slug:"top-facebook-instagram-video-downloaders-2026",excerpt:"Compare the best video downloaders. See why Galmee leads in 2026.",thumbnail:"https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/top%205%20video%20fb%20and%20ig%20downloader%202026.jpg",date:"2026-06-15",author:"Yasin Gelma",views:14500,readTime:"6 min read",tags:["Tools","Comparison"]},{id:3,title:"Fix Instagram Download Errors",slug:"instagram-video-download-tips",excerpt:"Fix common errors like 'content not available' and rate limiting.",thumbnail:"https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/instagram-downloading-error-fixed.jpg",date:"2026-06-28",author:"Yasin Gelma",views:12800,readTime:"7 min read",tags:["Instagram","Errors"]},{id:4,title:"10 Tips for Faster Facebook Downloads",slug:"facebook-video-download-tips",excerpt:"Expert tips to download Facebook videos faster and better.",thumbnail:"https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/tips-to-download-facebook-faster.jpg",date:"2026-06-25",author:"Yasin Gelma",views:8500,readTime:"5 min read",tags:["Facebook","Tips"]}];
-        function renderBlogPosts(){const c=document.getElementById('blogPostsContainer');c.innerHTML=blogPosts.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(p=>`<article class="blog-card" onclick="location.href='blog/${p.slug}.html'"><img src="${p.thumbnail}" alt="${p.title}" class="blog-thumbnail" loading="lazy"><div class="blog-card-body"><h2>${p.title}</h2><div class="blog-meta"><span><i class="fas fa-calendar"></i> ${new Date(p.date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</span><span><i class="fas fa-user"></i> ${p.author}</span><span><i class="fas fa-eye"></i> ${p.views.toLocaleString()}</span><span><i class="fas fa-clock"></i> ${p.readTime}</span></div><p class="blog-excerpt">${p.excerpt}</p><div class="blog-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div><span class="read-more">Read Article <i class="fas fa-arrow-right"></i></span></div></article>`).join('')}
-        renderBlogPosts();
-    </script>
+    <div class="menu-toggle" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <h1>Facebook Video Downloader</h1>
+    <p>Fast • Free • HD Quality</p>
+
+    <form id="dlForm" class="search-area">
+        <input type="text" id="urlInput" placeholder="Paste Facebook link...">
+        <button class="btn-dl"><i class="fas fa-download"></i></button>
+    </form>
+
+    <!-- PREVIEW -->
+    <div id="preview"></div>
+</div>
+
+<!-- TOP AD -->
+<div class="ad">Ads Banner (728x90)</div>
+
+<!-- HOW -->
+<div class="section" id="how">
+    <h2>How to Download</h2>
+    <div class="grid">
+        <div class="card">
+            <i class="fas fa-link"></i>
+            <h3>Copy Link</h3>
+        </div>
+        <div class="card">
+            <i class="fas fa-paste"></i>
+            <h3>Paste Link</h3>
+        </div>
+        <div class="card">
+            <i class="fas fa-download"></i>
+            <h3>Download</h3>
+        </div>
+    </div>
+</div>
+
+<!-- INLINE AD -->
+<div class="ad">Ads (Responsive)</div>
+
+<!-- NEWS -->
+<div class="section" id="news">
+    <h2>Latest Updates</h2>
+    <div class="grid">
+        <div class="card">
+            <h3>Version 2.0</h3>
+            <p>Added HD downloads & preview player</p>
+        </div>
+        <div class="card">
+            <h3>Speed Upgrade</h3>
+            <p>Faster processing servers</p>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ -->
+<div class="section" id="faq">
+    <h2>FAQs</h2>
+
+    <div class="faq-item" onclick="this.classList.toggle('active')">
+        <strong>Is it free?</strong>
+        <div class="faq-answer">Yes, completely free.</div>
+    </div>
+
+    <div class="faq-item" onclick="this.classList.toggle('active')">
+        <strong>Private videos?</strong>
+        <div class="faq-answer">Not supported.</div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <div class="footer-grid">
+        <div>
+            <h3>YasinG</h3>
+            <p>Best video downloader tool.</p>
+        </div>
+
+        <div>
+            <h4>Links</h4>
+            <a href="#">Home</a>
+            <a href="#">FAQ</a>
+        </div>
+
+        <div>
+            <h4>Follow</h4>
+            <div class="social">
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-telegram"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+function toggleMenu(){
+    document.getElementById("menu").classList.toggle("show");
+}
+</script>
+
 </body>
 </html>
