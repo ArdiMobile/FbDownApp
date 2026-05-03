@@ -3,22 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galmee - Free YouTube Video Downloader | HD Quality</title>
+   <title>Galmee - Free YouTube Video Downloader | HD Quality</title>
     <meta name="description" content="Download YouTube videos in HD quality for free. No registration required. Fast and easy YouTube downloader.">
-    <meta name="keywords" content="youtube video downloader, galmee, youtube hd download, free youtube downloader">
+    <meta name="keywords" content="Galmee, facebook video downloader, instagram video downloader, free video downloader, HD video download, fb video saver, instagram reel downloader">
     <meta name="author" content="Yasin Gelma">
-
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+    
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://yasing.com.et/">
-    <meta property="og:title" content="Galmee - Free YouTube Video Downloader">
-    <meta property="og:description" content="Download YouTube videos in HD quality. Fast, free, no registration.">
+    <meta property="og:title" content="Galmee - Free Facebook & Instagram Video Downloader | HD Quality">
+    <meta property="og:description" content="Download Facebook & Instagram videos in HD quality. Fast, free, no registration required.">
     <meta property="og:image" content="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/galmee%20pages%20banner.jpg">
-
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Galmee">
+    <meta property="og:locale" content="en_US">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://yasing.com.et/">
+    <meta name="twitter:title" content="Galmee - Free Facebook & Instagram Video Downloader">
+    <meta name="twitter:description" content="Download YouTube videos in HD quality. Fast, free, no registration.">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/galmee%20pages%20banner.jpg">
+    
     <link rel="canonical" href="https://yasing.com.et/">
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-     
+    
+    <script>window.si=window.si||function(){(window.siq=window.siq||[]).push(arguments)};</script>
+    <script defer src="/_vercel/speed-insights/script.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6017531796888844" crossorigin="anonymous"></script>
+    
     <style>
         .conarea{position:relative;max-width:900px;margin:100px auto 0 auto;z-index:1}
         .conman{position:absolute;width:250px;top:-95px;left:324px;z-index:-1;pointer-events:none}
@@ -122,37 +139,154 @@
         @media(min-width:481px) and (max-width:768px){.hero-brand{font-size:32px}.apps-grid{grid-template-columns:repeat(3,1fr)}}
         @media(min-width:1025px){.main{padding:28px 32px}.sidebar{display:block}.hero-card{padding:44px 36px}.hero-brand{font-size:48px}.hero-card h1{font-size:20px}.search-box input{padding:16px 20px;font-size:15px}.dl-btn{width:52px;height:52px}.apps-grid{grid-template-columns:repeat(4,1fr)}.blog-thumbnail{height:200px}}
     </style>
-    <style>
-        :root{--primary:#009959;--primary-dark:#007a47;--primary-light:#e6f5ee;--gold:#FEC601;--gold-dark:#e6b300;--gold-light:#fff9e6;--dark:#002611;--white:#FFFFFF;--text:#002611;--text-secondary:#4a6b56;--border:#d4e6da;--shadow:0 2px 4px rgba(0,38,17,0.06);--shadow-md:0 4px 16px rgba(0,38,17,0.1);--shadow-lg:0 8px 32px rgba(0,38,17,0.15);--radius-sm:8px;--radius:14px;--radius-lg:18px}
-        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
-        body{font-family:'Inter',-apple-system,sans-serif;background:#f5f8f6;color:var(--text);line-height:1.6;min-height:100vh}
-        /* ... (keep all your existing styles) ... */
-    </style>
 </head>
 <body>
-    <!-- HEADER, DRAWER, etc. (keep as is) -->
-
-    <!-- HERO SECTION - IMPORTANT FIX -->
-    <div class="hero-card" id="heroSection">
-        <div class="hero-brand">Galmee</div>
-        <h1>YouTube Video Downloader</h1>
-        <div class="platform-badges">
-            <span class="platform-badge"><i class="fab fa-youtube"></i> YouTube</span>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee" class="logo-icon">
+                <span class="logo-text">Galmee</span><span class="logo-dot">.et</span>
+            </a>
+            <button class="menu-btn" onclick="toggleDrawer()" aria-label="Menu"><i class="fas fa-bars"></i></button>
         </div>
-        <form id="dlForm" class="search-box">
-            <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
-            <input type="text" id="urlInput" placeholder="Paste YouTube link here...">
-            <button type="submit" class="dl-btn" id="dlBtn">
-                <i class="fas fa-download" id="dlBtnIcon"></i>
-                <span id="btnLoader" style="display:none;"></span>
-            </button>
-        </form>
-        <p class="subtitle">Fast • Free • HD Quality • No Registration</p>
-        <div id="preview" class="preview-area"></div>
-    </div>
+    </header>
 
-    <!-- Rest of your HTML remains the same -->
+    <!-- DRAWER -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
+    <nav class="drawer" id="drawer">
+        <div class="drawer-header">
+            <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
+            <button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="drawer-menu">
+            <a href="#" class="active" onclick="switchTab(event,'tab-home')"><i class="fas fa-home"></i> Home</a>
+            <a href="#" onclick="switchTab(event,'tab-how')"><i class="fas fa-download"></i> How to Use</a>
+            <a href="#" onclick="switchTab(event,'tab-updates')"><i class="fas fa-bell"></i> Updates</a>
+            <a href="#" onclick="switchTab(event,'tab-faq')"><i class="fas fa-question-circle"></i> FAQ</a>
+            <a href="page/purchase.html"><i class="fa-solid fa-crown"></i> Purchase</a>
+            <a href="blog.html"><i class="fas fa-rss"></i> Blog</a>
+            <a href="page/about.html"><i class="fa-solid fa-user"></i> About</a>
+            <a href="page/privacy.html"><i class="fa-solid fa-shield-haltered"></i> Privacy</a>
+            <a href="page/terms.html"><i class="fa-solid fa-file-contract"></i> Terms</a>
+            <a href="page/copyright.html"><i class="fa-solid fa-copyright"></i> Copyright</a>
+            <a href="page/contact.html"><i class="fa-solid fa-envelope"></i> Contact</a>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="main">
+        <!-- HERO -->
+        <div class="hero-card" id="heroSection">
+            <div class="hero-brand">Galmee</div>
+            <h1>HD Youtube Video Downloader</h1>
+            <div class="platform-badges">
+                <span class="platform-badge"><i class="fab fa-youtube"></i> YouTube</span>
+                <span class="platform-badge"><i class="fab fa-youtube"></i> YouTube</span>
+            </div>
+            <div class="conarea">
+                <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/keno.png" alt="Hold search bar" class="conman">
+            </div>
+            <form id="dlForm" class="search-box">
+                <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
+                <input type="text" id="urlInput" placeholder="Paste YouTube link here...">
+                <button type="submit" class="dl-btn" id="dlBtn"><i class="fas fa-download" id="dlBtnIcon"></i><span id="btnLoader" style="display:none;"></span></button>
+            </form>
+            <p class="subtitle">Fast • Free • HD Quality • No Registration</p>
+            <div id="preview" class="preview-area"></div>
+        </div>
+
+        <!-- CONTENT + SIDEBAR -->
+        <div style="display:flex;gap:24px;align-items:flex-start;">
+            <div class="main-content">
+                <!-- TABS -->
+                <div class="tabs-scroll" id="tabBar">
+                    <button class="tab-btn active" onclick="switchTab(event,'tab-home')"><i class="fas fa-home"></i> Home</button>
+                    <button class="tab-btn" onclick="switchTab(event,'tab-how')"><i class="fas fa-download"></i> Steps</button>
+                    <button class="tab-btn" onclick="switchTab(event,'tab-updates')"><i class="fas fa-bell"></i> News</button>
+                    <button class="tab-btn" onclick="switchTab(event,'tab-faq')"><i class="fas fa-question-circle"></i> FAQ</button>
+                    <button class="tab-btn" onclick="switchTab(event,'tab-apps')"><i class="fas fa-th-large"></i> More</button>
+                </div>
+
+                <!-- HOME TAB - Blog Posts -->
+                <div id="tab-home" class="tab-panel active">
+                    <div class="card">
+                        <div class="card-title"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""> Latest Articles</div>
+                        <div class="main-content" id="blogPostsContainer"></div>
+                    </div>
+                </div>
+
+                <!-- HOW TO TAB -->
+                <div id="tab-how" class="tab-panel">
+                    <div class="step-item"><div class="step-num">1</div><div class="step-content"><strong>Copy Video Link</strong><p>Open Facebook or Instagram, tap Share → Copy Link</p></div></div>
+                    <div class="step-item"><div class="step-num">2</div><div class="step-content"><strong>Paste in Search Box</strong><p>Tap the input field - link auto-pastes from clipboard</p></div></div>
+                    <div class="step-item"><div class="step-num">3</div><div class="step-content"><strong>Download in HD</strong><p>Choose your quality & save to your device instantly</p></div></div>
+                </div>
+
+                <!-- UPDATES TAB -->
+                <div id="tab-updates" class="tab-panel">
+                    <div class="update-card"><span class="badge new">New</span><h4>Galmee v3.0 Launched</h4><p style="font-size:12px;color:var(--text-secondary);">Fresh design, Instagram support, and faster downloads!</p></div>
+                    <div class="update-card"><span class="badge fix">Fix</span><h4>Speed Boost</h4><p style="font-size:12px;color:var(--text-secondary);">60% faster video processing. Improved error handling.</p></div>
+                </div>
+
+                <!-- FAQ TAB -->
+                <div id="tab-faq" class="tab-panel">
+                    <div class="faq-card" onclick="this.classList.toggle('active')"><div class="faq-question">Is Galmee really free? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes! 100% free. No registration, no hidden fees, unlimited downloads.</div></div>
+                    <div class="faq-card" onclick="this.classList.toggle('active')"><div class="faq-question">Can I download Instagram stories? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes! Stories, reels, and posts are all supported.</div></div>
+                    <div class="faq-card" onclick="this.classList.toggle('active')"><div class="faq-question">What quality is available? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Up to 1080p Full HD. Quality depends on the original upload.</div></div>
+                    <div class="faq-card" onclick="this.classList.toggle('active')"><div class="faq-question">Is it safe to use? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Absolutely. We don't store your data or downloaded videos.</div></div>
+                </div>
+
+                <!-- APPS TAB -->
+                <div id="tab-apps" class="tab-panel">
+                    <div class="apps-grid">
+                        <div class="app-card"><i class="fab fa-instagram" style="color:#E4405F;"></i><span>Instagram</span></div>
+                        <div class="app-card"><i class="fab fa-facebook" style="color:#1877f2;"></i><span>Facebook</span></div>
+                        <div class="app-card"><i class="fab fa-tiktok" style="color:#000;"></i><span>TikTok (Soon)</span></div>
+                        <div class="app-card"><i class="fab fa-youtube" style="color:#FF0000;"></i><span>YouTube (Soon)</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar" id="homeSidebar">
+                <div class="sidebar-sticky" id="sidebarContent"></div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-logo">
+            <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
+            <span>Galmee</span><h4 class="logo-dot">.et</h4>
+        </div>
+        <div class="social-icons">
+            <a href="https://fb.com/yasingelma" class="social-icon fb" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://instagram.com/yasingelma" class="social-icon ig" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://t.me/anayasingg" class="social-icon telegram" target="_blank"><i class="fab fa-telegram-plane"></i></a>
+            <a href="https://api.whatsapp.com/send?phone=251934646971" class="social-icon whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <div class="footer-links">
+            <a href="page/purchase.html">Purchase</a>
+            <a href="blog.html">Blog</a>
+            <a href="page/about.html">About</a>
+            <a href="page/privacy.html">Privacy</a>
+            <a href="page/terms.html">Terms</a>
+            <a href="page/copyright.html">Copyright</a>
+            <a href="page/contact.html">Contact</a>
+        </div>
+        <p class="copyright">2026 &copy; Galmee Inc | Developed by <a href="https://fb.com/yasingelma" id="credit-link"><strong>Yasin Gelma</strong></a></p>
+    </footer>
 
     <script src="script.js"></script>
+    <script>
+        function toggleDrawer(){document.getElementById('drawer').classList.toggle('show');document.getElementById('drawerOverlay').classList.toggle('show');}
+
+        const blogPosts=[{id:1,title:"How to Download Facebook & Instagram Videos",slug:"how-to-download-facebook-instagram-videos",excerpt:"Complete guide to download videos from Facebook and Instagram in HD quality. Step-by-step tutorial with Galmee.",thumbnail:"https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/how%20to%20download%20fb%20and%20ig%20videos.jpg",date:"2026-06-20",author:"Yasin Gelma",views:18200,readTime:"4 min read",tags:["Facebook","Instagram","Tutorial","Guide"],category:"Tutorial"},{id:2,title:"Top Facebook & Instagram Video Downloaders 2026",slug:"top-facebook-instagram-video-downloaders-2026",excerpt:"Compare the best video downloaders for Facebook and Instagram. Why Galmee leads in 2026.",thumbnail:"https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/top%205%20video%20fb%20and%20ig%20downloader%202026.jpg",date:"2026-06-15",author:"Yasin Gelma",views:14500,readTime:"6 min read",tags:["Tools","Comparison","2026","Review"],category:"Review"}];
+
+        function renderBlogPosts(){const c=document.getElementById('blogPostsContainer');const s=[...blogPosts].sort((a,b)=>new Date(b.date)-new Date(a.date));c.innerHTML=s.map(p=>`<article class="blog-card" onclick="location.href='blog/${p.slug}.html'"><img src="${p.thumbnail}" alt="${p.title}" class="blog-thumbnail" loading="lazy"><div class="blog-card-body"><h2>${p.title}</h2><div class="blog-meta"><span><i class="fas fa-calendar"></i> ${new Date(p.date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</span><span><i class="fas fa-user"></i> ${p.author}</span><span><i class="fas fa-eye"></i> ${p.views.toLocaleString()} views</span><span><i class="fas fa-clock"></i> ${p.readTime}</span></div><p class="blog-excerpt">${p.excerpt}</p><div class="blog-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div><span class="read-more">Read Article <i class="fas fa-arrow-right"></i></span></div></article>`).join('')}
+        renderBlogPosts();
+    </script>
 </body>
 </html>
