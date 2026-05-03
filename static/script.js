@@ -1,29 +1,35 @@
 const input = document.getElementById("urlInput");
 const preview = document.getElementById("preview");
 
-// AUTO URL DETECT
-input.addEventListener("paste", () => {
-    setTimeout(() => {
-        handleInput(input.value);
-    }, 300);
+// AUTO DETECT (paste OR typing)
+input.addEventListener("input", () => {
+    handleInput(input.value.trim());
 });
 
-async function handleInput(value) {
-    if (value.includes("youtube.com") || value.includes("youtu.be")) {
+function isYouTube(url){
+    return url.includes("youtube.com") || url.includes("youtu.be");
+}
+
+function handleInput(value){
+    if (!value) return;
+
+    if (isYouTube(value)) {
         window.location.href = `/download?url=${encodeURIComponent(value)}`;
     } else {
         searchVideo(value);
     }
 }
 
-// SEARCH
-async function searchVideo(query) {
-    const res = await fetch(`/api/search?q=${query}`);
+// SEARCH FUNCTION
+async function searchVideo(query){
+    const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
     const data = await res.json();
 
+    if(data.status !== "success") return;
+
     preview.innerHTML = data.results.map(v => `
-        <div onclick="go('${v.url}')">
-            <img src="${v.thumbnail}" width="100%">
+        <div onclick="go('${v.url}')" style="margin-bottom:10px;cursor:pointer;">
+            <img src="${v.thumbnail}" style="width:100%;border-radius:10px;">
             <p>${v.title}</p>
         </div>
     `).join('');
