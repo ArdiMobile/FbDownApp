@@ -1,3 +1,5 @@
+const API_BASE = ""; // leave empty → same domain (Railway handles it)
+
 const dlForm = document.getElementById('dlForm');
 const urlInput = document.getElementById('urlInput');
 const preview = document.getElementById('preview');
@@ -22,13 +24,10 @@ async function processPreview(url) {
     btnLoader.style.display = "block";
     btnLoader.innerHTML = `<span class="btn-spinner"></span>`;
 
-    preview.innerHTML = `
-        <div style="text-align:center;padding:20px;color:white;">
-            Fetching video...
-        </div>`;
+    preview.innerHTML = `<div style="text-align:center;padding:20px;color:white;">Fetching video...</div>`;
 
     try {
-        const res = await fetch(`/api/info?url=${encodeURIComponent(url)}`);
+        const res = await fetch(`${API_BASE}/api/info?url=${encodeURIComponent(url)}`);
         const data = await res.json();
 
         dlBtnIcon.style.display = "block";
@@ -43,8 +42,6 @@ async function processPreview(url) {
             </div>`;
             return;
         }
-
-        const video = data.formats[0];
 
         preview.innerHTML = `
         <div style="background:#fff;border-radius:16px;padding:15px;">
