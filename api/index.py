@@ -1,64 +1,51 @@
-from http.server import BaseHTTPRequestHandler
-import json
-from urllib.parse import parse_qs, urlparse
+from flask import Flask, request, jsonify
 import yt_dlp
-import sys
 
-class handler(BaseHTTPRequestHandler):
+app = Flask(__name__)
 
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-        self.end_headers()
+@app.route("/api/info")
+def get_video():
+    url = request.args.get("url")
 
-    def do_GET(self):
-        query = parse_qs(urlparse(self.path).query)
-        url = query.get('url', [None])[0]
+    if not url:
+        return jsonify({"status": "error", "message": "No URL provided"})
 
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.end_headers()
+    try:
+        ydl_opts = {
+            'quiet': True,
+            'noplaylist': True,
+            'format': 'bestvideo+bestaudio/best',
+        }
 
-        if not url:
-            self.wfile.write(json.dumps({"status": "error", "message": "No URL"}).encode())
-            return
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
 
-        try:
-            ydl_opts = {
-                'quiet': True,
-                'noplaylist': True,
-                'format': 'bestvideo+bestaudio/best',
-            }
+            formats = []
+            for f in info.get("formats", []):
+                if f.get("url") and f.get("height"):
+                    formats.append({
+                        "quality": f"{f.get('height')}p",
+                        "url": f["url"]
+                    })
 
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(url, download=False)
+            formats = sorted(formats, key=lambda x: int(x["quality"].replace("p","")), reverse=True)[:6]
 
-                formats = []
-                for f in info.get("formats", []):
-                    if f.get("url") and f.get("height"):
-                        formats.append({
-                            "quality": f"{f.get('height')}p",
-                            "url": f["url"]
-                        })
+            return jsonify({
+                "status": "success",
+                "title": info.get("title"),
+                "thumbnail": info.get("thumbnail"),
+                "uploader": info.get("uploader"),
+                "formats": formats
+            })
 
-                formats = sorted(formats, key=lambda x: int(x["quality"].replace("p","")), reverse=True)[:5]
+    except Exception as e:
+        print("ERROR:", str(e))
+        return jsonify({
+            "status": "error",
+            "message": "Failed to fetch video"
+        })
 
-                response = {
-                    "status": "success",
-                    "title": info.get("title"),
-                    "thumbnail": info.get("thumbnail"),
-                    "uploader": info.get("uploader"),
-                    "formats": formats
-                }
-
-        except Exception as e:
-            print("ERROR:", str(e), file=sys.stderr)
-            response = {
-                "status": "error",
-                "message": "Failed to fetch video"
-            }
-
-        self.wfile.write(json.dumps(response).encode())
+# IMPORTANT: Railway runs on PORT env
+if __name__ == "__main__":
+    import os
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
