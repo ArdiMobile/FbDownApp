@@ -1,14 +1,39 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import yt_dlp
+import os
 
 app = Flask(__name__)
+
+# =========================
+# PAGE ROUTES (IMPORTANT)
+# =========================
+
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+@app.route("/youtube")
+def youtube():
+    return render_template("YouTube.html")
+
+@app.route("/blog")
+def blog():
+    return render_template("blog.html")
+
+
+# =========================
+# API ROUTE
+# =========================
 
 @app.route("/api/info")
 def get_video():
     url = request.args.get("url")
 
     if not url:
-        return jsonify({"status": "error", "message": "No URL provided"})
+        return jsonify({
+            "status": "error",
+            "message": "No URL provided"
+        })
 
     try:
         ydl_opts = {
@@ -28,7 +53,12 @@ def get_video():
                         "url": f["url"]
                     })
 
-            formats = sorted(formats, key=lambda x: int(x["quality"].replace("p","")), reverse=True)[:6]
+            # Sort highest quality first
+            formats = sorted(
+                formats,
+                key=lambda x: int(x["quality"].replace("p", "")),
+                reverse=True
+            )[:6]
 
             return jsonify({
                 "status": "success",
@@ -45,7 +75,13 @@ def get_video():
             "message": "Failed to fetch video"
         })
 
-# IMPORTANT: Railway runs on PORT env
+
+# =========================
+# RUN APP (RAILWAY)
+# =========================
+
 if __name__ == "__main__":
-    import os
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 5000))
+    )
