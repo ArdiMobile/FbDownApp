@@ -8,9 +8,11 @@ const ICON_URL = 'https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/im
 const SITE_URL = 'https://yasing.com.et';
 
 function detectPlatform(url) {
-    if (url.includes('facebook.com') || url.includes('fb.com') || url.includes('fb.watch')) return 'facebook';
-    if (url.includes('instagram.com') || url.includes('instagr.am')) return 'instagram';
-    return 'unknown';
+    return 'youtube';
+}
+
+function isValidUrl(url) {
+    return url.includes('youtube.com') || url.includes('youtu.be');
 }
 
 function isValidUrl(url) {
@@ -26,7 +28,7 @@ urlInput.addEventListener('focus', async () => {
     try {
         const text = await navigator.clipboard.readText();
         if (isValidUrl(text) && text !== urlInput.value) urlInput.value = text;
-    } catch (e) { urlInput.placeholder = "Paste Facebook or Instagram link..."; }
+    } catch (e) { urlInput.placeholder="Paste YouTube link here..."; }
 });
 
 function toggleDrawer() {
@@ -66,10 +68,9 @@ async function processPreview(url) {
     btnLoader.style.display = "block";
     btnLoader.innerHTML = `<span class="btn-spinner"></span>`;
 
-    const platform = detectPlatform(url);
-    const platformName = platform === 'instagram' ? 'Instagram' : 'Facebook';
-    const platformIcon = platform === 'instagram' ? 'fa-instagram' : 'fa-facebook';
-    const platformColor = platform === 'instagram' ? '#E4405F' : '#1877f2';
+    const platformName = 'YouTube';
+const platformIcon = 'fa-youtube';
+const platformColor = '#FF0000';
 
     preview.innerHTML = `<div style="text-align:center;padding:20px;"><span class="btn-spinner" style="width:24px;height:24px;border:2px solid rgba(0,153,89,0.3);border-top:2px solid #009959;display:inline-block;border-radius:50%;animation:spin 0.6s linear infinite;"></span><p style="color:#4a6b56;font-size:13px;margin-top:8px;">Fetching ${platformName} video...</p></div>`;
 
