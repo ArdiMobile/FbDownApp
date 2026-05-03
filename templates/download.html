@@ -213,44 +213,127 @@
 const params = new URLSearchParams(window.location.search);
 const url = params.get("url");
 
+// Loading state
+document.getElementById("videoBox").innerHTML = `
+    <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;">
+        <i class="fas fa-spinner fa-spin" style="font-size:40px;color:#009959;"></i>
+        <p style="margin-top:10px;">Loading video information...</p>
+    </div>
+`;
+
 fetch(`/api/info?url=${encodeURIComponent(url)}`)
 .then(res => res.json())
 .then(data => {
 
   if(data.status !== "success"){
-    document.getElementById("videoBox").innerHTML = "Failed to load video";
+    document.getElementById("videoBox").innerHTML = `
+        <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;">
+            <i class="fas fa-exclamation-triangle" style="font-size:40px;color:#e74c3c;"></i>
+            <p style="margin-top:10px;">Failed to load video. Please check the URL and try again.</p>
+        </div>
+    `;
     return;
   }
 
+  // Format file sizes
+  function formatSize(bytes) {
+    if (bytes === 0 || !bytes) return 'Unknown size';
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+  }
+
+  // Format duration
+  function formatDuration(seconds) {
+    if (!seconds) return 'Unknown';
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hrs ? hrs + ':' : ''}${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  // Build quality options
+  let qualityOptions = '';
+  if (data.formats && data.formats.length > 0) {
+    data.formats.forEach(f => {
+      qualityOptions += `
+        <option value="${f.format_id}">
+          ${f.resolution ? f.resolution + ' (' + formatSize(f.filesize) + ')' : 'Audio only'}
+        </option>
+      `;
+    });
+  }
+
   document.getElementById("videoBox").innerHTML = `
-    <div style="background:#fff;padding:15px;border-radius:12px;">
+    <div style="background:#fff;padding:20px;border-radius:12px;">
 
       <!-- VIDEO PLAYER -->
-      <div style="border-radius:10px;overflow:hidden;">
+      <div style="border-radius:10px;overflow:hidden;position:relative;">
         <iframe 
           width="100%" 
-          height="200"
+          height="250"
           src="https://www.youtube.com/embed/${getVideoId(url)}"
           frameborder="0"
-          allowfullscreen>
+          allowfullscreen
+          style="border-radius:10px;">
         </iframe>
       </div>
 
-      <!-- INFO -->
-      <h3 style="margin-top:10px;">${data.title}</h3>
-      <p>${data.uploader}</p>
+      <!-- VIDEO INFO -->
+      <div style="margin-top:15px;">
+        <h3 style="font-size:18px;margin-bottom:5px;">${data.title}</h3>
+        <div style="display:flex;gap:15px;color:#666;font-size:13px;flex-wrap:wrap;">
+          <span><i class="fas fa-user"></i> ${data.uploader || 'Unknown'}</span>
+          <span><i class="fas fa-clock"></i> ${formatDuration(data.duration)}</span>
+        </div>
+      </div>
 
-      <!-- BUTTONS -->
-      <button onclick="downloadVideo('${url}')" 
-        style="width:100%;padding:14px;margin-top:15px;background:#009959;color:#fff;border:none;border-radius:10px;font-size:16px;">
-        ⬇ Download MP4
-      </button>
+      <!-- QUALITY SELECTOR -->
+      ${qualityOptions ? `
+      <div style="margin-top:15px;">
+        <label style="font-weight:600;font-size:14px;margin-bottom:8px;display:block;">
+          <i class="fas fa-video"></i> Select Quality:
+        </label>
+        <select id="qualitySelect" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;margin-bottom:15px;">
+          ${qualityOptions}
+        </select>
+      </div>
+      ` : ''}
 
-      <button onclick="downloadVideo('${url}')" 
-        style="width:100%;padding:14px;margin-top:10px;background:#222;color:#fff;border:none;border-radius:10px;font-size:16px;">
-        🎵 Download MP3
-      </button>
+      <!-- DOWNLOAD BUTTONS -->
+      <div style="display:grid;gap:10px;">
+        <button onclick="downloadVideo('${url}')" 
+          style="width:100%;padding:14px;background:#009959;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s ease;"
+          onmouseover="this.style.background='#007a47'"
+          onmouseout="this.style.background='#009959'">
+          <i class="fas fa-download"></i> Download Video
+        </button>
 
+        <button onclick="downloadAudio('${url}')" 
+          style="width:100%;padding:14px;background:#333;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s ease;"
+          onmouseover="this.style.background='#555'"
+          onmouseout="this.style.background='#333'">
+          <i class="fas fa-music"></i> Download MP3 (Audio Only)
+        </button>
+      </div>
+
+      <!-- LOADING OVERLAY -->
+      <div id="downloadOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:1000;display:none;align-items:center;justify-content:center;">
+        <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;">
+          <i class="fas fa-spinner fa-spin" style="font-size:40px;color:#009959;"></i>
+          <p style="margin-top:10px;font-weight:600;">Preparing your download...</p>
+          <p style="font-size:12px;color:#666;">This may take a moment</p>
+        </div>
+      </div>
+
+    </div>
+  `;
+})
+.catch(err => {
+  document.getElementById("videoBox").innerHTML = `
+    <div style="background:#fff;padding:30px;border-radius:12px;text-align:center;">
+      <i class="fas fa-exclamation-triangle" style="font-size:40px;color:#e74c3c;"></i>
+      <p style="margin-top:10px;">Connection error. Please try again.</p>
     </div>
   `;
 });
@@ -262,10 +345,63 @@ function getVideoId(url){
   return match ? match[1] : "";
 }
 
-// TEMP download (still basic)
-function downloadVideo(url){
-  window.open(url, "_blank");
+// Download Video
+async function downloadVideo(url) {
+  const overlay = document.getElementById('downloadOverlay');
+  const formatId = document.getElementById('qualitySelect')?.value || '';
+  
+  if (overlay) overlay.style.display = 'flex';
+  
+  try {
+    const response = await fetch(`/api/download?url=${encodeURIComponent(url)}&format_id=${formatId}`);
+    const data = await response.json();
+    
+    if (data.status === 'success') {
+      // Trigger actual download
+      window.open(data.download_url, '_blank');
+      
+      // Show success message
+      setTimeout(() => {
+        if (overlay) overlay.style.display = 'none';
+        alert('Download started! If it doesn\'t start automatically, check your popup blocker.');
+      }, 1000);
+    } else {
+      throw new Error(data.message || 'Download failed');
+    }
+  } catch (err) {
+    if (overlay) overlay.style.display = 'none';
+    alert('Download failed: ' + err.message);
+  }
 }
+
+// Download Audio
+async function downloadAudio(url) {
+  const overlay = document.getElementById('downloadOverlay');
+  
+  if (overlay) overlay.style.display = 'flex';
+  
+  try {
+    // Request best audio format
+    const response = await fetch(`/api/download?url=${encodeURIComponent(url)}&format_id=bestaudio`);
+    const data = await response.json();
+    
+    if (data.status === 'success') {
+      window.open(data.download_url, '_blank');
+      
+      setTimeout(() => {
+        if (overlay) overlay.style.display = 'none';
+        alert('Audio download started!');
+      }, 1000);
+    } else {
+      throw new Error(data.message || 'Download failed');
+    }
+  } catch (err) {
+    if (overlay) overlay.style.display = 'none';
+    alert('Audio download failed: ' + err.message);
+  }
+}
+
+function toggleDrawer(){document.getElementById('drawer').classList.toggle('show');document.getElementById('drawerOverlay').classList.toggle('show');}
 </script>
     <script>
         function toggleDrawer(){document.getElementById('drawer').classList.toggle('show');document.getElementById('drawerOverlay').classList.toggle('show');}
