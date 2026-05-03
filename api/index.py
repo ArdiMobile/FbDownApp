@@ -1,9 +1,8 @@
 from http.server import BaseHTTPRequestHandler
 import json
 from urllib.parse import parse_qs, urlparse
-import traceback
-import sys
 import yt_dlp
+import sys
 
 class handler(BaseHTTPRequestHandler):
 
@@ -15,8 +14,8 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        query_params = parse_qs(urlparse(self.path).query)
-        url = query_params.get('url', [None])[0]
+        query = parse_qs(urlparse(self.path).query)
+        url = query.get('url', [None])[0]
 
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
@@ -24,14 +23,13 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
 
         if not url:
-            self.wfile.write(json.dumps({"status": "error", "message": "No URL provided"}).encode())
+            self.wfile.write(json.dumps({"status": "error", "message": "No URL"}).encode())
             return
 
         try:
             ydl_opts = {
                 'quiet': True,
                 'noplaylist': True,
-                'no_warnings': True,
                 'format': 'bestvideo+bestaudio/best',
             }
 
@@ -40,33 +38,27 @@ class handler(BaseHTTPRequestHandler):
 
                 formats = []
                 for f in info.get("formats", []):
-                    if not f.get("url") or not f.get("height"):
-                        continue
-                    height = f.get("height")
-                    has_audio = f.get("acodec") != "none"
-                    label = f"{height}p {'🔊' if has_audio else '🔇'}"
-                    formats.append({
-                        "quality": label,
-                        "height": height,
-                        "url": f["url"],
-                        "has_audio": has_audio
-                    })
+                    if f.get("url") and f.get("height"):
+                        formats.append({
+                            "quality": f"{f.get('height')}p",
+                            "url": f["url"]
+                        })
 
-                formats = sorted(formats, key=lambda x: -x["height"])[:8]
+                formats = sorted(formats, key=lambda x: int(x["quality"].replace("p","")), reverse=True)[:5]
 
-                response_data = {
+                response = {
                     "status": "success",
-                    "title": info.get("title", "YouTube Video"),
-                    "thumbnail": info.get("thumbnail", ""),
-                    "uploader": info.get("uploader", ""),
-                    "duration": info.get("duration", 0),
+                    "title": info.get("title"),
+                    "thumbnail": info.get("thumbnail"),
+                    "uploader": info.get("uploader"),
                     "formats": formats
                 }
 
         except Exception as e:
-            response_data = {
-                "status": "error", 
-                "message": "Failed to fetch video. Make sure it's a valid public YouTube link."
+            print("ERROR:", str(e), file=sys.stderr)
+            response = {
+                "status": "error",
+                "message": "Failed to fetch video"
             }
 
-        self.wfile.write(json.dumps(response_data).encode())
+        self.wfile.write(json.dumps(response).encode())
