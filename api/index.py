@@ -34,13 +34,14 @@ class handler(BaseHTTPRequestHandler):
             if "facebook.com" in url and "m.facebook.com" not in url:
                 url = url.replace("www.facebook.com", "m.facebook.com").replace("web.facebook.com", "m.facebook.com")
 
-            # LOW QUALITY + AUDIO PRIORITY (Most Reliable)
+            # Best settings for getting formats WITH AUDIO
             ydl_opts = {
                 'quiet': True,
                 'noplaylist': True,
                 'no_warnings': True,
                 'extract_flat': False,
-                'format': 'best[ext=mp4][height<=720]/best[height<=720]/best',  # Force lower quality with audio
+                'format': 'best[ext=mp4]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best',
+                'merge_output_format': 'mp4',
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -56,13 +57,13 @@ class handler(BaseHTTPRequestHandler):
                         continue
 
                     height = f.get("height") or 0
-                    if height < 240 or height > 720:   # Limit to reliable range
+                    if height < 144:  # Skip very low useless formats
                         continue
 
                     vcodec = f.get("vcodec", "none")
                     acodec = f.get("acodec", "none")
 
-                    has_video = vcodec != "none"
+                    has_video = vcodec != "none" and height > 0
                     has_audio = acodec != "none"
 
                     if has_video:
@@ -82,16 +83,16 @@ class handler(BaseHTTPRequestHandler):
                 if not formats:
                     raise Exception("No formats found")
 
-                # Sort by height descending, audio first
+                # Sort: With audio first, then highest resolution
                 formats.sort(key=lambda x: (not x["has_audio"], -x["height"]))
 
-                # Deduplicate
+                # Deduplicate keeping best (with audio if possible)
                 seen = {}
                 unique = []
                 for f in formats:
-                    base = str(f["height"])
-                    if base not in seen or (f["has_audio"] and not seen[base]["has_audio"]):
-                        seen[base] = f
+                    base_q = f["quality"].split()[0]  # e.g. "1080p"
+                    if base_q not in seen or (f["has_audio"] and not seen[base_q]["has_audio"]):
+                        seen[base_q] = f
                         unique.append(f)
 
                 response_data = {
@@ -101,7 +102,7 @@ class handler(BaseHTTPRequestHandler):
                     "uploader": info.get("uploader", ""),
                     "uploader_url": info.get("uploader_url", ""),
                     "duration": info.get("duration", 0),
-                    "formats": unique[:5]   # Max 5 options
+                    "formats": unique[:6]
                 }
 
         except Exception as e:
