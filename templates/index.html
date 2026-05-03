@@ -71,14 +71,14 @@
         .hero-card .subtitle{font-size:13px;color:rgba(255,255,255,0.7);margin-top:20px;position:relative;z-index:1}
         .platform-badges{display:flex;justify-content:center;gap:50px;margin:10px 0;flex-wrap:wrap;position:relative;z-index:1}
         .platform-badge{padding:7px 14px;border-radius:50px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:#fff}
-        .search-box{display:flex;background:#fff;border-radius:50px;padding:5px;box-shadow:0 8px 30px rgba(0,0,0,0.3);max-width:650px;margin:0 auto;position:relative;z-index:1;border:2px solid transparent;transition:all 0.3s ease}
-        .search-box:focus-within{border-color:var(--gold);box-shadow:0 0 0 4px rgba(254,198,1,0.2),0 8px 30px rgba(0,0,0,0.3)}
-        .search-box input{flex:1;border:none;padding:14px 18px;outline:none;border-radius:50px;font-size:14px;background:transparent;color:var(--text);min-width:0}
-        .search-box input::placeholder{color:#999}
-        .search-box img{width:48px;height:48px}
+        .downloader{display:flex;background:#fff;border-radius:50px;padding:5px;box-shadow:0 8px 30px rgba(0,0,0,0.3);max-width:650px;margin:0 auto;position:relative;z-index:1;border:2px solid transparent;transition:all 0.3s ease}
+        .downloader:focus-within{border-color:var(--gold);box-shadow:0 0 0 4px rgba(254,198,1,0.2),0 8px 30px rgba(0,0,0,0.3)}
+        .downloader input{flex:1;border:none;padding:14px 18px;outline:none;border-radius:50px;font-size:14px;background:transparent;color:var(--text);min-width:0}
+        .downloader input::placeholder{color:#999}
+        .downloader img{width:48px;height:48px}
         .dl-btn{background:var(--primary);color:#fff;border:none;width:48px;height:48px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s ease}
         .dl-btn:hover{background:var(--gold);color:var(--dark);transform:scale(1.05);box-shadow:0 4px 20px rgba(254,198,1,0.4)}
-        .preview-area{margin-top:14px;position:relative;z-index:1}
+        .preview{margin-top:14px;position:relative;z-index:1}
         .tabs-scroll{display:flex;gap:8px;overflow-x:auto;padding:4px 0 16px;scrollbar-width:none}.tabs-scroll::-webkit-scrollbar{display:none}
         .tab-btn{padding:10px 20px;border:none;background:#fff;border-radius:50px;font-size:13px;font-weight:600;color:var(--text-secondary);cursor:pointer;white-space:nowrap;transition:all 0.2s ease;border:1px solid var(--border);display:flex;align-items:center;gap:6px;box-shadow:var(--shadow)}
         .tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 16px rgba(0,153,89,0.3)}
@@ -179,22 +179,6 @@
         <!-- HERO -->
         <div class="hero-card" id="heroSection">
 
-
-
-<section class="downloader">
-
-  <form id="dlForm">
-    <input id="urlInput" placeholder="Paste link or search..." />
-    <button>Download</button>
-  </form>
-
-  <div id="preview"></div>
-
-</section>
-
-
-
-
             <div class="hero-brand">Galmee</div>
             <h1>HD Youtube Video Downloader</h1>
             <div class="platform-badges">
@@ -204,11 +188,13 @@
             <div class="conarea">
                 <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/keno.png" alt="Hold search bar" class="conman">
             </div>
-            <form id="dlForm" class="search-box">
+           <form id="dlForm" class="downloader">
                 <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
                 <input type="text" id="urlInput" placeholder="Paste YouTube link here...">
                 <button type="submit" class="dl-btn" id="dlBtn"><i class="fas fa-download" id="dlBtnIcon"></i><span id="btnLoader" style="display:none;"></span></button>
-            </form>
+ </form>
+
+<div id="preview"></div>
             <p class="subtitle">Fast • Free • HD Quality • No Registration</p>
             <div id="preview" class="preview-area"></div>
         </div>
