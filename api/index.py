@@ -32,32 +32,19 @@ class handler(BaseHTTPRequestHandler):
                 'quiet': True,
                 'noplaylist': True,
                 'no_warnings': True,
-                'extract_flat': False,
-                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-                'merge_output_format': 'mp4',
+                'format': 'bestvideo+bestaudio/best',
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
 
-                if not info:
-                    raise Exception("Failed to extract video")
-
                 formats = []
                 for f in info.get("formats", []):
-                    if not f.get("url"):
+                    if not f.get("url") or not f.get("height"):
                         continue
-                    height = f.get("height") or 0
-                    if height < 144:
-                        continue
-                        
+                    height = f.get("height")
                     has_audio = f.get("acodec") != "none"
-                    label = f"{height}p"
-                    if has_audio:
-                        label += " 🔊"
-                    else:
-                        label += " 🔇"
-
+                    label = f"{height}p {'🔊' if has_audio else '🔇'}"
                     formats.append({
                         "quality": label,
                         "height": height,
@@ -65,17 +52,7 @@ class handler(BaseHTTPRequestHandler):
                         "has_audio": has_audio
                     })
 
-                # Sort: Audio first, highest quality
-                formats.sort(key=lambda x: (not x["has_audio"], -x["height"]))
-
-                # Deduplicate
-                seen = {}
-                unique = []
-                for f in formats:
-                    base = str(f["height"])
-                    if base not in seen or (f["has_audio"] and not seen[base]["has_audio"]):
-                        seen[base] = f
-                        unique.append(f)
+                formats = sorted(formats, key=lambda x: -x["height"])[:8]
 
                 response_data = {
                     "status": "success",
@@ -83,13 +60,13 @@ class handler(BaseHTTPRequestHandler):
                     "thumbnail": info.get("thumbnail", ""),
                     "uploader": info.get("uploader", ""),
                     "duration": info.get("duration", 0),
-                    "formats": unique[:8]
+                    "formats": formats
                 }
 
         except Exception as e:
             response_data = {
                 "status": "error", 
-                "message": "Failed to fetch video. Make sure it's a valid YouTube link."
+                "message": "Failed to fetch video. Make sure it's a valid public YouTube link."
             }
 
         self.wfile.write(json.dumps(response_data).encode())
