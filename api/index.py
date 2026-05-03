@@ -18,6 +18,7 @@ class handler(BaseHTTPRequestHandler):
             q = parse_qs(urlparse(self.path).query)
             url = q.get('url', [None])[0]
 
+            # 🛑 Improved Error Handling for missing URL
             if not url:
                 self.wfile.write(json.dumps({"error": "No URL provided"}).encode())
                 return
@@ -47,27 +48,29 @@ class handler(BaseHTTPRequestHandler):
                     h = f.get('height')
                     acodec = f.get('acodec', 'none')
 
+                    # skip if URL or height is missing
                     if not u or not h:
                         continue
                     
-                    # ❗ skip formats without audio
+                    # ❗ skip formats without audio (prevents silent videos)
                     if acodec == 'none':
                         continue
 
                     formats.append({
-                        "url": u,
                         "quality": f"{h}p",
-                        "extension": f.get('ext', 'mp4'),
+                        "url": u,
+                        "has_audio": True,
+                        "format_note": f.get('format_note', ''),
                         "filesize_approx": f.get('filesize') or f.get('filesize_approx')
                     })
 
-                # ✅ Safe sorting (prevents crash if quality isn't a standard string)
+                # ✅ Safe sorting (prevents crash on non-standard quality strings)
                 formats.sort(
                     key=lambda x: -int(x['quality'].replace('p', '')) 
                     if x['quality'].replace('p', '').isdigit() else 0
                 )
 
-                # ✅ Remove duplicate qualities
+                # ✅ Remove duplicate qualities (Keep the best one for each resolution)
                 unique = []
                 used = set()
                 for f in formats:
@@ -75,18 +78,18 @@ class handler(BaseHTTPRequestHandler):
                         used.add(f['quality'])
                         unique.append(f)
 
-                # ✅ Response Construction
+                # ✅ Construct Final Response
                 response = {
                     "status": "success",
                     "title": info.get('title', 'Video'),
                     "thumbnail": info.get('thumbnail', ''),
                     "uploader": info.get('uploader', ''),
                     "duration": info.get('duration', 0),
-                    "formats": unique # 🔥 No limit (better UX)
+                    "formats": unique # 🔥 no limit (better UX)
                 }
 
                 self.wfile.write(json.dumps(response).encode())
 
         except Exception as e:
+            # Catch-all for yt-dlp errors or network issues
             self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode())
-
