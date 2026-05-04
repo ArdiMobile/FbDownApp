@@ -10,7 +10,7 @@ def home():
     return render_template("index.html")
 
 # DOWNLOAD PAGE
-@app.route("/download-page")
+@app.route("/download")
 def download_page():
     return render_template("download.html")
 
