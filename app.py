@@ -11,7 +11,7 @@ def home():
 
 # DOWNLOAD PAGE
 @app.route("/download")
-def download_page():
+def download():
     return render_template("download.html")
 
 # API
