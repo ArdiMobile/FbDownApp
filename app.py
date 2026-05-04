@@ -15,10 +15,6 @@ def is_youtube_url(url):
 def index():
     return render_template('index.html')
 
-@app.route('/download.html')
-def download_page():
-    return render_template('download.html')
-
 @app.route('/api/info', methods=['GET'])
 def get_info():
     url = request.args.get('url', '').strip()
@@ -29,18 +25,29 @@ def get_info():
         ydl_opts = {
             'quiet': True,
             'no_warnings': True,
-            'extract_flat': False,
             'noplaylist': True,
+            'ignoreerrors': True,
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['default', 'ios', 'android', 'web'],
+                    'skip': ['translated_subs']
+                }
+            },
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
 
+            if not info:
+                raise Exception("Could not extract video info")
+
             video_formats = []
             audio_formats = []
 
             for f in info.get("formats", []):
-                if not f.get("url"): continue
+                if not f.get("url"):
+                    continue
                     
                 height = f.get("height") or 0
                 vcodec = f.get("vcodec", "none")
@@ -60,8 +67,8 @@ def get_info():
                         "url": f["url"]
                     })
 
-            video_formats = sorted(video_formats, key=lambda x: int(x["quality"][:-1]), reverse=True)
-            audio_formats = sorted(audio_formats, key=lambda x: int(x["quality"][:-4]), reverse=True)
+            video_formats = sorted(video_formats, key=lambda x: int(x["quality"][:-1] or 0), reverse=True)
+            audio_formats = sorted(audio_formats, key=lambda x: int(x["quality"][:-4] or 0), reverse=True)
 
             return jsonify({
                 "status": "success",
@@ -73,8 +80,18 @@ def get_info():
             })
 
     except Exception as e:
+        error_msg = str(e)
+        print("=== ERROR ===")
         print(traceback.format_exc())
-        return jsonify({"status": "error", "message": "Failed to fetch info. Try another link."})
+        print("URL:", url)
+        print("=============")
+        
+        return jsonify({
+            "status": "error",
+            "message": "Failed to fetch info. This video might be age-restricted or private."
+        })
+
+# ... keep the same /api/download route as before ...
 
 @app.route('/api/download', methods=['GET'])
 def download():
@@ -90,7 +107,6 @@ def download():
             'quiet': True,
             'noplaylist': True,
             'outtmpl': os.path.join(TEMP_DIR, '%(title)s.%(ext)s'),
-            'no_warnings': True,
         }
 
         if is_audio:
@@ -106,21 +122,14 @@ def download():
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
             filename = ydl.prepare_filename(info)
-            
             if is_audio:
                 filename = os.path.splitext(filename)[0] + '.mp3'
-
-        if not os.path.exists(filename):
-            return jsonify({"status": "error", "message": "File not found after download"})
 
         return send_file(filename, as_attachment=True, download_name=os.path.basename(filename))
 
     except Exception as e:
         print(traceback.format_exc())
-        error_msg = str(e)
-        if "ffmpeg" in error_msg.lower():
-            return jsonify({"status": "error", "message": "MP3 conversion failed. FFmpeg not available."})
-        return jsonify({"status": "error", "message": "Download failed. Please try again."})
+        return jsonify({"status": "error", "message": "Download failed."})
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
