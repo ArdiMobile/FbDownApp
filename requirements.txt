@@ -1,8 +1,3 @@
 flask
 gunicorn
-# Use the official yt-dlp with the [default] and [curl-cffi] extras for better browser impersonation
-yt-dlp[default,curl-cffi]
-# Plugin to help manage PO Tokens (Proof of Origin)
-yt-dlp-get-pot
-# For solving JavaScript challenges required by YouTube
-brotli
+git+https://github.com/yt-dlp/yt-dlp.git
