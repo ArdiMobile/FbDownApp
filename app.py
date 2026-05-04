@@ -4,16 +4,22 @@ import os
 import tempfile
 import uuid
 import time
-import sys
+import json
 
 app = Flask(__name__)
 
 # Create temp directory for downloaded files
 TEMP_DIR = os.path.join(tempfile.gettempdir(), 'galmee_downloads')
+COOKIES_DIR = os.path.join(tempfile.gettempdir(), 'galmee_cookies')
 os.makedirs(TEMP_DIR, exist_ok=True)
+os.makedirs(COOKIES_DIR, exist_ok=True)
 
-# Increase timeout for large files
-app.config['TIMEOUT'] = 600  # 10 minutes
+# Create a simple cookies file if it doesn't exist
+COOKIES_FILE = os.path.join(COOKIES_DIR, 'cookies.txt')
+if not os.path.exists(COOKIES_FILE):
+    # Create empty cookies file with Netscape format header
+    with open(COOKIES_FILE, 'w') as f:
+        f.write("# Netscape HTTP Cookie File\n")
 
 # HOME
 @app.route("/")
@@ -39,6 +45,15 @@ def get_video():
             'no_warnings': True,
             'extract_flat': False,
             'socket_timeout': 30,
+            'cookiefile': COOKIES_FILE,
+            # Add headers to look like a real browser
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'en-us,en;q=0.5',
+                'Accept-Encoding': 'gzip,deflate',
+                'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
+            },
         }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -50,12 +65,40 @@ def get_video():
                 "thumbnail": info.get("thumbnail", ""),
                 "uploader": info.get("uploader", info.get("channel", "Unknown")),
                 "duration": info.get("duration", 0),
-                "video_id": info.get("id", "")
             })
 
     except Exception as e:
-        print("ERROR:", str(e))
-        return jsonify({"status": "error", "message": f"Failed to fetch info: {str(e)}"}), 500
+        error_msg = str(e)
+        print(f"ERROR: {error_msg}")
+        
+        # Try alternative method if first fails
+        try:
+            ydl_opts2 = {
+                'quiet': True,
+                'extract_flat': True,
+                'force_generic_extractor': False,
+                'cookiefile': COOKIES_FILE,
+                'http_headers': {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                },
+            }
+            
+            with yt_dlp.YoutubeDL(ydl_opts2) as ydl:
+                info = ydl.extract_info(url, download=False)
+                return jsonify({
+                    "status": "success",
+                    "title": info.get("title", "Unknown Title"),
+                    "thumbnail": info.get("thumbnail", ""),
+                    "uploader": info.get("uploader", "Unknown"),
+                    "duration": info.get("duration", 0),
+                })
+        except:
+            pass
+            
+        return jsonify({
+            "status": "error", 
+            "message": "YouTube requires verification. Please try a different video or try again later."
+        }), 500
 
 # API - Download Audio Only
 @app.route("/api/download")
@@ -66,16 +109,13 @@ def download_audio():
         return jsonify({"status": "error", "message": "No URL provided"}), 400
     
     try:
-        # Clean old temp files first
         cleanup_old_files()
         
-        # Create unique filename
         file_id = str(uuid.uuid4())[:8]
         output_template = os.path.join(TEMP_DIR, f'{file_id}.%(ext)s')
         
         print(f"Starting download for: {url}")
         
-        # Simpler download options
         ydl_opts = {
             'format': 'bestaudio/best',
             'outtmpl': output_template,
@@ -87,23 +127,29 @@ def download_audio():
             'quiet': False,
             'no_warnings': False,
             'socket_timeout': 120,
-            'extract_flat': False,
+            'cookiefile': COOKIES_FILE,
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            },
+            # Try to bypass bot detection
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'web'],
+                }
+            },
         }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
             print(f"Download completed: {info.get('title')}")
         
-        # Find the mp3 file - check multiple possible locations
+        # Find the mp3 file
         mp3_file = os.path.join(TEMP_DIR, f'{file_id}.mp3')
         
-        # If not found, search for it
         if not os.path.exists(mp3_file):
-            print(f"Looking for MP3 file with ID: {file_id}")
             for filename in os.listdir(TEMP_DIR):
                 if file_id in filename and filename.endswith('.mp3'):
                     mp3_file = os.path.join(TEMP_DIR, filename)
-                    print(f"Found MP3: {mp3_file}")
                     break
         
         if os.path.exists(mp3_file):
@@ -117,7 +163,6 @@ def download_audio():
                 "filesize": file_size
             })
         else:
-            print("MP3 file not created!")
             return jsonify({
                 "status": "error", 
                 "message": "Conversion failed. Please try again."
@@ -127,22 +172,16 @@ def download_audio():
         error_msg = str(e)
         print(f"Download ERROR: {error_msg}")
         
-        # Provide more specific error messages
-        if "HTTP Error 403" in error_msg:
+        if "Sign in to confirm" in error_msg or "bot" in error_msg.lower():
             return jsonify({
                 "status": "error", 
-                "message": "This video is restricted. Try a different video."
+                "message": "YouTube is blocking this request. Please try a different video."
             }), 500
-        elif "Video unavailable" in error_msg:
-            return jsonify({
-                "status": "error", 
-                "message": "Video not available. It may be private or deleted."
-            }), 500
-        else:
-            return jsonify({
-                "status": "error", 
-                "message": "Download failed. Please try a different video."
-            }), 500
+        
+        return jsonify({
+            "status": "error", 
+            "message": "Download failed. Please try a different video."
+        }), 500
 
 # API - Serve downloaded file
 @app.route("/api/serve-file")
@@ -154,8 +193,7 @@ def serve_file():
         return jsonify({"error": "File not found"}), 404
     
     try:
-        original_filename = os.path.basename(file_path)
-        safe_filename = original_filename.replace(' ', '_').replace('/', '_')
+        safe_filename = os.path.basename(file_path).replace(' ', '_')
         file_size = os.path.getsize(file_path)
         
         print(f"Serving file: {safe_filename} ({file_size} bytes)")
@@ -166,14 +204,13 @@ def serve_file():
                 while data:
                     yield data
                     data = f.read(8192)
-            # Delete file after serving
             try:
                 os.remove(file_path)
                 print(f"Deleted: {file_path}")
             except Exception as e:
-                print(f"Could not delete file: {e}")
+                print(f"Could not delete: {e}")
         
-        response = Response(
+        return Response(
             generate(),
             mimetype='audio/mpeg',
             headers={
@@ -183,7 +220,6 @@ def serve_file():
                 'Cache-Control': 'no-cache'
             }
         )
-        return response
         
     except Exception as e:
         print(f"Serve ERROR: {str(e)}")
@@ -193,19 +229,15 @@ def cleanup_old_files():
     """Remove temp files older than 1 hour"""
     try:
         current_time = time.time()
-        count = 0
         for filename in os.listdir(TEMP_DIR):
             filepath = os.path.join(TEMP_DIR, filename)
             try:
                 if os.path.getmtime(filepath) < current_time - 3600:
                     os.remove(filepath)
-                    count += 1
             except:
                 pass
-        if count > 0:
-            print(f"Cleaned up {count} old files")
-    except Exception as e:
-        print(f"Cleanup error: {e}")
+    except:
+        pass
 
 # RUN
 if __name__ == "__main__":
