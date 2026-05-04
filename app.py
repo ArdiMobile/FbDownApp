@@ -1,3 +1,16 @@
+import os
+from flask import Flask
+
+app = Flask(__name__)
+
+# Railway sometimes needs this
+PORT = int(os.environ.get("PORT", 5000))
+
+# ... rest of your code
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=PORT)
+
 from flask import Flask, request, jsonify, send_file
 import yt_dlp
 import json
