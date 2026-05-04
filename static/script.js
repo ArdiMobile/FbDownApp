@@ -75,6 +75,11 @@ async function searchVideo(query) {
     }
 }
 
+function goToVideo(url) {
+    // Ensure we point to the correct HTML file path on your server
+    window.location.href = `/download.html?url=${encodeURIComponent(url)}`;
+}
+
 // ==============================
 // CLICK RESULT → REDIRECT
 // ==============================
