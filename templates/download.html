@@ -211,7 +211,16 @@
         </div>
         <p class="copyright">2026 &copy; Galmee Inc | Developed by <a href="https://fb.com/yasingelma" id="credit-link"><strong>Yasin Gelma</strong></a></p>
     </footer>
+  
     <script src="/static/script.js"></script>
+    <script>
+        function toggleDrawer(){document.getElementById('drawer').classList.toggle('show');document.getElementById('drawerOverlay').classList.toggle('show');}
+
+        const blogPosts=[{id:1,title:"How to Download Facebook & Instagram Videos",slug:"how-to-download-facebook-instagram-videos",excerpt:"Complete guide to download videos from Facebook and Instagram in HD quality. Step-by-step tutorial with Galmee.",thumbnail:"https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/how%20to%20download%20fb%20and%20ig%20videos.jpg",date:"2026-06-20",author:"Yasin Gelma",views:18200,readTime:"4 min read",tags:["Facebook","Instagram","Tutorial","Guide"],category:"Tutorial"},{id:2,title:"Top Facebook & Instagram Video Downloaders 2026",slug:"top-facebook-instagram-video-downloaders-2026",excerpt:"Compare the best video downloaders for Facebook and Instagram. Why Galmee leads in 2026.",thumbnail:"https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/top%205%20video%20fb%20and%20ig%20downloader%202026.jpg",date:"2026-06-15",author:"Yasin Gelma",views:14500,readTime:"6 min read",tags:["Tools","Comparison","2026","Review"],category:"Review"}];
+
+        function renderBlogPosts(){const c=document.getElementById('blogPostsContainer');const s=[...blogPosts].sort((a,b)=>new Date(b.date)-new Date(a.date));c.innerHTML=s.map(p=>`<article class="blog-card" onclick="location.href='blog/${p.slug}.html'"><img src="${p.thumbnail}" alt="${p.title}" class="blog-thumbnail" loading="lazy"><div class="blog-card-body"><h2>${p.title}</h2><div class="blog-meta"><span><i class="fas fa-calendar"></i> ${new Date(p.date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</span><span><i class="fas fa-user"></i> ${p.author}</span><span><i class="fas fa-eye"></i> ${p.views.toLocaleString()} views</span><span><i class="fas fa-clock"></i> ${p.readTime}</span></div><p class="blog-excerpt">${p.excerpt}</p><div class="blog-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div><span class="read-more">Read Article <i class="fas fa-arrow-right"></i></span></div></article>`).join('')}
+        renderBlogPosts();
+    </script>
     <script><script>
 const params = new URLSearchParams(window.location.search);
 const url = params.get("url");
@@ -513,6 +522,6 @@ async function downloadAudio(videoUrl) {
 }
 
 function toggleDrawer(){document.getElementById('drawer').classList.toggle('show');document.getElementById('drawerOverlay').classList.toggle('show');}
-</script></script>
+</script>
 </body>
 </html>
