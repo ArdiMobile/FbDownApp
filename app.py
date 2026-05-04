@@ -1,246 +1,128 @@
-from flask import Flask, request, jsonify, render_template, Response
+from flask import Flask, request, jsonify, send_file
 import yt_dlp
-import os
-import tempfile
-import uuid
-import time
 import json
+import traceback
+import os
+from urllib.parse import urlparse
 
 app = Flask(__name__)
 
-# Create temp directory for downloaded files
-TEMP_DIR = os.path.join(tempfile.gettempdir(), 'galmee_downloads')
-COOKIES_DIR = os.path.join(tempfile.gettempdir(), 'galmee_cookies')
-os.makedirs(TEMP_DIR, exist_ok=True)
-os.makedirs(COOKIES_DIR, exist_ok=True)
+# Create downloads folder if not exists
+os.makedirs("downloads", exist_ok=True)
 
-# Create a simple cookies file if it doesn't exist
-COOKIES_FILE = os.path.join(COOKIES_DIR, 'cookies.txt')
-if not os.path.exists(COOKIES_FILE):
-    # Create empty cookies file with Netscape format header
-    with open(COOKIES_FILE, 'w') as f:
-        f.write("# Netscape HTTP Cookie File\n")
+def is_youtube_url(url):
+    return 'youtube.com' in url or 'youtu.be' in url
 
-# HOME
-@app.route("/")
-def home():
-    return render_template("index.html")
+@app.route('/')
+def index():
+    return open('index.html', 'r', encoding='utf-8').read()
 
-# DOWNLOAD PAGE  
-@app.route("/download")
+@app.route('/download.html')
 def download_page():
-    return render_template("download.html")
+    return open('download.html', 'r', encoding='utf-8').read()
 
-# API - Get video info
-@app.route("/api/info")
-def get_video():
-    url = request.args.get("url")
-
+@app.route('/api/info', methods=['GET'])
+def get_info():
+    url = request.args.get('url')
     if not url:
-        return jsonify({"status": "error", "message": "No URL"}), 400
+        return jsonify({"status": "error", "message": "No URL provided"})
 
     try:
         ydl_opts = {
             'quiet': True,
             'no_warnings': True,
             'extract_flat': False,
-            'socket_timeout': 30,
-            'cookiefile': COOKIES_FILE,
-            # Add headers to look like a real browser
-            'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Accept-Language': 'en-us,en;q=0.5',
-                'Accept-Encoding': 'gzip,deflate',
-                'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
-            },
+            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/bestaudio/best',
         }
-        
+
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
-            
-            return jsonify({
+
+            video_formats = []
+            audio_formats = []
+
+            for f in info.get("formats", []):
+                if not f.get("url"):
+                    continue
+                height = f.get("height") or 0
+                vcodec = f.get("vcodec", "none")
+                acodec = f.get("acodec", "none")
+
+                # Video
+                if vcodec != "none" and height >= 144:
+                    video_formats.append({
+                        "quality": f"{height}p",
+                        "url": f["url"],
+                        "has_audio": acodec != "none"
+                    })
+
+                # Audio only
+                if vcodec == "none" and acodec != "none":
+                    abr = int(f.get("abr") or 128)
+                    audio_formats.append({
+                        "quality": f"{abr}kbps",
+                        "url": f["url"],
+                        "ext": f.get("ext", "m4a")
+                    })
+
+            # Sort
+            video_formats = sorted(video_formats, key=lambda x: int(x["quality"][:-1]), reverse=True)
+            audio_formats = sorted(audio_formats, key=lambda x: int(x["quality"][:-4]), reverse=True)
+
+            response = {
                 "status": "success",
-                "title": info.get("title", "Unknown Title"),
+                "title": info.get("title", "YouTube Video"),
                 "thumbnail": info.get("thumbnail", ""),
-                "uploader": info.get("uploader", info.get("channel", "Unknown")),
                 "duration": info.get("duration", 0),
-            })
+                "uploader": info.get("uploader", ""),
+                "video_formats": video_formats[:8],
+                "audio_formats": audio_formats[:6]
+            }
+            return jsonify(response)
 
     except Exception as e:
-        error_msg = str(e)
-        print(f"ERROR: {error_msg}")
-        
-        # Try alternative method if first fails
-        try:
-            ydl_opts2 = {
-                'quiet': True,
-                'extract_flat': True,
-                'force_generic_extractor': False,
-                'cookiefile': COOKIES_FILE,
-                'http_headers': {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                },
-            }
-            
-            with yt_dlp.YoutubeDL(ydl_opts2) as ydl:
-                info = ydl.extract_info(url, download=False)
-                return jsonify({
-                    "status": "success",
-                    "title": info.get("title", "Unknown Title"),
-                    "thumbnail": info.get("thumbnail", ""),
-                    "uploader": info.get("uploader", "Unknown"),
-                    "duration": info.get("duration", 0),
-                })
-        except:
-            pass
-            
+        print(traceback.format_exc())
         return jsonify({
-            "status": "error", 
-            "message": "YouTube requires verification. Please try a different video or try again later."
-        }), 500
+            "status": "error",
+            "message": "Failed to fetch video. Try again or use another link."
+        })
 
-# API - Download Audio Only
-@app.route("/api/download")
-def download_audio():
-    url = request.args.get("url")
-    
-    if not url:
-        return jsonify({"status": "error", "message": "No URL provided"}), 400
-    
+@app.route('/api/download', methods=['GET'])
+def download():
+    url = request.args.get('url')
+    itag = request.args.get('itag')  # format url
+    is_audio = request.args.get('audio', 'false').lower() == 'true'
+
+    if not url or not itag:
+        return jsonify({"status": "error", "message": "Missing parameters"})
+
     try:
-        cleanup_old_files()
-        
-        file_id = str(uuid.uuid4())[:8]
-        output_template = os.path.join(TEMP_DIR, f'{file_id}.%(ext)s')
-        
-        print(f"Starting download for: {url}")
-        
         ydl_opts = {
-            'format': 'bestaudio/best',
-            'outtmpl': output_template,
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }],
-            'quiet': False,
-            'no_warnings': False,
-            'socket_timeout': 120,
-            'cookiefile': COOKIES_FILE,
-            'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            },
-            # Try to bypass bot detection
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['android', 'web'],
-                }
-            },
+            'quiet': True,
+            'outtmpl': 'downloads/%(title)s.%(ext)s',
+            'noplaylist': True,
         }
-        
+
+        if is_audio:
+            ydl_opts.update({
+                'format': 'bestaudio/best',
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '192',
+                }],
+            })
+
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
-            print(f"Download completed: {info.get('title')}")
-        
-        # Find the mp3 file
-        mp3_file = os.path.join(TEMP_DIR, f'{file_id}.mp3')
-        
-        if not os.path.exists(mp3_file):
-            for filename in os.listdir(TEMP_DIR):
-                if file_id in filename and filename.endswith('.mp3'):
-                    mp3_file = os.path.join(TEMP_DIR, filename)
-                    break
-        
-        if os.path.exists(mp3_file):
-            file_size = os.path.getsize(mp3_file)
-            print(f"MP3 ready: {mp3_file} ({file_size} bytes)")
-            
-            return jsonify({
-                "status": "success",
-                "file_path": mp3_file,
-                "filename": f"{info.get('title', 'audio')[:50]}.mp3",
-                "filesize": file_size
-            })
-        else:
-            return jsonify({
-                "status": "error", 
-                "message": "Conversion failed. Please try again."
-            }), 500
-            
+            filename = ydl.prepare_filename(info)
+            if is_audio:
+                filename = filename.rsplit('.', 1)[0] + '.mp3'
+
+        return send_file(filename, as_attachment=True)
+
     except Exception as e:
-        error_msg = str(e)
-        print(f"Download ERROR: {error_msg}")
-        
-        if "Sign in to confirm" in error_msg or "bot" in error_msg.lower():
-            return jsonify({
-                "status": "error", 
-                "message": "YouTube is blocking this request. Please try a different video."
-            }), 500
-        
-        return jsonify({
-            "status": "error", 
-            "message": "Download failed. Please try a different video."
-        }), 500
+        return jsonify({"status": "error", "message": str(e)})
 
-# API - Serve downloaded file
-@app.route("/api/serve-file")
-def serve_file():
-    file_path = request.args.get("path")
-    
-    if not file_path or not os.path.exists(file_path):
-        print(f"File not found: {file_path}")
-        return jsonify({"error": "File not found"}), 404
-    
-    try:
-        safe_filename = os.path.basename(file_path).replace(' ', '_')
-        file_size = os.path.getsize(file_path)
-        
-        print(f"Serving file: {safe_filename} ({file_size} bytes)")
-        
-        def generate():
-            with open(file_path, 'rb') as f:
-                data = f.read(8192)
-                while data:
-                    yield data
-                    data = f.read(8192)
-            try:
-                os.remove(file_path)
-                print(f"Deleted: {file_path}")
-            except Exception as e:
-                print(f"Could not delete: {e}")
-        
-        return Response(
-            generate(),
-            mimetype='audio/mpeg',
-            headers={
-                'Content-Disposition': f'attachment; filename="{safe_filename}"',
-                'Content-Length': str(file_size),
-                'Content-Type': 'audio/mpeg',
-                'Cache-Control': 'no-cache'
-            }
-        )
-        
-    except Exception as e:
-        print(f"Serve ERROR: {str(e)}")
-        return jsonify({"error": "Error serving file"}), 500
-
-def cleanup_old_files():
-    """Remove temp files older than 1 hour"""
-    try:
-        current_time = time.time()
-        for filename in os.listdir(TEMP_DIR):
-            filepath = os.path.join(TEMP_DIR, filename)
-            try:
-                if os.path.getmtime(filepath) < current_time - 3600:
-                    os.remove(filepath)
-            except:
-                pass
-    except:
-        pass
-
-# RUN
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    print(f"Starting Galmee MP3 Downloader on port {port}")
-    app.run(host="0.0.0.0", port=port, debug=False)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
