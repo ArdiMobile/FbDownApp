@@ -1,139 +1,123 @@
-from http.server import BaseHTTPRequestHandler
-import json
-from urllib.parse import parse_qs, urlparse
-import traceback
-import sys
+from flask import Flask, request, jsonify, send_file, render_template
 import yt_dlp
+import traceback
+import os
+import tempfile
 
-class handler(BaseHTTPRequestHandler):
+app = Flask(__name__, template_folder='templates', static_folder='static')
 
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-        self.end_headers()
+TEMP_DIR = tempfile.gettempdir()
 
-    def do_GET(self):
-        query_params = parse_qs(urlparse(self.path).query)
-        facebook_url = query_params.get('url', [None])[0]
+def is_youtube_url(url):
+    return any(x in url.lower() for x in ['youtube.com', 'youtu.be'])
 
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.end_headers()
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-        if not facebook_url:
-            self.wfile.write(json.dumps({
-                "status": "error", 
-                "message": "No URL provided"
-            }).encode())
-            return
+@app.route('/api/info', methods=['GET'])
+def get_info():
+    url = request.args.get('url', '').strip()
+    if not url or not is_youtube_url(url):
+        return jsonify({"status": "error", "message": "Please provide a valid YouTube URL"})
 
-        try:
-            # Normalize URL
-            if "facebook.com" in facebook_url and "m.facebook.com" not in facebook_url:
-                facebook_url = facebook_url.replace("www.facebook.com", "m.facebook.com")
-                facebook_url = facebook_url.replace("web.facebook.com", "m.facebook.com")
-                if not facebook_url.startswith("http"):
-                    facebook_url = "https://" + facebook_url
+    try:
+        ydl_opts = {
+            'quiet': True,
+            'no_warnings': True,
+            'extract_flat': False,
+            'noplaylist': True,
+            'ignoreerrors': False,
+            # Help bypass some restrictions
+            'extractor_args': {'youtube': {'player_client': ['default', 'ios', 'android']}},
+        }
 
-            # IMPROVED OPTIONS - Better chance of getting audio
-            ydl_opts = {
-                'quiet': True,
-                'noplaylist': True,
-                'no_warnings': True,
-                'extract_flat': False,
-                'force_generic_extractor': False,
-                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',  # Prioritize combined MP4
-                'merge_output_format': 'mp4',
-            }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
 
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(facebook_url, download=False)
+            video_formats = []
+            audio_formats = []
 
-                if not info:
-                    raise Exception("Failed to extract video information")
-
-                formats_list = []
-                
-                for f in info.get("formats", []):
-                    if not f.get("url"):
-                        continue
-                        
-                    vcodec = f.get("vcodec", "none")
-                    acodec = f.get("acodec", "none")
-                    height = f.get("height") or 0
+            for f in info.get("formats", []):
+                if not f.get("url"):
+                    continue
                     
-                    has_video = vcodec != "none" and height > 0
-                    has_audio = acodec != "none"
-                    
-                    if has_video:
-                        formats_list.append({
-                            "quality": f"{height}p",
-                            "height": height,
-                            "url": f.get("url"),
-                            "has_audio": has_audio,
-                            "format_id": f.get("format_id", ""),
-                            "ext": f.get("ext", "")
-                        })
+                height = f.get("height") or 0
+                vcodec = f.get("vcodec", "none")
+                acodec = f.get("acodec", "none")
 
-                if not formats_list:
-                    raise Exception("No downloadable formats found")
+                if vcodec != "none" and height >= 144:
+                    video_formats.append({
+                        "quality": f"{height}p",
+                        "url": f["url"],
+                        "has_audio": acodec != "none"
+                    })
 
-                # Sort by height descending
-                formats_list = sorted(formats_list, key=lambda x: x["height"], reverse=True)
+                if vcodec == "none" and acodec != "none":
+                    abr = int(f.get("abr") or 128)
+                    audio_formats.append({
+                        "quality": f"{abr}kbps",
+                        "url": f["url"]
+                    })
 
-                # Remove duplicates, prefer formats WITH audio
-                seen = set()
-                unique = []
-                for f in formats_list:
-                    quality = f["quality"]
-                    if quality not in seen:
-                        seen.add(quality)
-                        label = quality
-                        if f["has_audio"]:
-                            label += " 🔊"
-                        else:
-                            label += " 🔇"
-                        unique.append({
-                            "quality": label,
-                            "url": f["url"],
-                            "has_audio": f["has_audio"]
-                        })
+            video_formats = sorted(video_formats, key=lambda x: int(x["quality"][:-1]), reverse=True)
+            audio_formats = sorted(audio_formats, key=lambda x: int(x["quality"][:-4]), reverse=True)
 
-                # Fallback if no audio formats found
-                if not any(f.get("has_audio") for f in unique):
-                    for f in info.get("formats", []):
-                        if (f.get("acodec") and f.get("acodec") != "none" and 
-                            f.get("height") and f.get("url")):
-                            quality = f"{f.get('height')}p 🔊"
-                            if quality not in seen:
-                                seen.add(quality)
-                                unique.append({
-                                    "quality": quality,
-                                    "url": f.get("url"),
-                                    "has_audio": True
-                                })
+            return jsonify({
+                "status": "success",
+                "title": info.get("title", "YouTube Video"),
+                "thumbnail": info.get("thumbnail", ""),
+                "uploader": info.get("uploader", ""),
+                "video_formats": video_formats[:8],
+                "audio_formats": audio_formats[:6]
+            })
 
-                response_data = {
-                    "status": "success",
-                    "title": info.get("title", "Facebook/Instagram Video"),
-                    "thumbnail": info.get("thumbnail", ""),
-                    "uploader": info.get("uploader", ""),
-                    "uploader_url": info.get("uploader_url", ""),
-                    "duration": info.get("duration", 0),
-                    "formats": unique[:6]   # Up to 6 qualities
-                }
+    except Exception as e:
+        error_str = str(e)
+        print(traceback.format_exc())
+        return jsonify({
+            "status": "error",
+            "message": f"Failed to fetch info: {error_str[:100]}..."
+        })
 
-        except Exception as e:
-            error_msg = str(e)
-            print(f"Error: {error_msg}", file=sys.stderr)
-            print(traceback.format_exc(), file=sys.stderr)
-            
-            response_data = {
-                "status": "error", 
-                "message": f"Failed to get video: {error_msg[:150]}"
-            }
+@app.route('/api/download', methods=['GET'])
+def download():
+    url = request.args.get('url')
+    format_url = request.args.get('format_url')
+    is_audio = request.args.get('audio', 'false').lower() == 'true'
 
-        self.wfile.write(json.dumps(response_data).encode())
+    if not url or not format_url:
+        return jsonify({"status": "error", "message": "Missing parameters"})
+
+    try:
+        ydl_opts = {
+            'quiet': True,
+            'noplaylist': True,
+            'outtmpl': os.path.join(TEMP_DIR, '%(title)s.%(ext)s'),
+        }
+
+        if is_audio:
+            ydl_opts.update({
+                'format': 'bestaudio/best',
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '192',
+                }],
+            })
+
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=True)
+            filename = ydl.prepare_filename(info)
+            if is_audio:
+                filename = os.path.splitext(filename)[0] + '.mp3'
+
+        return send_file(filename, as_attachment=True, download_name=os.path.basename(filename))
+
+    except Exception as e:
+        print(traceback.format_exc())
+        return jsonify({"status": "error", "message": "Download failed. Try again."})
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
