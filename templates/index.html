@@ -189,11 +189,13 @@
             <div class="conarea">
                 <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/keno.png" alt="Hold search bar" class="conman">
             </div>
-           <form id="dlForm" class="downloader">
-                <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
-                <input type="text" id="urlInput" placeholder="Paste YouTube link here...">
-                <button type="submit" class="dl-btn" id="dlBtn"><i class="fas fa-download" id="dlBtnIcon"></i><span id="btnLoader" style="display:none;"></span></button>
- </form>
+           <form id="dlForm" class="downloader" onsubmit="return false;">
+    <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
+    <input type="text" id="urlInput" placeholder="Paste YouTube, Facebook or Instagram link here...">
+    <button type="submit" class="dl-btn" id="dlBtn">
+        <i class="fas fa-download" id="dlBtnIcon"></i>
+    </button>
+</form>
 
 <div id="preview"></div>
             <p class="subtitle">Fast • Free • HD Quality • No Registration</p>
