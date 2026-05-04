@@ -22,7 +22,6 @@ def download_page():
 @app.route('/api/info', methods=['GET'])
 def get_info():
     url = request.args.get('url', '').strip()
-    
     if not url or not is_youtube_url(url):
         return jsonify({"status": "error", "message": "Please provide a valid YouTube URL"})
 
@@ -41,8 +40,7 @@ def get_info():
             audio_formats = []
 
             for f in info.get("formats", []):
-                if not f.get("url"):
-                    continue
+                if not f.get("url"): continue
                     
                 height = f.get("height") or 0
                 vcodec = f.get("vcodec", "none")
@@ -69,7 +67,6 @@ def get_info():
                 "status": "success",
                 "title": info.get("title", "YouTube Video"),
                 "thumbnail": info.get("thumbnail", ""),
-                "duration": info.get("duration", 0),
                 "uploader": info.get("uploader", ""),
                 "video_formats": video_formats[:8],
                 "audio_formats": audio_formats[:6]
@@ -77,10 +74,7 @@ def get_info():
 
     except Exception as e:
         print(traceback.format_exc())
-        return jsonify({
-            "status": "error",
-            "message": "Failed to fetch video. Please try again with another link."
-        })
+        return jsonify({"status": "error", "message": "Failed to fetch info. Try another link."})
 
 @app.route('/api/download', methods=['GET'])
 def download():
@@ -96,6 +90,7 @@ def download():
             'quiet': True,
             'noplaylist': True,
             'outtmpl': os.path.join(TEMP_DIR, '%(title)s.%(ext)s'),
+            'no_warnings': True,
         }
 
         if is_audio:
@@ -111,13 +106,20 @@ def download():
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
             filename = ydl.prepare_filename(info)
+            
             if is_audio:
                 filename = os.path.splitext(filename)[0] + '.mp3'
+
+        if not os.path.exists(filename):
+            return jsonify({"status": "error", "message": "File not found after download"})
 
         return send_file(filename, as_attachment=True, download_name=os.path.basename(filename))
 
     except Exception as e:
         print(traceback.format_exc())
+        error_msg = str(e)
+        if "ffmpeg" in error_msg.lower():
+            return jsonify({"status": "error", "message": "MP3 conversion failed. FFmpeg not available."})
         return jsonify({"status": "error", "message": "Download failed. Please try again."})
 
 if __name__ == '__main__':
