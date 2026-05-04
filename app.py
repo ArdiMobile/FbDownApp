@@ -1,33 +1,28 @@
 from flask import Flask, request, jsonify, render_template, Response
 import yt_dlp
 import os
-import tempfile
-import uuid
 
 app = Flask(__name__)
-TEMP_DIR = os.path.join(tempfile.gettempdir(), 'galmee_downloads')
-os.makedirs(TEMP_DIR, exist_ok=True)
 
+# HOME
 @app.route("/")
 def home():
     return render_template("index.html")
 
-@app.route("/download")
+# DOWNLOAD PAGE
+@app.route("/download-page")
 def download_page():
     return render_template("download.html")
 
-
+# API
 @app.route("/api/info")
 def get_video():
     url = request.args.get("url")
-    
+
     if not url:
-        return jsonify({"status": "error", "message": "No URL provided"}), 400
-        
-    print(f"Fetching info for: {url}")
-    
+        return jsonify({"status": "error", "message": "No URL"})
+
     try:
-        # Different options for different platforms
         ydl_opts = {
             'quiet': True,
             'no_warnings': True,
@@ -36,31 +31,75 @@ def get_video():
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             
+            # Get available formats
             formats = []
             for f in info.get('formats', []):
-                if f.get('ext') == 'mp4' and f.get('height'):
+                if f.get('ext') == 'mp4' and f.get('filesize'):
                     formats.append({
                         'format_id': f.get('format_id'),
-                        'quality': f.get('height'),
-                        'resolution': f"{f.get('width', '')}x{f.get('height', '')}",
-                        'filesize': f.get('filesize', 0)
+                        'quality': f.get('height', 'audio'),
+                        'filesize': f.get('filesize'),
+                        'ext': f.get('ext'),
+                        'resolution': f"{f.get('width', '')}x{f.get('height', '')}"
                     })
-            
-            print(f"Success: {info.get('title')}")
-            
+
             return jsonify({
                 "status": "success",
-                "title": info.get("title", "Unknown Title"),
-                "thumbnail": info.get("thumbnail", ""),
-                "uploader": info.get("uploader", info.get("channel", "Unknown")),
-                "duration": info.get("duration", 0),
-                "formats": formats[:10],
-                "video_id": info.get("id", "")
+                "title": info.get("title"),
+                "thumbnail": info.get("thumbnail"),
+                "uploader": info.get("uploader"),
+                "duration": info.get("duration"),
+                "formats": formats,
+                "video_id": info.get("id")
+            })
+
+    except Exception as e:
+        print("ERROR:", str(e))
+        return jsonify({"status": "error", "message": str(e)})
+
+# DOWNLOAD ENDPOINT
+@app.route("/api/download")
+def download_video():
+    url = request.args.get("url")
+    format_id = request.args.get("format_id", "")
+    
+    if not url:
+        return jsonify({"status": "error", "message": "No URL provided"}), 400
+    
+    try:
+        ydl_opts = {
+            'format': f'{format_id}+bestaudio/best' if format_id else 'best',
+            'quiet': True,
+        }
+        
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+            
+            # Get direct download URL
+            if format_id:
+                for f in info['formats']:
+                    if f['format_id'] == format_id:
+                        return jsonify({
+                            "status": "success",
+                            "download_url": f['url'],
+                            "title": info.get('title'),
+                            "ext": f['ext'],
+                            "filesize": f.get('filesize', 0),
+                            "quality": f.get('height', 'Unknown')
+                        })
+            
+            # Default to best quality
+            return jsonify({
+                "status": "success",
+                "download_url": info['url'],
+                "title": info.get('title'),
+                "ext": info.get('ext', 'mp4')
             })
             
     except Exception as e:
-        print(f"Error: {str(e)}")
-        return jsonify({
-            "status": "error", 
-            "message": "Failed to fetch video info. Please check the URL."
-        }), 500
+        print("Download ERROR:", str(e))
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+# RUN
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
