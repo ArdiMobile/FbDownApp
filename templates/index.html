@@ -51,7 +51,7 @@
         .logo{display:flex;align-items:center;gap:3px}
         .logo-icon{width:26px;height:26px;border-radius:8px}
         .logo-text{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:26px;font-weight:900;background:linear-gradient(135deg,var(--gold) 0%,#ffe680 50%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .logo-dot{color:var(--primary);-webkit-text-fill-color:var(--primary);font-size:10px}
+        .logo-dot{color:red;font-size:10px}
         .menu-btn{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:var(--gold);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}.menu-btn:hover{background:var(--primary);border-color:var(--primary);color:#fff}
         .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,38,17,0.6);z-index:2000}.drawer-overlay.show{display:block}
         .drawer{position:fixed;top:0;right:-320px;width:300px;max-width:85vw;height:100vh;background:var(--white);z-index:2001;transition:right 0.3s ease;overflow-y:auto;box-shadow:-4px 0 30px rgba(0,38,17,0.2)}.drawer.show{right:0}
@@ -146,7 +146,8 @@
         <div class="header-inner">
             <a href="/" class="logo">
                 <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee" class="logo-icon">
-                <span class="logo-text">Galmee</span><span class="logo-dot"><i class="fas fa-youtube"></i></span>
+                <span class="logo-text">Galmee</span>
+  <span class="logo-dot"><i class="fab fa-youtube"></i></span>
             </a>
             <button class="menu-btn" onclick="toggleDrawer()" aria-label="Menu"><i class="fas fa-bars"></i></button>
         </div>
@@ -282,7 +283,7 @@
         <p class="copyright">2026 &copy; Galmee Inc | Developed by <a href="https://fb.com/yasingelma" id="credit-link"><strong>Yasin Gelma</strong></a></p>
     </footer>
 
-    <script src="/static/script.js"></script>
+    <script src="/"></script>
     <script>
         function toggleDrawer(){document.getElementById('drawer').classList.toggle('show');document.getElementById('drawerOverlay').classList.toggle('show');}
 
