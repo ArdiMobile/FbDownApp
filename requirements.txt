@@ -1,7 +1,3 @@
-Give me latest yt-dlp requirements.txt
-
-I am using this: 
-
 flask
 gunicorn
 git+https://github.com/yt-dlp/yt-dlp.git
