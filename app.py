@@ -25,15 +25,22 @@ def get_info():
         ydl_opts = {
             'quiet': True,
             'no_warnings': True,
-            'extract_flat': False,
             'noplaylist': True,
-            'ignoreerrors': False,
-            # Help bypass some restrictions
-            'extractor_args': {'youtube': {'player_client': ['default', 'ios', 'android']}},
+            'ignoreerrors': True,
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['default', 'ios', 'android', 'web'],
+                    'skip': ['translated_subs']
+                }
+            },
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
+
+            if not info:
+                raise Exception("Could not extract video info")
 
             video_formats = []
             audio_formats = []
@@ -60,8 +67,8 @@ def get_info():
                         "url": f["url"]
                     })
 
-            video_formats = sorted(video_formats, key=lambda x: int(x["quality"][:-1]), reverse=True)
-            audio_formats = sorted(audio_formats, key=lambda x: int(x["quality"][:-4]), reverse=True)
+            video_formats = sorted(video_formats, key=lambda x: int(x["quality"][:-1] or 0), reverse=True)
+            audio_formats = sorted(audio_formats, key=lambda x: int(x["quality"][:-4] or 0), reverse=True)
 
             return jsonify({
                 "status": "success",
@@ -73,12 +80,18 @@ def get_info():
             })
 
     except Exception as e:
-        error_str = str(e)
+        error_msg = str(e)
+        print("=== ERROR ===")
         print(traceback.format_exc())
+        print("URL:", url)
+        print("=============")
+        
         return jsonify({
             "status": "error",
-            "message": f"Failed to fetch info: {error_str[:100]}..."
+            "message": "Failed to fetch info. This video might be age-restricted or private."
         })
+
+# ... keep the same /api/download route as before ...
 
 @app.route('/api/download', methods=['GET'])
 def download():
@@ -116,7 +129,7 @@ def download():
 
     except Exception as e:
         print(traceback.format_exc())
-        return jsonify({"status": "error", "message": "Download failed. Try again."})
+        return jsonify({"status": "error", "message": "Download failed."})
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
