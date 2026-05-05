@@ -1,52 +1,49 @@
-async function processVideo() {
-    const urlInput = document.getElementById('videoUrl').value;
-    const mainBtn = document.getElementById('mainBtn');
-    const inputContainer = document.getElementById('input-container');
-    const previewArea = document.getElementById('preview-area');
-    const player = document.getElementById('video-player');
-    const downloadLink = document.getElementById('hd-download');
-    const title = document.getElementById('video-title');
+async function fetchVideo() {
+    const url = document.getElementById('videoUrl').value;
+    const btn = document.querySelector('.btn-main');
+    if (!url) return alert("Please enter a URL");
 
-    if (!urlInput) return alert("Please enter a URL");
-
-    mainBtn.innerText = "Processing...";
-    mainBtn.disabled = true;
+    btn.innerText = "Analyzing...";
+    btn.disabled = true;
 
     try {
-        const response = await fetch('/download', {
+        const res = await fetch('/download', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: urlInput })
+            body: JSON.stringify({ url: url })
         });
-        const data = await response.json();
+        const data = await res.json();
 
-        if (data.url) {
-            // Hide input, show preview
-            inputContainer.classList.add('hidden');
-            previewArea.style.display = 'block';
+        if (data.formats) {
+            document.getElementById('input-box').style.display = 'none';
+            document.getElementById('result-area').style.display = 'flex';
+            
+            document.getElementById('v-title').innerText = data.title;
+            document.getElementById('v-user').innerText = data.uploader;
+            document.getElementById('v-views').innerText = data.views;
+            
+            // Set Player
+            const player = document.getElementById('player');
+            player.src = data.formats[0].url;
 
-            // Set content
-            title.innerText = data.title;
-            player.src = data.url;
-            downloadLink.href = data.url;
+            // Generate Quality Buttons
+            const list = document.getElementById('quality-list');
+            list.innerHTML = '';
+            data.formats.forEach(f => {
+                const a = document.createElement('a');
+                a.className = 'quality-btn';
+                a.href = f.url;
+                a.target = '_blank';
+                a.download = true;
+                a.innerHTML = `<span>MP4 ${f.quality}</span> <span>Download ↓</span>`;
+                list.appendChild(a);
+            });
         } else {
             alert("Error: " + data.error);
-            resetApp();
+            location.reload();
         }
     } catch (e) {
-        alert("Failed to fetch video.");
-        resetApp();
+        alert("System error. Try again.");
+        location.reload();
     }
-}
-
-function resetApp() {
-    // Show input container again
-    document.getElementById('input-container').classList.remove('hidden');
-    document.getElementById('preview-area').style.display = 'none';
-    
-    // Clear fields
-    document.getElementById('videoUrl').value = '';
-    document.getElementById('mainBtn').innerText = "Download";
-    document.getElementById('mainBtn').disabled = false;
-    document.getElementById('video-player').src = '';
 }
