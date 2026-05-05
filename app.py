@@ -1,52 +1,35 @@
-from fastapi import FastAPI, HTTPException, Body
-from pydantic import BaseModel
+import os
 import yt_dlp
-import uvicorn
+from flask import Flask, request, render_template, jsonify
 
-app = FastAPI(title="Facebook Video Downloader API")
+app = Flask(__name__)
 
-class VideoRequest(BaseModel):
-    url: str
+# Essential for Railway deployment
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-def get_video_info(url):
-    ydl_opts = {
-        'format': 'best',
-        'quiet': True,
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
-            info = ydl.extract_info(url, download=False)
-            return info
-        except Exception as e:
-            raise Exception(f"Failed to extract video: {str(e)}")
+@app.route('/download', methods=['POST'])
+def download():
+    url = request.json.get('url')
+    if not url:
+        return jsonify({'error': 'No URL provided'}), 400
 
-@app.post("/info")
-async def get_info(request: VideoRequest = Body(...)):
-    """
-    Takes a Facebook video URL and returns downloadable formats.
-    """
     try:
-        info = get_video_info(request.url)
-        
-        # Extract direct links for different qualities
-        formats = info.get('formats', [])
-        video_links = []
-        for f in formats:
-            if f.get('vcodec') != 'none' and f.get('acodec') != 'none': # Only streams with audio
-                video_links.append({
-                    "quality": f.get('format_note'),
-                    "url": f.get('url'),
-                    "extension": f.get('ext')
-                })
-
-        return {
-            "title": info.get('title'),
-            "thumbnail": info.get('thumbnail'),
-            "duration": info.get('duration'),
-            "download_options": video_links
+        ydl_opts = {
+            'format': 'best',
+            'noplaylist': True,
         }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+            return jsonify({
+                'title': info.get('title', 'Facebook Video'),
+                'url': info.get('url'), # Direct download link
+                'thumbnail': info.get('thumbnail')
+            })
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        return jsonify({'error': str(e)}), 500
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
