@@ -1,3 +1,4 @@
 flask
-yt-dl
+yt-dlp
 gunicorn
+requests
