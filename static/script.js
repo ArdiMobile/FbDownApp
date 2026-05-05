@@ -1,18 +1,16 @@
-async function downloadVideo() {
+async function processVideo() {
     const urlInput = document.getElementById('videoUrl').value;
-    const btn = document.querySelector('.download-btn');
-    const preview = document.getElementById('preview-container');
-    const videoPlayer = document.getElementById('video-player');
-    const directLink = document.getElementById('direct-link');
+    const mainBtn = document.getElementById('mainBtn');
+    const inputContainer = document.getElementById('input-container');
+    const previewArea = document.getElementById('preview-area');
+    const player = document.getElementById('video-player');
+    const downloadLink = document.getElementById('hd-download');
     const title = document.getElementById('video-title');
 
-    if (!urlInput) {
-        alert('Please paste a link first!');
-        return;
-    }
+    if (!urlInput) return alert("Please enter a URL");
 
-    btn.innerText = "Processing...";
-    btn.disabled = true;
+    mainBtn.innerText = "Processing...";
+    mainBtn.disabled = true;
 
     try {
         const response = await fetch('/download', {
@@ -23,20 +21,32 @@ async function downloadVideo() {
         const data = await response.json();
 
         if (data.url) {
+            // Hide input, show preview
+            inputContainer.classList.add('hidden');
+            previewArea.style.display = 'block';
+
+            // Set content
             title.innerText = data.title;
-            videoPlayer.src = data.url; // Sets the video player source
-            directLink.href = data.url;
-            
-            preview.style.display = 'block';
-            videoPlayer.load(); // Reloads player with new source
+            player.src = data.url;
+            downloadLink.href = data.url;
         } else {
-            alert('Error: ' + data.error);
+            alert("Error: " + data.error);
+            resetApp();
         }
-    } catch (error) {
-        alert('Something went wrong. Check console.');
-        console.error(error);
-    } finally {
-        btn.innerText = "Download";
-        btn.disabled = false;
+    } catch (e) {
+        alert("Failed to fetch video.");
+        resetApp();
     }
+}
+
+function resetApp() {
+    // Show input container again
+    document.getElementById('input-container').classList.remove('hidden');
+    document.getElementById('preview-area').style.display = 'none';
+    
+    // Clear fields
+    document.getElementById('videoUrl').value = '';
+    document.getElementById('mainBtn').innerText = "Download";
+    document.getElementById('mainBtn').disabled = false;
+    document.getElementById('video-player').src = '';
 }
