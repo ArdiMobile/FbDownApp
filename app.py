@@ -8,10 +8,8 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 
 TEMP_DIR = tempfile.gettempdir()
 
-def is_supported_url(url):
-    """Checks if the URL is from Facebook or Instagram."""
-    url = url.lower()
-    return any(x in url for x in ['facebook.com', 'fb.watch', 'instagram.com', 'reels'])
+def is_youtube_url(url):
+    return any(x in url.lower() for x in ['youtube.com', 'youtu.be'])
 
 @app.route('/')
 def index():
@@ -20,75 +18,106 @@ def index():
 @app.route('/api/info', methods=['GET'])
 def get_info():
     url = request.args.get('url', '').strip()
-    if not url or not is_supported_url(url):
-        return jsonify({"status": "error", "message": "Please provide a valid Facebook or Instagram URL"})
+    if not url or not is_youtube_url(url):
+        return jsonify({"status": "error", "message": "Please provide a valid YouTube URL"})
 
     try:
-        # Optimized options for FB/IG
         ydl_opts = {
             'quiet': True,
             'no_warnings': True,
             'extract_flat': False,
             'noplaylist': True,
             'ignoreerrors': False,
-            # User agent helps prevent some blocks from Meta platforms
-            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            # Help bypass some restrictions
+            'extractor_args': {'youtube': {'player_client': ['default', 'ios', 'android']}},
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
 
             video_formats = []
-            
-            # FB/IG usually provide direct mp4 links
+            audio_formats = []
+
             for f in info.get("formats", []):
-                # We want formats that have video and are not just metadata
-                if f.get('vcodec') != 'none' and f.get('url'):
-                    quality = f.get('format_note') or f.get('resolution') or "HD"
+                if not f.get("url"):
+                    continue
+                    
+                height = f.get("height") or 0
+                vcodec = f.get("vcodec", "none")
+                acodec = f.get("acodec", "none")
+
+                if vcodec != "none" and height >= 144:
                     video_formats.append({
-                        "quality": quality,
+                        "quality": f"{height}p",
                         "url": f["url"],
-                        "ext": f.get("ext", "mp4")
+                        "has_audio": acodec != "none"
                     })
 
-            # Return the best available formats
+                if vcodec == "none" and acodec != "none":
+                    abr = int(f.get("abr") or 128)
+                    audio_formats.append({
+                        "quality": f"{abr}kbps",
+                        "url": f["url"]
+                    })
+
+            video_formats = sorted(video_formats, key=lambda x: int(x["quality"][:-1]), reverse=True)
+            audio_formats = sorted(audio_formats, key=lambda x: int(x["quality"][:-4]), reverse=True)
+
             return jsonify({
                 "status": "success",
-                "title": info.get("title", "Social Media Video")[:50],
+                "title": info.get("title", "YouTube Video"),
                 "thumbnail": info.get("thumbnail", ""),
-                "uploader": info.get("uploader", "User"),
-                "video_formats": video_formats[-5:] # Return last 5 (usually highest quality)
+                "uploader": info.get("uploader", ""),
+                "video_formats": video_formats[:8],
+                "audio_formats": audio_formats[:6]
             })
 
     except Exception as e:
+        error_str = str(e)
         print(traceback.format_exc())
         return jsonify({
-            "status": "error", 
-            "message": "Could not fetch video. Meta platforms often block automated requests."
+            "status": "error",
+            "message": f"Failed to fetch info: {error_str[:100]}..."
         })
 
 @app.route('/api/download', methods=['GET'])
 def download():
-    # Note: For FB/IG, many URLs are temporary. 
-    # It is often better to let the frontend open the format_url directly.
     url = request.args.get('url')
-    if not url:
-        return jsonify({"status": "error", "message": "Missing URL"})
+    format_url = request.args.get('format_url')
+    is_audio = request.args.get('audio', 'false').lower() == 'true'
+
+    if not url or not format_url:
+        return jsonify({"status": "error", "message": "Missing parameters"})
 
     try:
-        file_path = os.path.join(TEMP_DIR, 'downloaded_video.mp4')
         ydl_opts = {
-            'outtmpl': file_path,
-            'format': 'best', # Simplest for FB/IG to get video+audio combined
+            'quiet': True,
+            'noplaylist': True,
+            'outtmpl': os.path.join(TEMP_DIR, '%(title)s.%(ext)s'),
         }
 
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
+        if is_audio:
+            ydl_opts.update({
+                'format': 'bestaudio/best',
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '192',
+                }],
+            })
 
-        return send_file(file_path, as_attachment=True)
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=True)
+            filename = ydl.prepare_filename(info)
+            if is_audio:
+                filename = os.path.splitext(filename)[0] + '.mp3'
+
+        return send_file(filename, as_attachment=True, download_name=os.path.basename(filename))
 
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)})
+        print(traceback.format_exc())
+        return jsonify({"status": "error", "message": "Download failed. Try again."})
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
