@@ -14,10 +14,6 @@ os.makedirs(TEMP_DIR, exist_ok=True)
 def home():
     return render_template("index.html")
 
-@app.route("/download")
-def download_page():
-    return render_template("download.html")
-
 @app.route("/api/info")
 def get_video():
     url = request.args.get("url")
@@ -38,15 +34,16 @@ def get_video():
             seen = set()
             
             for f in info.get('formats', []):
-                if f.get('ext') == 'mp4' and f.get('height'):
-                    h = f.get('height')
-                    if h not in seen:
-                        seen.add(h)
-                        formats.append({
-                            'format_id': f.get('format_id'),
-                            'quality': h,
-                            'resolution': f"{f.get('width', '')}x{f.get('height', '')}",
-                        })
+                ext = f.get('ext', '')
+                height = f.get('height')
+                if ext == 'mp4' and height and height not in seen:
+                    seen.add(height)
+                    formats.append({
+                        'format_id': f.get('format_id'),
+                        'quality': height,
+                        'resolution': f"{f.get('width', '')}x{f.get('height', '')}",
+                        'url': f.get('url', '')
+                    })
             
             formats.sort(key=lambda x: x['quality'], reverse=True)
             
@@ -56,12 +53,12 @@ def get_video():
                 "thumbnail": info.get("thumbnail", ""),
                 "uploader": info.get("uploader", info.get("channel", "Unknown")),
                 "duration": info.get("duration", 0),
-                "formats": formats[:10]
+                "formats": formats[:8]
             })
 
     except Exception as e:
         print("INFO ERROR:", str(e))
-        return jsonify({"status": "error", "message": "Cannot access video. Try another."}), 500
+        return jsonify({"status": "error", "message": "Cannot access video. It may be private or expired."}), 500
 
 @app.route("/api/download")
 def download_media():
@@ -71,58 +68,103 @@ def download_media():
     if not url:
         return jsonify({"status": "error", "message": "No URL"}), 400
     
+    # Clean old files
     try:
-        cleanup_old_files()
-        file_id = str(uuid.uuid4())[:8]
-        output_template = os.path.join(TEMP_DIR, f'{file_id}.%(ext)s')
+        current = time.time()
+        for f in os.listdir(TEMP_DIR):
+            fp = os.path.join(TEMP_DIR, f)
+            if os.path.getmtime(fp) < current - 300:
+                try:
+                    os.remove(fp)
+                except:
+                    pass
+    except:
+        pass
+    
+    file_id = str(uuid.uuid4())[:8]
+    output_template = os.path.join(TEMP_DIR, f'{file_id}.%(ext)s')
+    
+    try:
+        # First, try to get direct URL
+        ydl_opts_info = {
+            'quiet': True,
+            'no_warnings': True,
+        }
         
-        print(f"Downloading: {url} | Format: {format_id}")
+        with yt_dlp.YoutubeDL(ydl_opts_info) as ydl:
+            info = ydl.extract_info(url, download=False)
         
-        ydl_opts = {
-            'format': format_id if format_id else 'best',
-            'outtmpl': output_template,
-            'merge_output_format': 'mp4',
-            'quiet': False,
-            'no_warnings': False,
-            'socket_timeout': 120,
-            'retries': 3,
-            'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        # Find the direct URL for the requested format
+        direct_url = None
+        for f in info.get('formats', []):
+            if f.get('format_id') == format_id:
+                direct_url = f.get('url')
+                break
+        
+        # If no specific format, use best
+        if not direct_url:
+            for f in info.get('formats', []):
+                if f.get('ext') == 'mp4' and f.get('url'):
+                    direct_url = f.get('url')
+                    break
+        
+        if direct_url:
+            print(f"Direct URL found, downloading...")
+            
+            # Download using requests
+            import requests
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Referer': 'https://www.facebook.com/',
             }
+            
+            response = requests.get(direct_url, headers=headers, timeout=60, stream=True)
+            
+            if response.status_code == 200:
+                output_file = os.path.join(TEMP_DIR, f'{file_id}.mp4')
+                with open(output_file, 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
+                
+                if os.path.exists(output_file) and os.path.getsize(output_file) > 0:
+                    print(f"Downloaded: {output_file} ({os.path.getsize(output_file)} bytes)")
+                    return jsonify({
+                        "status": "success",
+                        "file_path": output_file,
+                        "filename": "galmee_video.mp4"
+                    })
+        
+        # Fallback: use yt-dlp download
+        print("Falling back to yt-dlp download...")
+        ydl_opts = {
+            'outtmpl': output_template,
+            'format': format_id if format_id else 'best[ext=mp4]/best',
+            'merge_output_format': 'mp4',
+            'quiet': True,
+            'no_warnings': True,
+            'socket_timeout': 120,
+            'retries': 2,
         }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=True)
-            print(f"Downloaded: {info.get('title')}")
+            ydl.download([url])
         
         # Find file
-        downloaded_file = None
-        for ext in ['mp4', 'mkv', 'webm']:
-            test = os.path.join(TEMP_DIR, f'{file_id}.{ext}')
-            if os.path.exists(test):
-                downloaded_file = test
-                break
+        for filename in os.listdir(TEMP_DIR):
+            if file_id in filename:
+                output_file = os.path.join(TEMP_DIR, filename)
+                print(f"Found: {output_file}")
+                return jsonify({
+                    "status": "success",
+                    "file_path": output_file,
+                    "filename": "galmee_video.mp4"
+                })
         
-        if not downloaded_file:
-            for f in os.listdir(TEMP_DIR):
-                if file_id in f:
-                    downloaded_file = os.path.join(TEMP_DIR, f)
-                    break
-        
-        if downloaded_file and os.path.exists(downloaded_file):
-            print(f"File ready: {downloaded_file} ({os.path.getsize(downloaded_file)} bytes)")
-            return jsonify({
-                "status": "success",
-                "file_path": downloaded_file,
-                "filename": "galmee_video.mp4"
-            })
-        
-        print("File not created!")
-        return jsonify({"status": "error", "message": "Download failed"}), 500
+        raise Exception("File not created")
             
     except Exception as e:
         print("DOWNLOAD ERROR:", str(e))
-        return jsonify({"status": "error", "message": "Download failed"}), 500
+        return jsonify({"status": "error", "message": "Download failed. Try a different video or quality."}), 500
 
 @app.route("/api/serve-file")
 def serve_file():
@@ -132,6 +174,7 @@ def serve_file():
         return "File not found", 404
     
     try:
+        filename = os.path.basename(file_path)
         file_size = os.path.getsize(file_path)
         
         def generate():
@@ -150,26 +193,13 @@ def serve_file():
             generate(),
             mimetype='video/mp4',
             headers={
-                'Content-Disposition': 'attachment; filename="galmee_video.mp4"',
+                'Content-Disposition': f'attachment; filename="galmee_video.mp4"',
                 'Content-Length': str(file_size),
             }
         )
     except Exception as e:
         print("SERVE ERROR:", str(e))
         return "Error", 500
-
-def cleanup_old_files():
-    try:
-        current = time.time()
-        for f in os.listdir(TEMP_DIR):
-            fp = os.path.join(TEMP_DIR, f)
-            try:
-                if os.path.getmtime(fp) < current - 1800:
-                    os.remove(fp)
-            except:
-                pass
-    except:
-        pass
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
