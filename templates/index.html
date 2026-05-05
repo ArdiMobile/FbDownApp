@@ -4,136 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facebook Video Downloader</title>
-    <!-- Using Google Fonts to match the clean style -->
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #2c3e50; /* Deep blue/grey for the button */
-            --bg-color: #ffffff;
-            --text-color: #333;
+            --primary-blue: #2c3e50;
+            --success-green: #27ae60;
+            --reset-grey: #95a5a6;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
+            background-color: #f8f9fa;
             margin: 0;
+            color: #333;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 50px 20px;
-            color: var(--text-color);
+            justify-content: center;
         }
 
-        .container {
-            max-width: 600px;
+        .hero-section {
+            max-width: 550px; /* Minimized width */
             width: 100%;
+            background: white;
+            padding: 40px;
+            margin-top: 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             text-align: center;
         }
 
-        h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
+        h1 { font-size: 1.8rem; margin-bottom: 8px; font-weight: 700; }
+        .subtitle { color: #666; font-size: 0.95rem; margin-bottom: 30px; }
 
-        .subtitle {
-            font-size: 1.1rem;
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
+        /* Input Area */
+        .input-box {
             width: 100%;
-            padding: 18px 20px;
-            border: 2px solid #2c3e50;
+            padding: 15px;
+            border: 2px solid var(--primary-blue);
             border-radius: 8px;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            margin-bottom: 15px;
             box-sizing: border-box;
-            outline: none;
         }
 
-        .download-btn {
+        /* Button Styling */
+        .btn {
             width: 100%;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 18px;
+            padding: 15px;
             border: none;
             border-radius: 8px;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.2s ease;
+            transition: transform 0.1s, opacity 0.2s;
         }
+        .btn:active { transform: scale(0.98); }
 
-        .download-btn:hover {
-            opacity: 0.9;
-        }
+        .btn-download { background-color: var(--primary-blue); color: white; }
+        .btn-success { background-color: var(--success-green); color: white; margin-top: 10px; text-decoration: none; display: block; }
+        .btn-reset { background-color: transparent; color: var(--reset-grey); border: 1px solid #ddd; margin-top: 15px; }
 
-        /* Video Player Frame */
-        #preview-container {
+        /* Compact Preview Area */
+        #preview-area {
             display: none;
-            margin-top: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            background: #f9f9f9;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
         }
 
         video {
             width: 100%;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 320px; /* Minimized size */
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .final-download-link {
-            display: inline-block;
-            background: #27ae60;
-            color: white;
-            text-decoration: none;
-            padding: 12px 25px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        .android-banner {
-            margin-top: 50px;
-            border-top: 1px solid #eee;
-            padding-top: 30px;
-        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Facebook Video Downloader</h1>
-        <p class="subtitle">Tool to save Facebook videos in high quality right on the browser</p>
-
-        <div class="input-group">
-            <input type="text" id="videoUrl" placeholder="Enter the Facebook video link here">
+    <div class="hero-section">
+        <div id="input-container">
+            <h1>Facebook Video Downloader</h1>
+            <p class="subtitle">Tool to save Facebook videos in high quality right on the browser</p>
+            
+            <input type="text" id="videoUrl" class="input-box" placeholder="Enter the Facebook video link here">
+            <button class="btn btn-download" id="mainBtn" onclick="processVideo()">Download</button>
         </div>
 
-        <button class="download-btn" onclick="downloadVideo()">Download</button>
+        <!-- Stylish Preview & Download Area -->
+        <div id="preview-area">
+            <video id="video-player" controls></video>
+            <h4 id="video-title" style="margin: 15px 0 10px;"></h4>
+            
+            <a id="hd-download" class="btn btn-success" href="#" target="_blank" download>
+                Download High Quality (MP4)
+            </a>
 
-        <!-- Dynamic Preview Section -->
-        <div id="preview-container">
-            <h3 id="video-title"></h3>
-            <video id="video-player" controls>
-                <source src="" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <br>
-            <a id="direct-link" class="final-download-link" href="#" target="_blank" download>Save Video High Quality</a>
+            <button class="btn btn-reset" onclick="resetApp()">Download Another Video</button>
         </div>
 
-        <div class="android-banner">
-            <h3>Facebook Downloader for Android</h3>
-            <p>Install FBDown app on Android now to download Facebook videos easier and faster.</p>
+        <div style="margin-top: 40px; font-size: 0.85rem; color: #888;">
+            <p><strong>Facebook Downloader for Android</strong><br>
+            Install FBDown app on Android now to download videos faster.</p>
         </div>
     </div>
 
