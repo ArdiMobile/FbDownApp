@@ -35,278 +35,7 @@
     <script>window.si=window.si||function(){(window.siq=window.siq||[]).push(arguments)};</script>
     <script defer src="/_vercel/speed-insights/script.js"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6017531796888844" crossorigin="anonymous"></script>
-    <style>/* Video Preview Card */
-.video-preview-card {
-    background: #fff;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-    animation: slideUp 0.4s ease;
-}
-
-/* Video Player */
-.video-player {
-    position: relative;
-    width: 100%;
-    padding-top: 56.25%;
-    background: #000;
-    overflow: hidden;
-}
-.video-player iframe,
-.video-player img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-.play-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70px;
-    height: 70px;
-    background: rgba(0,0,0,0.7);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-.play-overlay i {
-    color: #fff;
-    font-size: 28px;
-    margin-left: 5px;
-}
-.video-player:hover .play-overlay {
-    background: rgba(254,198,1,0.9);
-    transform: translate(-50%, -50%) scale(1.1);
-}
-
-/* Video Info Section */
-.video-info-section {
-    padding: 20px 20px 10px;
-}
-.platform-tag {
-    display: inline-block;
-    padding: 5px 14px;
-    border-radius: 50px;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 12px;
-}
-.video-title-preview {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--dark);
-    line-height: 1.4;
-    margin-bottom: 10px;
-}
-.video-meta-row {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    color: var(--text-secondary);
-    font-size: 13px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--border);
-}
-.video-meta-row span {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-.video-meta-row i {
-    color: var(--primary);
-}
-
-/* Download Section */
-.download-section {
-    padding: 20px;
-}
-.download-heading {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--dark);
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.download-heading i {
-    color: var(--primary);
-}
-.quality-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* Quality Grid */
-.quality-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 8px;
-    margin-bottom: 20px;
-}
-.quality-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 14px 10px;
-    background: #f8faf8;
-    border: 2px solid var(--border);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: inherit;
-    color: var(--text);
-}
-.quality-btn:hover {
-    background: var(--primary-light);
-    border-color: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,153,89,0.15);
-}
-.quality-btn i {
-    font-size: 18px;
-    color: var(--primary);
-}
-.quality-btn span {
-    font-weight: 700;
-    font-size: 15px;
-}
-.quality-btn small {
-    font-size: 10px;
-    color: var(--text-secondary);
-}
-
-/* Action Buttons */
-.action-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 12px;
-}
-.mp3-btn {
-    padding: 14px;
-    background: #333;
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    font-family: inherit;
-}
-.mp3-btn:hover {
-    background: #555;
-    transform: translateY(-2px);
-}
-.best-btn {
-    padding: 14px;
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    font-family: inherit;
-}
-.best-btn:hover {
-    background: var(--gold);
-    color: var(--dark);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(254,198,1,0.4);
-}
-
-/* Reset Button */
-.reset-btn {
-    width: 100%;
-    padding: 12px;
-    background: transparent;
-    color: var(--text-secondary);
-    border: 2px solid var(--border);
-    border-radius: 50px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    font-family: inherit;
-}
-.reset-btn:hover {
-    background: #f0f0f0;
-    border-color: #999;
-    color: var(--text);
-}
-
-/* Status Messages */
-#downloadStatus {
-    padding: 0 20px 20px;
-}
-.status-msg {
-    padding: 12px 16px;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    animation: slideUp 0.3s ease;
-}
-.status-msg.downloading {
-    background: #fff9e6;
-    color: #b8860b;
-    border: 1px solid #f0d060;
-}
-.status-msg.success {
-    background: #e6f5ee;
-    color: var(--primary);
-    border: 1px solid var(--primary);
-}
-.status-msg.error {
-    background: #ffe6e6;
-    color: #c0392b;
-    border: 1px solid #e74c3c;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-@media (max-width: 480px) {
-    .quality-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    .action-buttons {
-        grid-template-columns: 1fr;
-    }
-    .video-title-preview {
-        font-size: 16px;
-    }
-}</style>
+    
     <style>
         .conarea{position:relative;max-width:900px;margin:100px auto 0 auto;z-index:1}
         .conman{position:absolute;width:250px;top:-95px;left:324px;z-index:-1;pointer-events:none}
@@ -359,13 +88,12 @@
         .card{background:#fff;border-radius:var(--radius);padding:18px;margin-bottom:14px;box-shadow:var(--shadow);border:1px solid var(--border)}
         .card-title{font-size:17px;font-weight:700;margin-bottom:16px;color:var(--dark);display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:2px solid var(--primary-light)}
         .card-title i{color:var(--primary)}.card-title img{width:20px;height:20px;border-radius:4px}
-        .blog-card{background:#fff;border-radius:var(--radius);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow);border:3px solid var(--primary);transition:all .2s ease;cursor:pointer}
+        .blog-card{background:#fff;border-radius:var(--radius);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow);border:1px solid var(--border);transition:all .2s ease;cursor:pointer}
         .blog-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);border-color:var(--primary)}
         .blog-thumbnail{width:100%;height:180px;object-fit:cover;display:none;border-bottom:3px solid var(--primary)}
         .blog-card-body{padding:18px}
         .blog-card h2{font-size:16px;font-weight:700;border-bottom:dashed gray 1px;margin-bottom:8px;color:var(--dark)}
-        .blog-meta{display:flex;gap:12px;font-size:11px;color:var(--text-secondary);margin-bottom:10px;border-bottom
-:solid gray 1px;flex-wrap:wrap}
+        .blog-meta{display:flex;gap:12px;font-size:11px;color:var(--text-secondary);margin-bottom:10px;flex-wrap:wrap}
         .blog-meta span{display:flex;align-items:center;gap:4px}.blog-meta i{color:var(--primary)}
         .blog-excerpt{font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:10px}
         .blog-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
@@ -460,10 +188,10 @@
                 <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/keno.png" alt="Hold search bar" class="conman">
             </div>
             
-           <form id="form" class="search-box" onsubmit="return false;">
+            <form id="form" class="search-box">
                 <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
                 <input type="text" id="url" placeholder="Paste Facebook or Instagram link here...">
-                <button type="text" class="dl-btn" id="dlBtn"><i class="fas fa-download" id="dlBtnIcon"></i><span id="btnLoader" style="display:none;"></span></button>
+                <button type="submit" class="dl-btn" id="dlBtn"><i class="fas fa-download" id="dlBtnIcon"></i><span id="btnLoader" style="display:none;"></span></button>
             </form>
             <p class="subtitle">Fast • Free • HD Quality • No Registration</p>
             <div id="preview" class="preview-area"></div>
@@ -551,11 +279,11 @@
         </div>
         <p class="copyright">2026 &copy; Galmee Inc | Developed by <a href="https://fb.com/yasingelma" id="credit-link"><strong>Yasin Gelma</strong></a></p>
     </footer>
-    
 
-    <script src="static/scipt.js"></script>
+    <script src="static/script.js"></script>
     <script>
         function toggleDrawer(){document.getElementById('drawer').classList.toggle('show');document.getElementById('drawerOverlay').classList.toggle('show');}
+        function switchTab(e,t){e.preventDefault();document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));e.target.closest('.tab-btn').classList.add('active');document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById(t).classList.add('active');document.getElementById('drawer').classList.remove('show');document.getElementById('drawerOverlay').classList.remove('show')}
 
       const blogPosts=[
     {
@@ -596,7 +324,7 @@
     }
 ];
 
-        function renderBlogPosts(){const c=document.getElementById('blogPostsContainer');const s=[...blogPosts].sort((a,b)=>new Date(b.date)-new Date(a.date));c.innerHTML=s.map(p=>`<article class="blog-card" onclick="location.href='blog/${p.slug}.html'"><img src="${p.thumbnail}" alt="${p.title}" class="blog-thumbnail" loading="lazy"><div class="blog-card-body"><h2>${p.title}</h2><div class="blog-meta"><span><i class="fas fa-calendar"></i> ${new Date(p.date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</span><span><i class="fas fa-user"></i> ${p.author}</span><span><i class="fas fa-eye"></i> ${p.views.toLocaleString()} views</span><span><i class="fas fa-clock"></i> ${p.readTime}</span></div><p class="blog-excerpt">${p.excerpt}</p><div class="blog-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div><span class="read-more">Read Full Articles <i class="fas fa-arrow-right"></i></span></div></article>`).join('')}
+        function renderBlogPosts(){const c=document.getElementById('blogPostsContainer');const s=[...blogPosts].sort((a,b)=>new Date(b.date)-new Date(a.date));c.innerHTML=s.map(p=>`<article class="blog-card" onclick="location.href='blog/${p.slug}.html'"><img src="${p.thumbnail}" alt="${p.title}" class="blog-thumbnail" loading="lazy"><div class="blog-card-body"><h2>${p.title}</h2><div class="blog-meta"><span><i class="fas fa-calendar"></i> ${new Date(p.date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</span><span><i class="fas fa-user"></i> ${p.author}</span><span><i class="fas fa-eye"></i> ${p.views.toLocaleString()} views</span><span><i class="fas fa-clock"></i> ${p.readTime}</span></div><p class="blog-excerpt">${p.excerpt}</p><div class="blog-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div><span class="read-more">Read Full Article <i class="fas fa-arrow-right"></i></span></div></article>`).join('')}
         renderBlogPosts();
     </script>
 </body>
