@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Check if it's a supported URL
         if (!url.includes('facebook.com') && !url.includes('fb.watch') && !url.includes('instagram.com')) {
             preview.innerHTML = `<p style="color:#e74c3c; text-align:center; padding:30px;">Only Facebook and Instagram links are supported</p>`;
             return;
@@ -29,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
 
             if (data.status !== "success") {
-                preview.innerHTML = `<p style="color:#e74c3c; text-align:center; padding:30px;">${data.message || 'Failed to load video'}</p>`;
+                preview.innerHTML = `<p style="color:#e74c3c; text-align:center; padding:30px; background:#fff; border-radius:12px; margin-top:15px;">${data.message || 'Failed to load video'}</p>`;
                 return;
             }
 
@@ -43,24 +42,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h4 style="color:#fff; margin:15px 0 8px 0;">📥 Available Downloads</h4>`;
 
             if (data.formats && data.formats.length > 0) {
-                data.formats.forEach(f => {
+                data.formats.forEach((f, index) => {
                     html += `
-                        <button onclick="downloadMedia('${encodeURIComponent(url)}', '${f.format_id}')" 
+                        <button id="dl-btn-${index}" onclick="downloadMedia('${encodeURIComponent(url)}', '${f.format_id}', ${index})" 
                             style="width:100%; padding:14px; margin:6px 0; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); border:none; border-radius:10px; color:white; font-size:15px; font-weight:600; cursor:pointer; transition:all 0.2s;"
-                            onmouseover="this.style.transform='scale(1.02)'"
-                            onmouseout="this.style.transform='scale(1)'">
+                            onmouseover="if(!this.disabled) { this.style.transform='scale(1.02)'; }"
+                            onmouseout="if(!this.disabled) { this.style.transform='scale(1)'; }">
                             <i class="fas fa-download"></i> Download Video (${f.resolution || f.quality}p)
                         </button>`;
                 });
             } else {
-                html += `<p style="color:rgba(255,255,255,0.6); text-align:center;">No formats found. The video might be private.</p>`;
+                html += `<p style="color:rgba(255,255,255,0.6); text-align:center; background:#fff; border-radius:12px; padding:20px;">No formats found. Try a different video.</p>`;
             }
 
             preview.innerHTML = html;
 
         } catch (err) {
             console.error(err);
-            preview.innerHTML = `<p style="color:#e74c3c; text-align:center; padding:40px;">Connection error. Please try again.</p>`;
+            preview.innerHTML = `<p style="color:#e74c3c; text-align:center; padding:40px; background:#fff; border-radius:12px; margin-top:15px;">Connection error. Please try again.</p>`;
         }
     });
 });
@@ -68,62 +67,52 @@ document.addEventListener('DOMContentLoaded', () => {
 function formatDuration(seconds) {
     if (!seconds) return '';
     const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
+    const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-async function downloadMedia(url, formatId) {
-    // Show loading on the button
-    const buttons = document.querySelectorAll('button');
-    buttons.forEach(b => {
-        if (b.textContent.includes('Download Video')) {
-            b.disabled = true;
-            b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
-        }
-    });
+async function downloadMedia(url, formatId, btnIndex) {
+    const btn = document.getElementById(`dl-btn-${btnIndex}`);
+    if (!btn) return;
+    
+    // Save original state
+    const originalHTML = btn.innerHTML;
+    const originalBg = btn.style.background;
+    
+    // Set loading state
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
+    btn.style.opacity = '0.7';
+    btn.style.cursor = 'not-allowed';
 
     try {
         const response = await fetch(`/api/download?url=${encodeURIComponent(url)}&format_id=${formatId}`);
         const data = await response.json();
         
         if (data.status === 'success' && data.file_path) {
-            // Trigger download
             const downloadUrl = `/api/serve-file?path=${encodeURIComponent(data.file_path)}`;
             
-            // Create hidden iframe for download
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = downloadUrl;
-            document.body.appendChild(iframe);
-            
-            // Also create a direct link as fallback
+            // Create download link
             const link = document.createElement('a');
             link.href = downloadUrl;
             link.download = 'galmee_video.mp4';
-            link.style.display = 'none';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
-            // Cleanup iframe after delay
-            setTimeout(() => {
-                document.body.removeChild(iframe);
-            }, 5000);
+            // Success state
+            btn.innerHTML = '<i class="fas fa-check"></i> Downloaded!';
+            btn.style.background = 'var(--gold)';
+            btn.style.color = 'var(--dark)';
+            btn.style.opacity = '1';
             
-            // Success feedback
-            buttons.forEach(b => {
-                b.disabled = false;
-                b.innerHTML = '<i class="fas fa-check"></i> Downloaded!';
-                b.style.background = 'var(--gold)';
-                b.style.color = 'var(--dark)';
-            });
-            
+            // Reset after 3 seconds
             setTimeout(() => {
-                buttons.forEach(b => {
-                    b.innerHTML = b.textContent.includes('Download Video') ? '<i class="fas fa-download"></i> Download Video' : b.innerHTML;
-                    b.style.background = '';
-                    b.style.color = '';
-                });
+                btn.innerHTML = originalHTML;
+                btn.style.background = originalBg || '';
+                btn.style.color = '';
+                btn.disabled = false;
+                btn.style.cursor = 'pointer';
             }, 3000);
             
         } else {
@@ -131,21 +120,32 @@ async function downloadMedia(url, formatId) {
         }
     } catch (err) {
         console.error('Download error:', err);
-        alert('Download failed. Please try again.');
         
-        buttons.forEach(b => {
-            b.disabled = false;
-            b.innerHTML = '<i class="fas fa-download"></i> Download Video';
-        });
+        // Error state
+        btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Failed - Try Again';
+        btn.style.background = '#e74c3c';
+        btn.style.opacity = '1';
+        
+        // Show alert
+        alert('Download failed. Please try again or choose a different quality.');
+        
+        // Reset after 3 seconds
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.style.background = originalBg || '';
+            btn.style.color = '';
+            btn.disabled = false;
+            btn.style.cursor = 'pointer';
+        }, 3000);
     }
 }
 
-// Auto-detect paste from clipboard
+// Auto-paste detection
 document.getElementById('url').addEventListener('paste', () => {
     setTimeout(() => {
         const input = document.getElementById('url');
         if (input.value && (input.value.includes('facebook.com') || input.value.includes('fb.watch') || input.value.includes('instagram.com'))) {
             document.getElementById('form').dispatchEvent(new Event('submit'));
         }
-    }, 300);
+    }, 500);
 });
