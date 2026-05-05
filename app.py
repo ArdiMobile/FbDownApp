@@ -4,7 +4,6 @@ from flask import Flask, request, render_template, jsonify
 
 app = Flask(__name__)
 
-# Essential for Railway deployment
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -17,15 +16,31 @@ def download():
 
     try:
         ydl_opts = {
-            'format': 'best',
-            'noplaylist': True,
+            'quiet': True,
+            'no_warnings': True,
+            'format': 'best'
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
+            
+            # Extract metadata
+            formats = []
+            for f in info.get('formats', []):
+                if f.get('vcodec') != 'none' and f.get('acodec') != 'none':
+                    res = f.get('height')
+                    if res:
+                        formats.append({
+                            'quality': f"{res}p",
+                            'url': f.get('url'),
+                            'ext': f.get('ext')
+                        })
+
             return jsonify({
-                'title': info.get('title', 'Facebook Video'),
-                'url': info.get('url'), # Direct download link
-                'thumbnail': info.get('thumbnail')
+                'title': info.get('title', 'Social Video'),
+                'uploader': info.get('uploader', 'Unknown Creator'),
+                'views': f"{info.get('view_count', 0):,}",
+                'thumbnail': info.get('thumbnail'),
+                'formats': formats[::-1][:4] # Top 4 unique qualities
             })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
