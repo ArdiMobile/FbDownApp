@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ["ffmpeg"]
-
-[phases.install]
-cmds = ["pip3 install --break-system-packages flask yt-dlp gunicorn requests"]
-
-[start]
-cmd = "python3 -m gunicorn app:app --bind 0.0.0.0:${PORT} --workers 1 --timeout 300"
