@@ -12,10 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Check if it's a supported URL
+        if (!url.includes('facebook.com') && !url.includes('fb.watch') && !url.includes('instagram.com')) {
+            preview.innerHTML = `<p style="color:#e74c3c; text-align:center; padding:30px;">Only Facebook and Instagram links are supported</p>`;
+            return;
+        }
+
         preview.innerHTML = `
             <div style="text-align:center; padding:30px 20px;">
                 <i class="fas fa-spinner fa-spin" style="font-size:32px;color:var(--primary);"></i>
-                <p style="margin-top:10px;color:rgba(255,255,255,0.7);">Fetching media details...</p>
+                <p style="margin-top:10px;color:rgba(255,255,255,0.7);">Fetching video...</p>
             </div>`;
 
         try {
@@ -29,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let html = `
                 <div style="background:#fff;border-radius:12px;padding:20px;margin-top:15px;text-align:center;">
-                    ${data.thumbnail ? `<img src="${data.thumbnail}" style="max-width:100%;max-height:200px;border-radius:10px;margin-bottom:15px;">` : ''}
+                    ${data.thumbnail ? `<img src="${data.thumbnail}" style="max-width:100%;max-height:200px;border-radius:10px;margin-bottom:15px;" onerror="this.style.display='none'">` : ''}
                     <h3 style="color:var(--dark);margin-bottom:5px;">${data.title || 'Video'}</h3>
                     ${data.uploader ? `<p style="color:var(--text-secondary);font-size:13px;">By ${data.uploader}</p>` : ''}
                     ${data.duration ? `<p style="color:var(--text-secondary);font-size:12px;"><i class="fas fa-clock"></i> ${formatDuration(data.duration)}</p>` : ''}
@@ -47,12 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         </button>`;
                 });
             } else {
-                html += `<p style="color:rgba(255,255,255,0.6); text-align:center;">No formats available. Try a different video.</p>`;
+                html += `<p style="color:rgba(255,255,255,0.6); text-align:center;">No formats found. The video might be private.</p>`;
             }
 
             preview.innerHTML = html;
 
         } catch (err) {
+            console.error(err);
             preview.innerHTML = `<p style="color:#e74c3c; text-align:center; padding:40px;">Connection error. Please try again.</p>`;
         }
     });
@@ -65,15 +72,79 @@ function formatDuration(seconds) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-function downloadMedia(url, formatId) {
-    window.location.href = `/api/download?url=${encodeURIComponent(url)}&format_id=${formatId}`;
+async function downloadMedia(url, formatId) {
+    // Show loading on the button
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(b => {
+        if (b.textContent.includes('Download Video')) {
+            b.disabled = true;
+            b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
+        }
+    });
+
+    try {
+        const response = await fetch(`/api/download?url=${encodeURIComponent(url)}&format_id=${formatId}`);
+        const data = await response.json();
+        
+        if (data.status === 'success' && data.file_path) {
+            // Trigger download
+            const downloadUrl = `/api/serve-file?path=${encodeURIComponent(data.file_path)}`;
+            
+            // Create hidden iframe for download
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = downloadUrl;
+            document.body.appendChild(iframe);
+            
+            // Also create a direct link as fallback
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = 'galmee_video.mp4';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Cleanup iframe after delay
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+            }, 5000);
+            
+            // Success feedback
+            buttons.forEach(b => {
+                b.disabled = false;
+                b.innerHTML = '<i class="fas fa-check"></i> Downloaded!';
+                b.style.background = 'var(--gold)';
+                b.style.color = 'var(--dark)';
+            });
+            
+            setTimeout(() => {
+                buttons.forEach(b => {
+                    b.innerHTML = b.textContent.includes('Download Video') ? '<i class="fas fa-download"></i> Download Video' : b.innerHTML;
+                    b.style.background = '';
+                    b.style.color = '';
+                });
+            }, 3000);
+            
+        } else {
+            throw new Error(data.message || 'Download failed');
+        }
+    } catch (err) {
+        console.error('Download error:', err);
+        alert('Download failed. Please try again.');
+        
+        buttons.forEach(b => {
+            b.disabled = false;
+            b.innerHTML = '<i class="fas fa-download"></i> Download Video';
+        });
+    }
 }
 
-// Auto-detect paste
+// Auto-detect paste from clipboard
 document.getElementById('url').addEventListener('paste', () => {
     setTimeout(() => {
         const input = document.getElementById('url');
-        if (input.value) {
+        if (input.value && (input.value.includes('facebook.com') || input.value.includes('fb.watch') || input.value.includes('instagram.com'))) {
             document.getElementById('form').dispatchEvent(new Event('submit'));
         }
     }, 300);
