@@ -3,526 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galmee - Free Facebook Video Downloader | HD Quality</title>
-    <meta name="description" content="Download Facebook videos in HD quality for free. No registration required. Fast and easy Facebook downloader.">
-    <meta name="keywords" content="Galmee, facebook video downloader, free video downloader, HD video download, fb video saver">
-    <meta name="author" content="Yasin Gelma">
-    <meta name="robots" content="index, follow">
-    
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://yasing.com.et/">
-    <meta property="og:title" content="Galmee - Free Facebook Video Downloader | HD Quality">
-    <meta property="og:description" content="Download Facebook videos in HD quality. Fast, free, no registration required.">
-    <meta property="og:image" content="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/galmee%20pages%20banner.jpg">
-    <meta property="og:site_name" content="Galmee">
-    
-    <link rel="canonical" href="https://yasing.com.et/">
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <title>Facebook Video Downloader</title>
+    <!-- Using Google Fonts to match the clean style -->
+    <link href="https://googleapis.com" rel="stylesheet">
     <style>
         :root {
-            --primary: #009959;
-            --primary-dark: #007a47;
-            --primary-light: #e6f5ee;
-            --gold: #FEC601;
-            --gold-dark: #e6b300;
-            --dark: #002611;
-            --white: #FFFFFF;
-            --text: #002611;
-            --text-secondary: #4a6b56;
-            --border: #d4e6da;
-            --shadow: 0 2px 4px rgba(0,38,17,0.06);
-            --shadow-md: 0 4px 16px rgba(0,38,17,0.1);
-            --shadow-lg: 0 8px 32px rgba(0,38,17,0.15);
-            --radius-sm: 8px;
-            --radius: 14px;
-            --radius-lg: 18px;
+            --primary-color: #2c3e50; /* Deep blue/grey for the button */
+            --bg-color: #ffffff;
+            --text-color: #333;
         }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        
+
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: #f5f8f6;
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        
-        a { text-decoration: none; color: inherit; }
-        button { cursor: pointer; font-family: inherit; }
-        input { font-family: inherit; }
-        img { max-width: 100%; height: auto; }
-        
-        /* Header */
-        .header {
-            background: var(--dark);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 20px rgba(0,38,17,0.3);
-        }
-        .header-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 10px 18px;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            padding: 50px 20px;
+            color: var(--text-color);
         }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            text-decoration: none;
-        }
-        .logo-icon {
-            width: 26px;
-            height: 26px;
-            border-radius: 8px;
-        }
-        .logo-text {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-style: italic;
-            font-size: 26px;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--gold) 0%, #ffe680 50%, var(--gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .logo-dot {
-            color: var(--primary);
-            -webkit-text-fill-color: var(--primary);
-            font-size: 10px;
-        }
-        
-        /* Main */
-        .main {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px 16px;
-        }
-        
-        /* Hero Card */
-        .hero-card {
-            background: linear-gradient(135deg, var(--dark) 0%, #003d1b 50%, #001a0b 100%);
-            border-radius: var(--radius-lg);
-            padding: 36px 22px;
-            text-align: center;
-            color: #fff;
-            margin-bottom: 24px;
-            box-shadow: 0 12px 40px rgba(0,38,17,0.4);
-            position: relative;
-            overflow: hidden;
-        }
-        .hero-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 50%, rgba(0,153,89,0.08) 0%, transparent 50%), 
-                        radial-gradient(circle at 70% 50%, rgba(254,198,1,0.05) 0%, transparent 50%);
-            animation: rotate 30s linear infinite;
-            pointer-events: none;
-        }
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .hero-brand {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-style: italic;
-            font-size: 38px;
-            font-weight: 900;
-            margin-bottom: 4px;
-            position: relative;
-            z-index: 1;
-            background: linear-gradient(135deg, var(--gold) 0%, #ffe680 40%, var(--primary) 60%, #00cc75 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero-card h1 {
-            font-size: 18px;
-            font-weight: 700;
-            position: relative;
-            z-index: 1;
-        }
-        .hero-card .subtitle {
-            font-size: 13px;
-            color: rgba(255,255,255,0.7);
-            margin-top: 6px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* Platform Badge */
-        .platform-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 600;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
-            color: #fff;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        .platform-badge .fa-facebook {
-            color: #1877f2;
-        }
-        
-        /* Search Box */
-        .search-box {
-            display: flex;
-            background: #fff;
-            border-radius: 50px;
-            padding: 5px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+
+        .container {
             max-width: 600px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-        .search-box:focus-within {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 4px rgba(254,198,1,0.2), 0 8px 30px rgba(0,0,0,0.3);
-        }
-        .search-box input {
-            flex: 1;
-            border: none;
-            padding: 14px 18px;
-            outline: none;
-            border-radius: 50px;
-            font-size: 14px;
-            background: transparent;
-            color: var(--text);
-            min-width: 0;
-        }
-        .search-box input::placeholder {
-            color: #999;
-        }
-        .search-box img {
-            width: 44px;
-            height: 44px;
-            border-radius: 8px;
-            margin: 2px;
-        }
-        .dl-btn {
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.2s ease;
-            font-size: 16px;
-        }
-        .dl-btn:hover {
-            background: var(--gold);
-            color: var(--dark);
-            transform: scale(1.05);
-            box-shadow: 0 4px 20px rgba(254,198,1,0.4);
-        }
-        
-        /* Result Area */
-        .result-area {
-            margin-top: 15px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* Video Info Card */
-        .video-card {
-            background: #fff;
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border);
-        }
-        .video-thumb {
             width: 100%;
-            max-height: 250px;
-            object-fit: cover;
-            display: block;
+            text-align: center;
         }
-        .video-info {
-            padding: 18px;
-        }
-        .video-title {
-            font-size: 16px;
+
+        h1 {
+            font-size: 2.2rem;
             font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 6px;
-        }
-        .video-uploader {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-        }
-        .video-duration {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-        }
-        .video-duration i {
-            color: var(--primary);
-        }
-        
-        /* Download Section */
-        .download-section {
-            padding: 0 18px 18px 18px;
-        }
-        .download-heading {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--dark);
             margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
-        .download-heading i {
-            color: var(--primary);
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
         }
-        .download-buttons {
-            display: grid;
-            gap: 8px;
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
         }
-        .download-option {
+
+        input[type="text"] {
             width: 100%;
-            padding: 13px 16px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #fff;
+            padding: 18px 20px;
+            border: 2px solid #2c3e50;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .download-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 18px;
             border: none;
-            border-radius: var(--radius-sm);
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 1.2rem;
             font-weight: 600;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.2s ease;
+            transition: opacity 0.2s ease;
         }
-        .download-option:hover {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: var(--dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-        .download-option:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .download-option .quality {
-            font-size: 12px;
+
+        .download-btn:hover {
             opacity: 0.9;
         }
-        
-        /* Loading */
-        .loading-state {
-            text-align: center;
-            padding: 30px;
-            color: rgba(255,255,255,0.8);
-        }
-        .loading-state i {
-            font-size: 32px;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-        
-        /* Error */
-        .error-state {
-            text-align: center;
+
+        /* Video Player Frame */
+        #preview-container {
+            display: none;
+            margin-top: 30px;
             padding: 20px;
-            background: #fff;
-            border-radius: var(--radius);
-            color: #e74c3c;
-            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            background: #f9f9f9;
         }
-        
-        /* No formats */
-        .no-formats {
-            text-align: center;
-            padding: 15px;
-            background: #fff;
-            border-radius: var(--radius);
-            color: var(--text-secondary);
-            font-size: 14px;
+
+        video {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        
-        /* Footer */
-        .footer {
-            background: var(--dark);
-            padding: 24px 16px;
-            text-align: center;
-            margin-top: 36px;
-            color: rgba(255,255,255,0.7);
+
+        .final-download-link {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-weight: bold;
         }
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
-            margin-bottom: 12px;
-        }
-        .footer-logo img {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-        }
-        .footer-logo span {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-style: italic;
-            font-size: 22px;
-            font-weight: 900;
-            color: var(--gold);
-        }
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            margin-bottom: 14px;
-        }
-        .social-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.05);
-            color: rgba(255,255,255,0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            border: 1px solid rgba(255,255,255,0.15);
-            transition: all 0.2s ease;
-        }
-        .social-icon:hover { transform: translateY(-2px); }
-        .social-icon.fb:hover { background: #1877f2; color: #fff; border-color: #1877f2; }
-        .social-icon.ig:hover { background: linear-gradient(135deg,#f09433,#dc2743,#bc1888); color: #fff; }
-        .social-icon.telegram:hover { background: #0088cc; color: #fff; border-color: #0088cc; }
-        .social-icon.whatsapp:hover { background: #25D366; color: #fff; border-color: #25D366; }
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }
-        .footer-links a {
-            font-size: 12px;
-            color: rgba(255,255,255,0.6);
-            font-weight: 500;
-        }
-        .footer-links a:hover { color: var(--gold); }
-        .copyright {
-            font-size: 11px;
-            color: rgba(255,255,255,0.4);
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-        .copyright strong { color: var(--gold); }
-        
-        .form-note {
-            font-size: 11px;
-            color: rgba(255,255,255,0.5);
-            margin-top: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* Responsive */
-        @media (max-width: 480px) {
-            .hero-card { padding: 28px 12px; }
-            .hero-brand { font-size: 28px; }
-            .hero-card h1 { font-size: 15px; }
-            .search-box input { padding: 10px 12px; font-size: 12px; }
-            .search-box img { width: 34px; height: 34px; }
-            .dl-btn { width: 34px; height: 34px; font-size: 14px; }
+
+        .android-banner {
+            margin-top: 50px;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
         }
     </style>
 </head>
 <body>
-    <!-- HEADER -->
-    <header class="header">
-        <div class="header-inner">
-            <a href="/" class="logo">
-                <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee" class="logo-icon">
-                <span class="logo-text">Galmee</span><span class="logo-dot">.et</span>
-            </a>
-        </div>
-    </header>
 
-    <!-- MAIN -->
-    <main class="main">
-        <!-- HERO -->
-        <div class="hero-card">
-            <div class="hero-brand">Galmee</div>
-            <span class="platform-badge">
-                <i class="fab fa-facebook"></i> Facebook Video Downloader
-            </span>
-            <h1>Download Facebook Videos in HD</h1>
-            <p class="subtitle">Fast • Free • HD Quality • No Registration</p>
-            
-            <!-- Search Form -->
-            <form id="downloadForm" style="margin-top:20px;">
-                <div class="search-box">
-                    <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
-                    <input type="text" id="videoUrl" placeholder="Paste Facebook video link here..." required>
-                    <button type="submit" class="dl-btn" id="submitBtn">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </form>
-            <p class="form-note">Supports: facebook.com, fb.watch, fb.com/reel</p>
-            
-            <!-- Result Area -->
-            <div id="result" class="result-area"></div>
-        </div>
-    </main>
+    <div class="container">
+        <h1>Facebook Video Downloader</h1>
+        <p class="subtitle">Tool to save Facebook videos in high quality right on the browser</p>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="footer-logo">
-            <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
-            <span>Galmee</span>
+        <div class="input-group">
+            <input type="text" id="videoUrl" placeholder="Enter the Facebook video link here">
         </div>
-        <div class="social-icons">
-            <a href="https://fb.com/yasingelma" class="social-icon fb" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://instagram.com/yasingelma" class="social-icon ig" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://t.me/anayasingg" class="social-icon telegram" target="_blank"><i class="fab fa-telegram-plane"></i></a>
-            <a href="https://api.whatsapp.com/send?phone=251934646971" class="social-icon whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
-        </div>
-        <div class="footer-links">
-            <a href="/page/about.html">About</a>
-            <a href="/page/privacy.html">Privacy</a>
-            <a href="/page/terms.html">Terms</a>
-            <a href="/page/contact.html">Contact</a>
-        </div>
-        <p class="copyright">2026 &copy; Galmee Inc | Developed by <a href="https://fb.com/yasingelma"><strong>Yasin Gelma</strong></a></p>
-    </footer>
 
-    <script src="/static/script.js"></script>
+        <button class="download-btn" onclick="downloadVideo()">Download</button>
+
+        <!-- Dynamic Preview Section -->
+        <div id="preview-container">
+            <h3 id="video-title"></h3>
+            <video id="video-player" controls>
+                <source src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <br>
+            <a id="direct-link" class="final-download-link" href="#" target="_blank" download>Save Video High Quality</a>
+        </div>
+
+        <div class="android-banner">
+            <h3>Facebook Downloader for Android</h3>
+            <p>Install FBDown app on Android now to download Facebook videos easier and faster.</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
