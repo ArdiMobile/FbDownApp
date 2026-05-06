@@ -47,36 +47,18 @@
         }
 
         [data-theme="dark"] {
-            --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --border: #334155;
+            --primary: black;
+            --dark-footer: black;
+            --bg: black;
+            --card: black;
+            --text: white;
+            --text-light: yellow;
+            --border: red;
         }
-
-        * { box-sizing: border-box; transition: background 0.3s, color 0.3s; margin: 0; padding: 0; }
-        body { font-family: 'Poppins', sans-serif; background-color: var(--bg); color: var(--text); }
-
         /* --- UPDATED HEADER --- */
-        header { 
-            background: var(--card); border-bottom: 1px solid var(--border); 
-            padding: 15px 5%; display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .logo { font-weight: 700; font-size: 1.6rem; color: #a3cc00; display: flex; align-items: center; gap: 8px; }
-        .logo span { font-style: italic; font-size: 0.8rem; color: var(--text-light); }
-        
-        .header-actions { display: flex; align-items: center; gap: 15px; }
         .theme-btn { background: var(--border); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--text); }
-        .menu-toggle { background: var(--primary); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-
-        /* --- MOBILE DRAWER --- */
-        .mobile-drawer { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: var(--card); z-index: 2000; transition: 0.4s; padding: 30px 20px; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
-        .mobile-drawer.active { left: 0; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1500; }
-        .overlay.active { display: block; }
-        .mobile-drawer ul { list-style: none; margin-top: 30px; }
-        .mobile-drawer li { padding: 15px 0; border-bottom: 1px solid var(--border); }
-        .mobile-drawer a { text-decoration: none; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 12px; }
 
         /* --- CONTENT --- */
-        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; min-height: 50vh; }
         .main-card { background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         .input-group { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
         input { padding: 16px; border-radius: 10px; border: 2px solid var(--border); background: var(--bg); color: var(--text); font-size: 1rem; outline: none; }
@@ -87,28 +69,6 @@
         video { width: 100%; max-width: 400px; border-radius: 10px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .dl-list { display: flex; flex-direction: column; gap: 10px; }
         .dl-btn { background: #00a86b; color: white; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: 600; display: flex; justify-content: space-between; padding: 15px 25px; }
-
-        /* --- UPDATED FOOTER (Matches Image) --- */
-        footer { background: var(--dark-footer); color: #ffffff; padding: 60px 20px 30px; text-align: center; }
-        .footer-logo { font-size: 1.8rem; font-weight: 700; color: #a3cc00; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        
-        .social-circle-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
-        .social-circle-row a { 
-            width: 45px; height: 45px; border: 1px solid rgba(255,255,255,0.2); 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            color: white; text-decoration: none; font-size: 1.1rem; transition: 0.3s;
-        }
-        .social-circle-row a:hover { background: rgba(255,255,255,0.1); }
-
-        .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px 25px; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; }
-        .footer-links a { color: #ffffff; text-decoration: none; font-size: 0.9rem; opacity: 0.8; transition: 0.3s; }
-        .footer-links a:hover { opacity: 1; }
-
-        .footer-copy { font-size: 0.85rem; opacity: 0.5; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; }
-        .footer-copy span { color: #a3cc00; font-weight: 600; }
-
-        @media (max-width: 600px) {
-            .footer-links { display: flex; justify-content: center; gap: 15px }
         }
     </style>
     <style>/* Video Preview Card */
@@ -384,7 +344,7 @@
     }
 }</style>
     <style>
-        .conarea{position:relative;max-width:900px;margin:100px auto 0 auto;z-index:1}
+        .conarea{display:none;position:relative;max-width:900px;margin:100px auto 0 auto;z-index:1}
         .conman{position:absolute;width:250px;top:-95px;left:324px;z-index:-1;pointer-events:none}
         @media(max-width:480px){.conman{width:300px;top:-88px;left:3px}.conarea{max-width:200px;margin-top:50px}}
     </style>
@@ -504,7 +464,7 @@
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
     <nav class="drawer" id="drawer">
         <div class="drawer-header">
-            <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
+                        <button class="theme-btn" onclick="toggleTheme()" id="theme-icon"><i class="fas fa-moon"></i></button>
             <button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
         </div>
         <div class="drawer-menu">
