@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galmee Downloader</title>
+<title>Galmee • Premium Downloader</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -12,23 +12,40 @@
   --primary:#009959;
   --yellow:#FEC601;
   --red:#e63946;
+  --dark:#0f172a;
 }
 
-/* BASIC */
+/* BASE */
 body{
   margin:0;
-  font-family:Arial;
+  font-family:Inter, Arial;
   background:#f5f8f6;
+}
+
+/* HERO */
+.hero{
+  text-align:center;
+  padding:60px 20px;
+}
+
+.hero h1{
+  font-size:32px;
+  margin-bottom:10px;
+}
+
+.hero p{
+  color:#666;
 }
 
 /* INPUT */
 .input-box{
   max-width:600px;
-  margin:40px auto;
+  margin:20px auto;
   display:flex;
   background:#fff;
   border-radius:50px;
   overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
 }
 
 .input-box input{
@@ -61,7 +78,7 @@ body{
   border-radius:20px;
 }
 
-/* LEFT VIDEO */
+/* VIDEO */
 .video-left{
   flex:1;
   position:relative;
@@ -83,7 +100,7 @@ video{
   font-size:12px;
 }
 
-/* RIGHT PANEL */
+/* RIGHT */
 .video-right{
   flex:1;
   display:flex;
@@ -91,20 +108,15 @@ video{
   gap:10px;
 }
 
-/* BADGES */
-.fb-badge{
-  background:#1877f2;
-  color:#fff;
+/* BADGE */
+.badge{
   padding:4px 12px;
   border-radius:20px;
+  color:#fff;
 }
 
-.ig-badge{
-  background:linear-gradient(45deg,#f09433,#dc2743);
-  color:#fff;
-  padding:4px 12px;
-  border-radius:20px;
-}
+.facebook{background:#1877f2;}
+.instagram{background:linear-gradient(45deg,#f09433,#dc2743);}
 
 /* QUALITY */
 .quality-grid{
@@ -135,35 +147,61 @@ video{
 }
 
 .best{background:var(--primary);}
-.mp3{background:#333;}
+.mp3{background:var(--yellow); color:#000;}
 .reset-btn{background:var(--red);}
 
-/* SPINNER */
-.spinner{
-  width:18px;
-  height:18px;
-  border:2px solid white;
-  border-top:2px solid transparent;
-  border-radius:50%;
-  display:inline-block;
-  animation:spin 0.7s linear infinite;
+/* LOADER OVERLAY */
+.loader{
+  position:fixed;
+  inset:0;
+  background:#000000cc;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  color:#fff;
+  z-index:9999;
 }
 
-@keyframes spin{
-  from{transform:rotate(0deg);}
-  to{transform:rotate(360deg);}
+.loader.show{display:flex;}
+
+.bar{
+  width:250px;
+  height:6px;
+  background:#333;
+  border-radius:10px;
+  margin-top:10px;
+  overflow:hidden;
+}
+
+.progress{
+  height:100%;
+  width:0%;
+  background:var(--primary);
+  transition:width 0.3s;
 }
 </style>
 </head>
 
 <body>
 
-<!-- INPUT -->
-<div class="input-box">
-  <input id="url" placeholder="Paste video link...">
-  <button id="downloadBtn" onclick="fetchVideo()">
-    <i class="fas fa-download"></i> Download
-  </button>
+<!-- HERO -->
+<div class="hero">
+  <h1>Download Videos Instantly</h1>
+  <p>Facebook & Instagram HD Downloader</p>
+
+  <div class="input-box">
+    <input id="url" placeholder="Paste video link...">
+    <button id="downloadBtn" onclick="fetchVideo()">
+      <i class="fas fa-download"></i> Download
+    </button>
+  </div>
+</div>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <h2>Processing Video...</h2>
+  <div class="bar"><div class="progress" id="progress"></div></div>
 </div>
 
 <!-- RESULT -->
@@ -171,18 +209,17 @@ video{
   <div class="video-row">
 
     <div class="video-left">
-      <video id="player" controls playsinline preload="metadata"></video>
+      <video id="player" controls playsinline></video>
       <div class="watermark">GALMEE</div>
     </div>
 
     <div class="video-right">
       <div style="display:flex;justify-content:space-between;">
-        <h3 id="title">Video Title</h3>
-        <span id="platformBadge"></span>
+        <h3 id="title">Video</h3>
+        <span id="platformBadge" class="badge"></span>
       </div>
 
       <div>
-        <span id="uploaderName">@creator</span> · 
         <span id="viewCount">0 views</span> · 
         <span id="fileSize">0 MB</span>
       </div>
@@ -191,7 +228,7 @@ video{
 
       <div class="actions">
         <button class="best" onclick="downloadBest()">Best</button>
-        <button class="mp3">BUY NOW</button>
+        <button class="mp3" onclick="alert('Upgrade to unlock MP3')">MP3</button>
         <button class="reset-btn" onclick="resetAll()">Reset</button>
       </div>
     </div>
@@ -200,69 +237,72 @@ video{
 </div>
 
 <script>
-// GLOBAL
-const dlBtn = document.getElementById('downloadBtn');
+// LOADER
+const loader = document.getElementById('loader');
+const progress = document.getElementById('progress');
+
+function startLoader(){
+  loader.classList.add('show');
+  let p=0;
+  const interval=setInterval(()=>{
+    p+=10;
+    progress.style.width=p+'%';
+    if(p>=90) clearInterval(interval);
+  },200);
+}
+
+function stopLoader(){
+  progress.style.width='100%';
+  setTimeout(()=>{
+    loader.classList.remove('show');
+    progress.style.width='0%';
+  },300);
+}
 
 // PLATFORM
 function detectPlatform(url){
-  const l = url.toLowerCase();
-  if(l.includes('facebook') || l.includes('fb.watch')) return 'facebook';
+  const l=url.toLowerCase();
+  if(l.includes('facebook')) return 'facebook';
   if(l.includes('instagram')) return 'instagram';
-  return 'unknown';
-}
-
-// SPINNER
-function startSpin(){
-  dlBtn.disabled = true;
-  dlBtn.innerHTML = `<span class="spinner"></span> Processing...`;
-}
-
-function stopSpin(){
-  dlBtn.disabled = false;
-  dlBtn.innerHTML = `<i class="fas fa-download"></i> Download`;
+  return '';
 }
 
 // FETCH
 async function fetchVideo(){
-  const startTime = Date.now();
-
   try{
-    const url = document.getElementById('url').value.trim();
+    const url=document.getElementById('url').value.trim();
     if(!url) return alert('Enter URL');
 
-    startSpin();
+    startLoader();
 
-    const platform = detectPlatform(url);
-    const badge = document.getElementById('platformBadge');
-
-    if(platform !== 'unknown'){
-      badge.className = platform === 'facebook' ? 'fb-badge' : 'ig-badge';
-      badge.innerText = platform.toUpperCase();
-    }
-
-    const res = await fetch('/download',{
+    const res=await fetch('/download',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({url})
     });
 
-    const data = await res.json();
+    const data=await res.json();
 
     document.getElementById('result').style.display='block';
 
-    const player = document.getElementById('player');
-    player.src = data.formats[0].url;
+    const player=document.getElementById('player');
+    player.src=data.formats[0].url;
     player.load();
 
-    document.getElementById('title').innerText = data.title || 'Video';
-    document.getElementById('viewCount').innerText = (data.views || 0) + ' views';
-    document.getElementById('fileSize').innerText = data.size || 'Unknown';
+    document.getElementById('title').innerText=data.title;
+    document.getElementById('viewCount').innerText=data.views || '0 views';
+    document.getElementById('fileSize').innerText=data.size || 'Unknown';
 
-    const q = document.getElementById('qualities');
+    const badge=document.getElementById('platformBadge');
+    const platform=detectPlatform(url);
+    badge.className='badge '+platform;
+    badge.innerText=platform.toUpperCase();
+
+    const q=document.getElementById('qualities');
     q.innerHTML='';
 
     data.formats.forEach(f=>{
-      const btn = document.createElement('button');
+      const btn=document.createElement('button');
       btn.className='q-btn';
       btn.innerText=f.quality;
       btn.onclick=()=>window.open(f.url);
@@ -270,16 +310,15 @@ async function fetchVideo(){
     });
 
   }catch(e){
-    alert('Error loading video');
+    alert('Error');
   }finally{
-    const delay = Math.max(400 - (Date.now() - startTime),0);
-    setTimeout(stopSpin, delay);
+    setTimeout(stopLoader,500);
   }
 }
 
 // BEST
 function downloadBest(){
-  const first = document.querySelector('.q-btn');
+  const first=document.querySelector('.q-btn');
   if(first) first.click();
 }
 
@@ -287,7 +326,6 @@ function downloadBest(){
 function resetAll(){
   document.getElementById('url').value='';
   document.getElementById('result').style.display='none';
-  document.getElementById('qualities').innerHTML='';
 }
 </script>
 
