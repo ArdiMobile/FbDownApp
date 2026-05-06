@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Galmee · HD Facebook & Instagram Video Downloader</title>
   <meta name="description" content="Free online Facebook & Instagram video downloader. HD quality, no registration, fast and secure.">
-  <meta name="keywords" content="facebook video downloader, instagram reel saver, hd video download, galmee, free fb downloader">
+  <meta name="keywords" content="facebook video downloader, instagram reel saver, hd video download, galmee">
   <meta name="author" content="Yasin Gelma">
   <meta name="robots" content="index, follow">
-  
-  <!-- Open Graph / Social -->
+
   <meta property="og:title" content="Galmee · HD Facebook & Instagram Video Downloader">
   <meta property="og:description" content="Download Facebook & Instagram videos in crisp HD. Free, fast, no sign-up.">
   <meta property="og:image" content="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/galmee%20pages%20banner.jpg">
@@ -17,16 +16,14 @@
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://yasing.com.et/">
-  
-  <!-- Favicon & Fonts -->
+
   <link rel="icon" href="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:ital,wght@0,700;1,700;1,800;1,900&display=swap" rel="stylesheet">
-  
+
   <style>
-    /* ----- REFINED DESIGN SYSTEM (Teal & Warm Amber) ----- */
     :root {
       --primary: #0b7d69;
       --primary-light: #d0f0e8;
@@ -38,13 +35,19 @@
       --text-main: #0f2b2a;
       --text-soft: #4b5e5b;
       --border: #dde8e4;
-      --shadow-elegant: 0 18px 35px rgba(0, 40, 30, 0.06);
+      --shadow-card: 0 18px 35px rgba(0, 40, 30, 0.06);
       --radius-3xl: 28px;
       --radius-2xl: 20px;
       --radius-xl: 16px;
+      --radius-full: 60px;
       --font-body: 'Inter', system-ui, -apple-system, sans-serif;
       --font-display: 'Playfair Display', Georgia, serif;
-      transition: background 0.3s, color 0.3s;
+      --danger: #e74c3c;
+      --danger-light: #fde8e8;
+      --success: #0b7d69;
+      --success-light: #d0f0e8;
+      --warning: #f5a65b;
+      --warning-light: #fef0e0;
     }
 
     [data-theme="dark"] {
@@ -58,10 +61,21 @@
       --text-main: #eaf5f2;
       --text-soft: #b0c7c1;
       --border: #2a4a42;
-      --shadow-elegant: 0 20px 35px rgba(0, 0, 0, 0.4);
+      --shadow-card: 0 20px 35px rgba(0, 0, 0, 0.4);
+      --danger: #f87171;
+      --danger-light: #3b1c1c;
+      --success: #2dd4bf;
+      --success-light: #0d3832;
+      --warning: #fb923c;
+      --warning-light: #2b2218;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: var(--font-body);
       background: var(--bg-page);
@@ -70,9 +84,19 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      transition: background 0.3s, color 0.3s;
     }
-    img { max-width: 100%; height: auto; display: block; }
-    a { text-decoration: none; color: inherit; }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
 
     .container {
       max-width: 1280px;
@@ -81,35 +105,40 @@
       width: 100%;
     }
 
-    /* ----- HEADER (clean, premium) ----- */
+    /* Header */
     .site-header {
-      background: rgba(255,255,255,0.8);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 50;
     }
     [data-theme="dark"] .site-header {
-      background: rgba(12, 31, 28, 0.8);
+      background: rgba(12, 31, 28, 0.85);
     }
+
     .header-content {
       display: flex;
       align-items: center;
       justify-content: space-between;
       height: 72px;
     }
+
     .logo-area {
       display: flex;
       align-items: center;
       gap: 10px;
     }
+
     .logo-img {
       width: 38px;
       height: 38px;
       border-radius: 12px;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
     }
+
     .brand {
       font-family: var(--font-display);
       font-style: italic;
@@ -120,11 +149,13 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+
     .header-right {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 16px;
     }
+
     .theme-switch {
       background: var(--border);
       border: none;
@@ -139,10 +170,12 @@
       color: var(--text-main);
       transition: all 0.25s;
     }
+
     .theme-switch:hover {
       background: var(--primary-light);
       color: var(--primary);
     }
+
     .menu-burger {
       background: transparent;
       border: 2px solid var(--border);
@@ -157,12 +190,13 @@
       cursor: pointer;
       transition: 0.2s;
     }
+
     .menu-burger:hover {
       border-color: var(--primary);
       color: var(--primary);
     }
 
-    /* ----- DRAWER (stylish side menu) ----- */
+    /* Drawer */
     .drawer-overlay {
       position: fixed;
       inset: 0;
@@ -172,10 +206,12 @@
       pointer-events: none;
       transition: opacity 0.3s;
     }
+
     .drawer-overlay.show {
       opacity: 1;
       pointer-events: auto;
     }
+
     .drawer {
       position: fixed;
       top: 0;
@@ -184,7 +220,7 @@
       width: 310px;
       max-width: 85vw;
       background: var(--surface);
-      box-shadow: -12px 0 30px rgba(0,0,0,0.15);
+      box-shadow: -12px 0 30px rgba(0, 0, 0, 0.15);
       z-index: 100;
       transform: translateX(100%);
       transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
@@ -192,26 +228,53 @@
       flex-direction: column;
       padding: 24px 20px;
     }
+
     .drawer.show {
       transform: translateX(0);
     }
+
     .drawer-header {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 30px;
     }
+
+    .drawer-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .drawer-logo img {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+    }
+
+    .drawer-logo span {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 900;
+      font-size: 1.4rem;
+      color: var(--primary);
+    }
+
     .drawer-close-btn {
       background: none;
       border: none;
       font-size: 1.8rem;
       color: var(--text-soft);
       cursor: pointer;
+      padding: 8px;
     }
+
     .drawer-nav {
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
+
     .drawer-nav a {
       display: flex;
       align-items: center;
@@ -222,18 +285,20 @@
       color: var(--text-main);
       transition: 0.2s;
     }
+
     .drawer-nav a i {
       width: 22px;
       font-size: 1.2rem;
       color: var(--primary);
     }
+
     .drawer-nav a:hover,
     .drawer-nav a.active {
       background: var(--primary-light);
       color: var(--primary-dark);
     }
 
-    /* ----- HERO SECTION ----- */
+    /* Hero */
     .hero-card {
       background: linear-gradient(130deg, #064e3f 0%, #0b6b57 100%);
       border-radius: var(--radius-3xl);
@@ -245,9 +310,11 @@
       overflow: hidden;
       box-shadow: 0 25px 45px rgba(0, 60, 40, 0.4);
     }
+
     [data-theme="dark"] .hero-card {
       background: linear-gradient(135deg, #0a2f28, #12483b);
     }
+
     .hero-icon-row {
       display: flex;
       justify-content: center;
@@ -255,8 +322,9 @@
       margin: 18px 0 24px;
       flex-wrap: wrap;
     }
+
     .platform-tag {
-      background: rgba(255,255,255,0.18);
+      background: rgba(255, 255, 255, 0.18);
       backdrop-filter: blur(6px);
       padding: 8px 22px;
       border-radius: 40px;
@@ -266,6 +334,7 @@
       align-items: center;
       gap: 8px;
     }
+
     .hero-title {
       font-family: var(--font-display);
       font-style: italic;
@@ -273,29 +342,34 @@
       font-weight: 900;
       margin-bottom: 8px;
     }
+
     .search-box {
       background: var(--surface);
-      border-radius: 60px;
+      border-radius: var(--radius-full);
       padding: 6px;
       display: flex;
       max-width: 650px;
       margin: 30px auto 0;
-      box-shadow: 0 18px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.3);
       border: 2px solid transparent;
+      transition: border-color 0.3s;
     }
+
     .search-box:focus-within {
       border-color: var(--accent);
     }
+
     .search-box input {
       flex: 1;
       border: none;
       padding: 15px 22px;
-      border-radius: 60px;
+      border-radius: var(--radius-full);
       background: transparent;
       font-size: 1rem;
       color: var(--text-main);
       outline: none;
     }
+
     .btn-download {
       background: var(--primary);
       color: white;
@@ -310,11 +384,49 @@
       white-space: nowrap;
       transition: 0.2s;
     }
+
     .btn-download:hover {
       background: var(--primary-dark);
     }
 
-    /* ----- TABS (steps, faqs, news, apps) ----- */
+    .btn-download:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Status message */
+    .status-message {
+      display: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      margin-top: 16px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .status-message.error {
+      display: block;
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    .status-message.success {
+      display: block;
+      background: var(--success-light);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .status-message.info {
+      display: block;
+      background: var(--warning-light);
+      color: var(--warning);
+      border: 1px solid var(--warning);
+    }
+
+    /* Tabs */
     .tabs-bar {
       display: flex;
       flex-wrap: wrap;
@@ -323,6 +435,7 @@
       border-bottom: 2px solid var(--border);
       padding-bottom: 14px;
     }
+
     .tab {
       background: transparent;
       border: none;
@@ -334,14 +447,17 @@
       transition: 0.2s;
       font-size: 0.95rem;
     }
+
     .tab.active {
       background: var(--primary);
       color: white;
       box-shadow: 0 8px 16px rgba(11, 125, 105, 0.25);
     }
+
     .tab-pane {
       display: none;
     }
+
     .tab-pane.active {
       display: block;
     }
@@ -352,30 +468,106 @@
       gap: 20px;
       margin: 18px 0 30px;
     }
+
     .feature-card {
       background: var(--surface);
       border-radius: var(--radius-2xl);
       padding: 26px 20px;
       border: 1px solid var(--border);
-      box-shadow: var(--shadow-elegant);
+      box-shadow: var(--shadow-card);
     }
 
-    /* Result panel */
+    /* Result Panel */
     .result-panel {
       background: var(--surface);
       border-radius: var(--radius-2xl);
       margin-top: 28px;
       padding: 24px;
-      box-shadow: var(--shadow-elegant);
+      box-shadow: var(--shadow-card);
       display: none;
     }
-    video {
+
+    .result-panel video {
       width: 100%;
       border-radius: 16px;
       max-height: 420px;
       background: #000;
     }
 
+    .video-meta {
+      margin: 14px 0 8px;
+    }
+
+    .video-meta h3 {
+      font-size: 1.2rem;
+      margin-bottom: 6px;
+    }
+
+    .video-meta .platform-badge-sm {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .dl-links {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+
+    .dl-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      border: none;
+      font-size: 0.95rem;
+    }
+
+    .dl-link-btn.hd {
+      background: var(--primary);
+      color: white;
+    }
+
+    .dl-link-btn.hd:hover {
+      background: var(--primary-dark);
+    }
+
+    .dl-link-btn.sd {
+      background: var(--accent);
+      color: #0f2b2a;
+    }
+
+    .dl-link-btn.sd:hover {
+      background: #e89440;
+    }
+
+    .btn-reset {
+      background: var(--border);
+      border: none;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: 0.2s;
+    }
+
+    .btn-reset:hover {
+      background: var(--text-soft);
+      color: white;
+    }
+
+    /* Footer */
     footer {
       margin-top: auto;
       background: var(--surface);
@@ -384,9 +576,65 @@
       text-align: center;
       color: var(--text-soft);
     }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 14px;
+    }
+
+    .social-links a {
+      font-size: 1.3rem;
+      transition: color 0.2s;
+    }
+
+    .social-links a:hover {
+      color: var(--primary);
+    }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .hero-card {
+        padding: 32px 16px 28px;
+      }
+      .search-box {
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+      }
+      .search-box input {
+        padding: 14px 18px;
+      }
+      .btn-download {
+        justify-content: center;
+        padding: 14px;
+      }
+      .dl-links {
+        flex-direction: column;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- HEADER -->
   <header class="site-header">
     <div class="container header-content">
       <div class="logo-area">
@@ -404,23 +652,28 @@
     </div>
   </header>
 
-  <!-- Drawer menu -->
+  <!-- DRAWER MENU -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <div class="drawer" id="drawerPanel">
     <div class="drawer-header">
+      <div class="drawer-logo">
+        <img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee">
+        <span>Galmee</span>
+      </div>
       <button class="drawer-close-btn" id="drawerCloseBtn"><i class="fas fa-times"></i></button>
     </div>
     <nav class="drawer-nav">
       <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
-      <a href="#"><i class="fas fa-question-circle"></i> FAQ</a>
-      <a href="#"><i class="fas fa-newspaper"></i> News</a>
-      <a href="#"><i class="fas fa-th-large"></i> More Apps</a>
+      <a href="#faqs-section"><i class="fas fa-question-circle"></i> FAQ</a>
+      <a href="#news-section"><i class="fas fa-newspaper"></i> News</a>
+      <a href="#apps-section"><i class="fas fa-th-large"></i> More Apps</a>
       <a href="#"><i class="fas fa-envelope"></i> Contact</a>
     </nav>
   </div>
 
+  <!-- MAIN CONTENT -->
   <main class="container">
-    <!-- Hero -->
+    <!-- HERO -->
     <div class="hero-card">
       <h1 class="hero-title">Galmee</h1>
       <div class="hero-icon-row">
@@ -431,9 +684,10 @@
         <input type="text" id="videoUrl" placeholder="Paste Facebook or Instagram video link...">
         <button class="btn-download" id="downloadBtn"><i class="fas fa-download"></i> Download</button>
       </div>
+      <div class="status-message" id="statusMessage"></div>
     </div>
 
-    <!-- Tabs navigation -->
+    <!-- TABS -->
     <div class="tabs-bar" id="tabNav">
       <button class="tab active" data-tab="steps">📋 Steps</button>
       <button class="tab" data-tab="faqs">❓ FAQs</button>
@@ -441,7 +695,7 @@
       <button class="tab" data-tab="apps">📱 More Apps</button>
     </div>
 
-    <!-- Tab panes -->
+    <!-- TAB PANES -->
     <div class="tab-pane active" id="pane-steps">
       <div class="card-grid">
         <div class="feature-card"><i class="fas fa-copy" style="color:#0b7d69;font-size:2rem;"></i><h3 style="margin:12px 0">1. Copy Link</h3><p>Copy the video URL from Facebook or Instagram.</p></div>
@@ -464,30 +718,36 @@
       </div>
     </div>
 
-    <!-- Video result (hidden by default) -->
+    <!-- RESULT PANEL -->
     <div class="result-panel" id="resultPanel">
-      <video id="videoPlayer" controls></video>
-      <h3 id="videoTitle" style="margin:14px 0 8px;"></h3>
-      <div id="dlLinks" style="display:flex; gap:14px; flex-wrap:wrap; margin:12px 0;"></div>
-      <button id="resetSearchBtn" style="background:var(--border); border:none; padding:12px 28px; border-radius:30px; font-weight:600;">← New download</button>
+      <video id="videoPlayer" controls playsinline></video>
+      <div class="video-meta">
+        <span class="platform-badge-sm" id="platformBadge"></span>
+        <h3 id="videoTitle"></h3>
+        <p style="color:var(--text-soft);font-size:0.85rem;" id="videoQuality"></p>
+      </div>
+      <div class="dl-links" id="dlLinks"></div>
+      <button class="btn-reset" id="resetSearchBtn">← New download</button>
     </div>
   </main>
 
+  <!-- FOOTER -->
   <footer>
     <p>© 2026 Galmee · Crafted by <strong>Yasin Gelma</strong></p>
-    <div style="display:flex; justify-content:center; gap:24px; margin-top:14px;">
+    <div class="social-links">
       <a href="#"><i class="fab fa-facebook"></i></a>
       <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-telegram"></i></a>
     </div>
   </footer>
 
   <script>
     (function() {
-      // ----- Theme toggle with icon -----
+      // ============ THEME ============
       const html = document.documentElement;
       const themeBtn = document.getElementById('themeToggle');
       const themeIcon = themeBtn.querySelector('i');
-      
+
       const savedTheme = localStorage.getItem('galmeeTheme') || 'light';
       html.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
@@ -504,7 +764,7 @@
         themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
       }
 
-      // ----- Drawer logic -----
+      // ============ DRAWER ============
       const drawer = document.getElementById('drawerPanel');
       const overlay = document.getElementById('drawerOverlay');
       const openBtn = document.getElementById('menuOpenBtn');
@@ -514,6 +774,7 @@
         drawer.classList.add('show');
         overlay.classList.add('show');
       }
+
       function closeDrawer() {
         drawer.classList.remove('show');
         overlay.classList.remove('show');
@@ -525,7 +786,7 @@
         link.addEventListener('click', () => closeDrawer());
       });
 
-      // ----- Tabs switching -----
+      // ============ TABS ============
       const tabs = document.querySelectorAll('.tab');
       const panes = document.querySelectorAll('.tab-pane');
       tabs.forEach(tab => {
@@ -538,54 +799,176 @@
         });
       });
 
-      // ----- Video download simulation (frontend demo) -----
+      // ============ VIDEO DOWNLOAD LOGIC ============
       const urlInput = document.getElementById('videoUrl');
       const downloadBtn = document.getElementById('downloadBtn');
       const resultPanel = document.getElementById('resultPanel');
       const videoPlayer = document.getElementById('videoPlayer');
       const videoTitle = document.getElementById('videoTitle');
+      const videoQuality = document.getElementById('videoQuality');
+      const platformBadge = document.getElementById('platformBadge');
       const dlLinks = document.getElementById('dlLinks');
       const resetBtn = document.getElementById('resetSearchBtn');
+      const statusMessage = document.getElementById('statusMessage');
 
-      downloadBtn.addEventListener('click', () => {
+      function showStatus(text, type) {
+        statusMessage.textContent = text;
+        statusMessage.className = 'status-message ' + type;
+        statusMessage.style.display = 'block';
+      }
+
+      function hideStatus() {
+        statusMessage.style.display = 'none';
+        statusMessage.className = 'status-message';
+      }
+
+      function detectPlatform(url) {
+        if (url.includes('facebook.com') || url.includes('fb.com') || url.includes('fb.watch')) {
+          return 'Facebook';
+        }
+        if (url.includes('instagram.com')) {
+          return 'Instagram';
+        }
+        return null;
+      }
+
+      function isValidUrl(url) {
+        return url.includes('facebook.com') || url.includes('fb.com') || url.includes('fb.watch') || url.includes('instagram.com');
+      }
+
+      async function fetchVideo() {
         const url = urlInput.value.trim();
-        if (!url || (!url.includes('facebook.com') && !url.includes('instagram.com'))) {
-          alert('Please enter a valid Facebook or Instagram video URL.');
+
+        if (!url) {
+          showStatus('⚠️ Please paste a video URL first.', 'info');
           return;
         }
-        downloadBtn.disabled = true;
-        downloadBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing';
 
-        setTimeout(() => {
+        if (!isValidUrl(url)) {
+          showStatus('❌ Please enter a valid Facebook or Instagram video URL.', 'error');
+          return;
+        }
+
+        hideStatus();
+        downloadBtn.disabled = true;
+        downloadBtn.innerHTML = '<span class="spinner"></span> Processing...';
+        resultPanel.style.display = 'none';
+
+        try {
+          // =====================================================
+          // 🔴 IMPORTANT: Replace this URL with YOUR actual backend API endpoint
+          // Example: 'https://galmee.up.railway.app/api/download'
+          // or: 'https://yasing.com.et/api/download'
+          // =====================================================
+          const API_ENDPOINT = '/api/download'; // ← CHANGE THIS TO YOUR REAL BACKEND URL
+
+          const response = await fetch(API_ENDPOINT, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: url }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          // Populate result
+          const platform = data.platform || detectPlatform(url) || 'Social Media';
+          platformBadge.textContent = platform;
+          platformBadge.style.display = 'inline-block';
+
+          videoTitle.textContent = data.title || 'Video Ready';
+          videoQuality.textContent = data.quality || 'HD Quality';
+
+          // Set video source
+          if (data.videoUrl) {
+            videoPlayer.src = data.videoUrl;
+            videoPlayer.load();
+          } else if (data.formats && data.formats.length > 0) {
+            videoPlayer.src = data.formats[0].url;
+            videoPlayer.load();
+          }
+
+          // Build download links
+          dlLinks.innerHTML = '';
+          if (data.formats && data.formats.length > 0) {
+            data.formats.forEach(format => {
+              const btn = document.createElement('a');
+              btn.href = format.url;
+              btn.target = '_blank';
+              btn.rel = 'noopener';
+              btn.download = '';
+              btn.className = 'dl-link-btn ' + (format.quality?.includes('HD') ? 'hd' : 'sd');
+              btn.innerHTML = `<i class="fas fa-download"></i> MP4 ${format.quality || 'Download'}`;
+              dlLinks.appendChild(btn);
+            });
+          } else if (data.videoUrl) {
+            const btn = document.createElement('a');
+            btn.href = data.videoUrl;
+            btn.target = '_blank';
+            btn.rel = 'noopener';
+            btn.download = '';
+            btn.className = 'dl-link-btn hd';
+            btn.innerHTML = '<i class="fas fa-download"></i> Download Video';
+            dlLinks.appendChild(btn);
+          }
+
           resultPanel.style.display = 'block';
-          videoTitle.textContent = 'Sample Video · HD Ready';
-          videoPlayer.src = 'https://www.w3school.com/html/mov_bbb.mp4';
-          dlLinks.innerHTML = `
-            <a href="#" style="background:var(--primary); color:white; padding:12px 24px; border-radius:30px; font-weight:600;">MP4 HD ↓</a>
-            <a href="#" style="background:var(--accent); color:#0f2b2a; padding:12px 24px; border-radius:30px; font-weight:600;">MP4 SD ↓</a>
-          `;
+          showStatus('✅ Video ready! Choose quality and download.', 'success');
+          resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        } catch (error) {
+          console.error('Download error:', error);
+          showStatus('❌ Failed to fetch video. The link may be private or expired. Please try another link.', 'error');
+          resultPanel.style.display = 'none';
+        } finally {
           downloadBtn.disabled = false;
           downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download';
-          resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 1100);
+        }
+      }
+
+      downloadBtn.addEventListener('click', fetchVideo);
+
+      // Allow Enter key to trigger download
+      urlInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          fetchVideo();
+        }
       });
 
+      // Reset
       resetBtn.addEventListener('click', () => {
         resultPanel.style.display = 'none';
         videoPlayer.src = '';
         urlInput.value = '';
         dlLinks.innerHTML = '';
+        platformBadge.textContent = '';
+        platformBadge.style.display = 'none';
+        videoTitle.textContent = '';
+        videoQuality.textContent = '';
+        hideStatus();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
 
-      // Auto-paste from clipboard on input focus
+      // Auto-paste from clipboard
       urlInput.addEventListener('focus', async () => {
         try {
           const clipText = await navigator.clipboard.readText();
-          if (clipText && (clipText.includes('facebook.com') || clipText.includes('instagram.com'))) {
+          if (clipText && isValidUrl(clipText)) {
             urlInput.value = clipText;
+            hideStatus();
           }
-        } catch (e) {}
+        } catch (e) {
+          // Clipboard access denied
+        }
       });
     })();
   </script>
