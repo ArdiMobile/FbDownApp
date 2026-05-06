@@ -180,17 +180,40 @@
             color: var(--primary);
             border-color: var(--primary);
         }
-        .lang-select {
-            padding: 7px 12px;
+
+        /* Language switcher - no popup, just clickable buttons */
+        .lang-switcher {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .lang-flag {
+            width: 32px;
+            height: 32px;
             border-radius: var(--radius-md);
             border: 1px solid var(--border);
             background: var(--bg);
             color: var(--text-secondary);
-            font-size: 0.8rem;
-            font-weight: 600;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            padding: 0;
             font-family: 'Inter', sans-serif;
-            outline: none;
+        }
+        .lang-flag:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .lang-flag.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            font-weight: 800;
         }
 
         /* ========== HERO ========== */
@@ -693,9 +716,6 @@
             .top-bar .tagline {
                 display: none;
             }
-            .lang-select {
-                display: none;
-            }
             .hero { padding: 40px 5% 30px; }
             .hero h1 { font-size: 1.8rem; }
             .hero p { font-size: 0.95rem; }
@@ -739,7 +759,7 @@
 </head>
 <body>
 
-    <!-- ========== NEW TOP BAR ========== -->
+    <!-- ========== NEW TOP BAR (no nav menu, no popup) ========== -->
     <div class="top-bar">
         <a href="#" class="brand">
             <div class="brand-dot"><i class="fas fa-play"></i></div>
@@ -749,18 +769,16 @@
             <span class="tagline-dot"></span> Free HD Video Downloader
         </span>
         <div class="top-actions">
-            <select class="lang-select">
-                <option>🌐 EN</option>
-                <option>🇪🇸 ES</option>
-                <option>🇫🇷 FR</option>
-                <option>🇩🇪 DE</option>
-            </select>
-            <button class="top-btn" id="themeBtn" title="Toggle theme">
+            <!-- Language flags as clickable buttons (no popup) -->
+            <div class="lang-switcher">
+                <button class="lang-flag active" title="English" onclick="alert('Language: English')">EN</button>
+                <button class="lang-flag" title="Español" onclick="alert('Idioma: Español')">ES</button>
+                <button class="lang-flag" title="Français" onclick="alert('Langue: Français')">FR</button>
+            </div>
+            <!-- Theme toggle -->
+            <button class="top-btn" id="themeBtn" title="Toggle dark/light mode">
                 <i class="fas fa-moon"></i>
             </button>
-            <a href="#" class="top-btn" title="Help">
-                <i class="fas fa-question"></i>
-            </a>
         </div>
     </div>
 
