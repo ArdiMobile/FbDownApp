@@ -1242,14 +1242,14 @@
                 badge.innerText = platform;
 
                 const q = document.getElementById('qualities');
-                q.innerHTML = 'yasin';
-                data.formats.forEach(f => {
-                    const btn = document.createElement('button');
-                    btn.className = 'q-btn';
-                    btn.innerText = f.quality;
-                    btn.onclick = () => window.open(f.url);
-                    q.appendChild(btn);
-                });
+                q.innerHTML = '';
+                data.formats.forEach(f=>{
+      const btn = document.createElement('button');
+      btn.className = 'q-btn';
+      btn.innerText = 'DOWNLOAD HD ' + f.quality;
+      btn.onclick = ()=>window.open(f.url);
+      q.appendChild(btn);
+    });
 
                 hideStatus();
                 showToast('✅ Video ready! Choose quality to download.');
