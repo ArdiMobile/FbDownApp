@@ -1,325 +1,740 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galmee - Premium Video Downloader</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>Galmee • Premium Video Downloader</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    :root {
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --primary: #10b981;
+      --secondary: #111827;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --border-light: #e5e7eb;
+      --shadow: 0 20px 35px rgba(0, 0, 0, 0.05);
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+    }
 
-<style>
+    [data-theme="dark"] {
+      --bg: #020617;
+      --card: #0f172a;
+      --text: #e2e8f0;
+      --border-light: #1e293b;
+      --shadow: 0 20px 35px rgba(0, 0, 0, 0.4);
+    }
 
-/* ===== ROOT ===== */
-:root {
-  --primary:#00c27a;
-  --secondary:#111827;
-  --bg:#f4f7fb;
-  --card:#ffffff;
-  --text:#0f172a;
-}
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.2s;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-[data-theme="dark"]{
-  --bg:#020617;
-  --card:#0f172a;
-  --text:#e2e8f0;
-}
+    /* ----- DRAWER (top slide menu) ----- */
+    .drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      max-width: 320px;
+      height: 100vh;
+      background: var(--card);
+      box-shadow: 5px 0 25px rgba(0,0,0,0.15);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      padding: 25px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      backdrop-filter: blur(10px);
+      border-right: 1px solid var(--border-light);
+    }
 
-/* ===== GLOBAL ===== */
-body{
-  margin:0;
-  font-family:Inter, sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
+    .drawer.open {
+      transform: translateX(0);
+    }
 
-/* ===== NAV ===== */
-.nav{
-  display:flex;
-  justify-content:space-between;
-  padding:15px 20px;
-  background:rgba(255,255,255,0.7);
-  backdrop-filter:blur(10px);
-  position:sticky;
-  top:0;
-}
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--green);
+    }
 
-.logo{font-weight:800;font-size:20px;}
+    .drawer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      font-size: 18px;
+    }
 
-.nav-right{
-  display:flex;
-  gap:10px;
-}
+    .drawer-links a {
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      transition: 0.2s;
+    }
 
-.btn-small{
-  padding:8px 14px;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
-}
+    .drawer-links a:hover {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--green);
+    }
 
-/* ===== HERO ===== */
-.hero{
-  text-align:center;
-  padding:80px 20px;
-  background:linear-gradient(135deg,#00c27a,#007cf0);
-  color:#fff;
-}
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 999;
+      display: none;
+    }
 
-.hero h1{
-  font-size:36px;
-  margin-bottom:10px;
-}
+    .overlay.show {
+      display: block;
+    }
 
-.hero p{
-  opacity:0.9;
-}
+    /* ----- NAVIGATION ----- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(15px);
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      border-bottom: 1px solid var(--border-light);
+    }
 
-/* INPUT */
-.input-box{
-  max-width:600px;
-  margin:30px auto;
-  display:flex;
-  background:#fff;
-  border-radius:50px;
-  overflow:hidden;
-}
+    [data-theme="dark"] .nav {
+      background: rgba(15, 23, 42, 0.8);
+    }
 
-.input-box input{
-  flex:1;
-  padding:16px;
-  border:none;
-}
+    .logo {
+      font-weight: 800;
+      font-size: 22px;
+      background: linear-gradient(135deg, var(--green), var(--yellow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-.input-box button{
-  background:var(--primary);
-  border:none;
-  color:#fff;
-  padding:0 25px;
-  font-weight:bold;
-}
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-/* ===== RESULT ===== */
-.result{
-  max-width:700px;
-  margin:20px auto;
-  display:none;
-}
+    .btn-small {
+      padding: 8px 16px;
+      border-radius: 30px;
+      border: none;
+      background: var(--card);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      color: var(--text);
+    }
 
-.card{
-  background:var(--card);
-  border-radius:15px;
-  padding:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.1);
-}
+    .btn-small:hover {
+      background: var(--green);
+      color: white;
+    }
 
-video{
-  width:100%;
-  border-radius:10px;
-}
+    .menu-icon {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
 
-.quality-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-  gap:10px;
-  margin-top:15px;
-}
+    /* ----- HERO (outside download area) ----- */
+    .hero {
+      text-align: center;
+      padding: 50px 20px 25px;
+      background: linear-gradient(135deg, #10b981, #f59e0b, #ef4444);
+      color: white;
+    }
 
-.q-btn{
-  padding:12px;
-  border-radius:8px;
-  border:1px solid #ddd;
-  cursor:pointer;
-  background:#f9fafb;
-}
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
 
-.actions{
-  display:flex;
-  gap:10px;
-  margin-top:10px;
-}
+    .hero p {
+      opacity: 0.95;
+      margin: 10px 0 5px;
+      font-size: 1.1rem;
+    }
 
-.actions button{
-  flex:1;
-  padding:12px;
-  border:none;
-  border-radius:8px;
-  color:#fff;
-}
+    .input-box {
+      max-width: 650px;
+      margin: 25px auto 15px;
+      display: flex;
+      background: white;
+      border-radius: 60px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
 
-.best{background:var(--primary);}
-.mp3{background:#333;}
+    .input-box input {
+      flex: 1;
+      padding: 16px 22px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      background: transparent;
+      color: #111;
+    }
 
-/* ===== TRUST BAR ===== */
-.trust{
-  display:flex;
-  justify-content:center;
-  gap:30px;
-  padding:20px;
-  font-size:14px;
-}
+    .input-box button {
+      background: var(--green);
+      border: none;
+      color: white;
+      padding: 0 28px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
 
-/* ===== FEATURES ===== */
-.features{
-  padding:60px 20px;
-  text-align:center;
-}
+    .input-box button:hover {
+      background: #059669;
+    }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:20px;
-  margin-top:30px;
-}
+    .badge-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
 
-.feature{
-  background:var(--card);
-  padding:20px;
-  border-radius:12px;
-}
+    .platform-badge {
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: white;
+    }
 
-/* ===== CTA ===== */
-.cta{
-  text-align:center;
-  padding:60px 20px;
-  background:linear-gradient(135deg,#007cf0,#00dfd8);
-  color:#fff;
-}
+    /* ----- RESULT AREA (left-right layout) ----- */
+    .result {
+      max-width: 1100px;
+      margin: 25px auto;
+      display: none;
+      padding: 0 20px;
+    }
 
-.cta button{
-  padding:15px 30px;
-  border:none;
-  border-radius:10px;
-  font-size:16px;
-}
+    .video-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      background: var(--card);
+      border-radius: 28px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-light);
+      position: relative;
+    }
 
-/* ===== FAQ ===== */
-.faq{
-  padding:40px 20px;
-}
+    .video-left {
+      flex: 1 1 400px;
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #000;
+    }
 
-.faq-item{
-  margin-bottom:15px;
-}
+    .watermark {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      background: rgba(0,0,0,0.65);
+      color: white;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(5px);
+      z-index: 5;
+      pointer-events: none;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
 
-/* ===== FOOTER ===== */
-.footer{
-  background:#000;
-  color:#fff;
-  text-align:center;
-  padding:20px;
-}
+    video {
+      width: 100%;
+      display: block;
+      border-radius: 14px;
+      background: #000;
+    }
 
-</style>
+    .video-right {
+      flex: 1 1 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .video-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin: 5px 0;
+    }
+
+    .uploader {
+      font-weight: 700;
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .views, .size {
+      background: var(--border-light);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .fb-badge, .ig-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    .fb-badge {
+      background: #1877f2;
+      color: white;
+    }
+
+    .ig-badge {
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366);
+      color: white;
+    }
+
+    .quality-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 5px 0;
+    }
+
+    .q-btn {
+      padding: 10px 16px;
+      border-radius: 30px;
+      border: 1px solid var(--border-light);
+      background: var(--bg);
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.2s;
+      color: var(--text);
+    }
+
+    .q-btn:hover {
+      background: var(--green);
+      color: white;
+      border-color: var(--green);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .best {
+      background: var(--green);
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .mp3 {
+      background: var(--yellow);
+      border: none;
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .reset-btn {
+      background: var(--red);
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid white;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 0.8s linear infinite;
+      margin-right: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* TRUST, FEATURES, ETC */
+    .trust {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 20px;
+      font-weight: 500;
+      background: var(--card);
+      flex-wrap: wrap;
+    }
+
+    .features {
+      padding: 50px 20px;
+      text-align: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-top: 25px;
+    }
+
+    .feature {
+      background: var(--card);
+      padding: 25px 15px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .faq {
+      padding: 30px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .footer {
+      background: #0f172a;
+      color: white;
+      padding: 25px;
+      text-align: center;
+      margin-top: auto;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin-bottom: 15px;
+      font-size: 1.6rem;
+    }
+
+    .social-icons a {
+      color: white;
+      transition: 0.2s;
+    }
+
+    .social-icons a:hover {
+      color: var(--green);
+    }
+
+    @media (max-width: 700px) {
+      .video-row {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
-
 <body>
-
-<!-- NAV -->
-<div class="nav">
-  <div class="logo">Galmee</div>
-  <div class="nav-right">
-    <button class="btn-small" onclick="toggleTheme()">🌙</button>
-    <button class="btn-small">Login</button>
-  </div>
-</div>
-
-<!-- HERO -->
-<div class="hero">
-  <h1>Download Videos Instantly</h1>
-  <p>Facebook • Instagram • HD Quality • Fast & Free</p>
-
-  <div class="input-box">
-    <input id="url" placeholder="Paste video link...">
-    <button onclick="fetchVideo()">Download</button>
-  </div>
-</div>
-
-<!-- TRUST -->
-<div class="trust">
-  <span>⚡ Fast</span>
-  <span>🔒 Secure</span>
-  <span>📱 Mobile</span>
-</div>
-
-<!-- RESULT -->
-<div class="result" id="result">
-  <div class="card">
-    <video id="player" controls></video>
-    <h3 id="title"></h3>
-
-    <div class="quality-grid" id="qualities"></div>
-
-    <div class="actions">
-      <button class="best" onclick="downloadBest()">Best</button>
-      <button class="mp3">MP3</button>
+  <!-- Drawer Menu -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <span><i class="fas fa-bolt"></i> Galmee</span>
+      <i class="fas fa-times" onclick="closeDrawer()" style="cursor:pointer;"></i>
+    </div>
+    <div class="drawer-links">
+      <a href="#"><i class="fas fa-home"></i> Home</a>
+      <a href="#"><i class="fas fa-download"></i> Downloads</a>
+      <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
+      <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+      <a href="#"><i class="fas fa-cog"></i> Settings</a>
     </div>
   </div>
-</div>
+  <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
 
-<!-- FEATURES -->
-<div class="features">
-  <h2>Why Choose Galmee</h2>
-  <div class="grid">
-    <div class="feature">⚡ Ultra Fast</div>
-    <div class="feature">🔐 Safe & Private</div>
-    <div class="feature">📱 Mobile Friendly</div>
+  <!-- Nav -->
+  <div class="nav">
+    <div class="logo"><i class="fas fa-play-circle"></i> Galmee</div>
+    <div class="nav-right">
+      <i class="fas fa-bars menu-icon" onclick="openDrawer()"></i>
+      <button class="btn-small" onclick="toggleTheme()"><i class="fas fa-moon"></i> Theme</button>
+    </div>
   </div>
-</div>
 
-<!-- CTA -->
-<div class="cta">
-  <h2>Start Downloading Now</h2>
-  <button onclick="window.scrollTo(0,0)">Try Now</button>
-</div>
-
-<!-- FAQ -->
-<div class="faq">
-  <h2>FAQ</h2>
-  <div class="faq-item">
-    <b>Is it free?</b>
-    <p>Yes, completely free.</p>
+  <!-- Hero (outside download) -->
+  <div class="hero">
+    <h1>Download Videos Instantly</h1>
+    <p>Facebook • Instagram • HD · Fast & Free</p>
+    <div class="input-box">
+      <input id="url" placeholder="Paste video link..." autocomplete="off">
+      <button id="downloadBtn" onclick="fetchVideo()"><span id="spinArea"></span> Download</button>
+    </div>
+    <div class="badge-row">
+      <span class="platform-badge"><i class="fab fa-facebook"></i> Facebook</span>
+      <span class="platform-badge"><i class="fab fa-instagram"></i> Instagram</span>
+      <span class="platform-badge"><i class="fas fa-bolt"></i> Auto-detect</span>
+    </div>
   </div>
-</div>
 
-<!-- FOOTER -->
-<div class="footer">
-  © 2026 Galmee
-</div>
+  <!-- Trust bar -->
+  <div class="trust">
+    <span><i class="fas fa-tachometer-alt"></i> Fast</span>
+    <span><i class="fas fa-lock"></i> Secure</span>
+    <span><i class="fas fa-mobile-alt"></i> Mobile</span>
+  </div>
 
-<script>
-function toggleTheme(){
-  const t=document.body.getAttribute('data-theme');
-  document.body.setAttribute('data-theme', t==='dark'?'light':'dark');
-}
+  <!-- Result (video left / info right) -->
+  <div class="result" id="result">
+    <div class="video-row">
+      <div class="video-left">
+        <video id="player" controls></video>
+        <div class="watermark">Galmee.io</div>
+      </div>
+      <div class="video-right">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 id="title" style="margin:0;">Video Title</h3>
+          <span id="platformBadge"></span>
+        </div>
+        <div class="video-meta">
+          <span class="uploader"><i class="fas fa-user-circle"></i> <span id="uploaderName">@creator</span></span>
+          <span class="views"><i class="fas fa-eye"></i> <span id="viewCount">0</span></span>
+          <span class="size"><i class="fas fa-hdd"></i> <span id="fileSize">0 MB</span></span>
+        </div>
+        <div class="quality-grid" id="qualities"></div>
+        <div class="actions">
+          <button class="best" onclick="downloadBest()"><i class="fas fa-download"></i> Best</button>
+          <button class="mp3"><i class="fas fa-music"></i> MP3</button>
+          <button class="reset-btn" onclick="resetResult()"><i class="fas fa-redo"></i> Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-async function fetchVideo(){
-  const url=document.getElementById('url').value;
+  <!-- Features -->
+  <div class="features">
+    <h2>Why Galmee</h2>
+    <div class="grid">
+      <div class="feature"><i class="fas fa-rocket"></i> Ultra Fast</div>
+      <div class="feature"><i class="fas fa-shield-alt"></i> Safe & Private</div>
+      <div class="feature"><i class="fas fa-mobile-alt"></i> Mobile Friendly</div>
+    </div>
+  </div>
 
-  const res=await fetch('/download',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({url})
-  });
+  <!-- FAQ -->
+  <div class="faq">
+    <h2>FAQ</h2>
+    <div class="faq-item"><b>Is it free?</b><p>Yes, completely free.</p></div>
+  </div>
 
-  const data=await res.json();
+  <!-- Footer with social icons -->
+  <div class="footer">
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-youtube"></i></a>
+      <a href="#"><i class="fab fa-tiktok"></i></a>
+    </div>
+    <p>© 2026 Galmee · Premium Video Downloader</p>
+  </div>
 
-  document.getElementById('result').style.display='block';
-  document.getElementById('player').src=data.formats[0].url;
-  document.getElementById('title').innerText=data.title;
+  <script>
+    (function() {
+      // Theme toggle
+      window.toggleTheme = function() {
+        const body = document.body;
+        const current = body.getAttribute('data-theme');
+        body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+      };
 
-  const q=document.getElementById('qualities');
-  q.innerHTML='';
+      // Drawer control
+      window.openDrawer = function() {
+        document.getElementById('drawer').classList.add('open');
+        document.getElementById('overlay').classList.add('show');
+      };
+      window.closeDrawer = function() {
+        document.getElementById('drawer').classList.remove('open');
+        document.getElementById('overlay').classList.remove('show');
+      };
 
-  data.formats.forEach(f=>{
-    q.innerHTML+=`<button class="q-btn" onclick="window.open('${f.url}')">${f.quality}</button>`;
-  });
-}
+      // Reset
+      window.resetResult = function() {
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('url').value = '';
+        document.getElementById('player').src = '';
+        document.getElementById('qualities').innerHTML = '';
+        document.getElementById('title').innerText = 'Video Title';
+        document.getElementById('uploaderName').innerText = '@creator';
+        document.getElementById('viewCount').innerText = '0';
+        document.getElementById('fileSize').innerText = '0 MB';
+        document.getElementById('platformBadge').innerHTML = '';
+        stopSpin();
+      };
 
-function downloadBest(){
-  const first=document.querySelector('.q-btn');
-  if(first) first.click();
-}
-</script>
+      function startSpin() {
+        const spinArea = document.getElementById('spinArea');
+        if (spinArea) spinArea.innerHTML = '<span class="spinner"></span>';
+      }
+      function stopSpin() {
+        const spinArea = document.getElementById('spinArea');
+        if (spinArea) spinArea.innerHTML = '';
+      }
 
+      // Detect FB or IG from URL
+      function detectPlatform(url) {
+        if (!url) return 'unknown';
+        const lower = url.toLowerCase();
+        if (lower.includes('facebook.com') || lower.includes('fb.watch')) return 'facebook';
+        if (lower.includes('instagram.com') || lower.includes('instagr.am')) return 'instagram';
+        return 'unknown';
+      }
+
+      // Simulated fetch (mock data with real-like structure)
+      window.fetchVideo = async function() {
+        const urlInput = document.getElementById('url');
+        const url = urlInput.value.trim();
+        if (!url) {
+          alert('Please paste a video link');
+          return;
+        }
+
+        startSpin();
+        document.getElementById('result').style.display = 'none';
+
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 1800));
+
+        const platform = detectPlatform(url);
+        // Mock data based on platform
+        const mockData = {
+          title: platform === 'facebook' ? 'Funny moment outdoors' : 'Reel: amazing sunset',
+          uploader: platform === 'facebook' ? 'JohnDoe' : 'insta_creator',
+          views: platform === 'facebook' ? '2.4K' : '15.8K',
+          size: '12.3 MB',
+          formats: [
+            { quality: '1080p', url: 'https://www.w3school.com/html/mov_bbb.mp4' },
+            { quality: '720p', url: 'https://www.w3school.com/html/mov_bbb.mp4' },
+            { quality: '480p', url: 'https://www.w3school.com/html/mov_bbb.mp4' },
+          ]
+        };
+
+        // Update UI
+        document.getElementById('title').innerText = mockData.title;
+        document.getElementById('uploaderName').innerText = '@' + mockData.uploader;
+        document.getElementById('viewCount').innerText = mockData.views;
+        document.getElementById('fileSize').innerText = mockData.size;
+
+        const player = document.getElementById('player');
+        if (mockData.formats.length > 0) {
+          player.src = mockData.formats[0].url;
+        }
+
+        const qContainer = document.getElementById('qualities');
+        qContainer.innerHTML = '';
+        mockData.formats.forEach(f => {
+          const btn = document.createElement('button');
+          btn.className = 'q-btn';
+          btn.innerText = f.quality;
+          btn.onclick = () => {
+            player.src = f.url;
+            player.play();
+          };
+          qContainer.appendChild(btn);
+        });
+
+        // Platform badge
+        const badgeSpan = document.getElementById('platformBadge');
+        if (platform === 'facebook') {
+          badgeSpan.innerHTML = '<span class="fb-badge"><i class="fab fa-facebook"></i> Facebook</span>';
+        } else if (platform === 'instagram') {
+          badgeSpan.innerHTML = '<span class="ig-badge"><i class="fab fa-instagram"></i> Instagram</span>';
+        } else {
+          badgeSpan.innerHTML = '<span style="background:#6b7280;color:white;padding:4px 12px;border-radius:20px;">Unknown</span>';
+        }
+
+        document.getElementById('result').style.display = 'block';
+        stopSpin();
+        // scroll to result
+        document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
+
+      window.downloadBest = function() {
+        const firstQ = document.querySelector('.q-btn');
+        if (firstQ) firstQ.click();
+        else alert('No quality available');
+      };
+
+      // Initial theme set (optional)
+      if (!document.body.getAttribute('data-theme')) {
+        document.body.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
 </body>
 </html>
