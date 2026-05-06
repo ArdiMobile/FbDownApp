@@ -43,6 +43,9 @@
             --error-bg: #fef2f2;
             --error-border: #fecaca;
             --error-text: #dc2626;
+            --success-bg: #f0fdf4;
+            --success-border: #bbf7d0;
+            --success-text: #16a34a;
             --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
             --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
@@ -80,6 +83,9 @@
             --error-bg: #1a0f0f;
             --error-border: #3b1a1a;
             --error-text: #f87171;
+            --success-bg: #0f1a0f;
+            --success-border: #1a3b1a;
+            --success-text: #4ade80;
             --shadow-xs: 0 1px 2px rgba(0,0,0,0.3);
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
             --shadow-md: 0 4px 6px rgba(0,0,0,0.4);
@@ -218,7 +224,7 @@
         .hero h1 {
             font-size: clamp(2rem, 5vw, 3.4rem);
             font-weight: 900;
-            letter-spacing: -1.5px;
+            letter-spacing: 1px;
             line-height: 1.15;
             margin-bottom: 12px;
             color: var(--text);
@@ -302,6 +308,33 @@
             transform: translateY(0);
         }
 
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: var(--success-text);
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.85rem;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
         /* Status */
         .status {
             display: none;
@@ -383,7 +416,7 @@
 
         /* ========== RESULT SECTION ========== */
         .result {
-            max-width: 900px;
+            max-width: 620px;
             margin: 24px auto;
             display: none;
             animation: fadeInUp 0.45s ease;
@@ -422,6 +455,7 @@
             object-fit: contain;
             display: block;
             background: #000;
+            border-radius:10px;
         }
         .video-watermark {
             position: absolute;
@@ -449,10 +483,12 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            background: var(--bg)
             gap: 10px;
         }
         .video-title-row h3 {
             font-size: 1rem;
+            background: var(--bg)
             font-weight: 700;
             color: var(--text);
             line-height: 1.3;
@@ -543,11 +579,11 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 25px var(--primary-glow);
         }
-        .btn-mp3 {
+        .btn-buy {
             background: linear-gradient(135deg, #E84393, #FF6B6B);
             color: white;
         }
-        .btn-mp3:hover {
+        .btn-buy:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(232,67,147,0.25);
         }
@@ -735,7 +771,7 @@
 
             .footer-grid {
                 grid-template-columns: 1fr;
-                text-align: center;
+                text-align: left;
             }
             .footer-social {
                 justify-content: center;
@@ -744,6 +780,11 @@
     </style>
 </head>
 <body>
+
+    <!-- Toast notification for auto-paste -->
+    <div class="toast" id="toast">
+        <i class="fas fa-link"></i> <span id="toastText">Link detected!</span>
+    </div>
 
     <!-- ========== TOP BAR ========== -->
     <div class="top-bar">
@@ -766,7 +807,7 @@
         <div class="hero-badge">
             <span class="dot"></span> Free & Unlimited Downloads
         </div>
-        <h1>Download Video Content<br><span class="gradient-text">In Seconds.</span></h1>
+        <h1>Download Faceboom and Instagram Video Content<br><span class="gradient-text">In Seconds.</span></h1>
         <p>The fastest way to save high-quality videos from Facebook and Instagram.</p>
 
         <div class="search-wrapper">
@@ -810,7 +851,7 @@
                     <button class="btn btn-best" onclick="downloadBest()">
                         <i class="fas fa-star"></i> Best
                     </button>
-                    <button class="btn btn-mp3">
+                    <button class="btn btn-buy">
                         <i class="fas fa-music"></i> MP3
                     </button>
                     <button class="btn btn-reset" onclick="resetAll()">
@@ -910,13 +951,183 @@
         const errorText = document.getElementById('errorText');
         const resultDiv = document.getElementById('result');
         const player = document.getElementById('player');
+        const toast = document.getElementById('toast');
+        const toastText = document.getElementById('toastText');
+
+        // ========== AUTO-PASTE SYSTEM ==========
+        
+        /**
+         * Check if a string looks like a Facebook or Instagram URL
+         */
+        function isSocialVideoUrl(text) {
+            if (!text) return false;
+            const cleaned = text.trim().toLowerCase();
+            return (
+                cleaned.includes('facebook.com') ||
+                cleaned.includes('fb.watch') ||
+                cleaned.includes('fb.com') ||
+                cleaned.includes('instagram.com')
+            );
+        }
+
+        /**
+         * Extract URL from clipboard text (handles plain text or rich text)
+         */
+        function extractUrl(text) {
+            if (!text) return null;
+            const trimmed = text.trim();
+            // If the entire text is a URL, return it
+            if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+                return trimmed;
+            }
+            // Otherwise try to find a URL in the text
+            const match = trimmed.match(/(https?:\/\/[^\s]+)/i);
+            return match ? match[0] : null;
+        }
+
+        /**
+         * Show a brief toast notification
+         */
+        function showToast(message) {
+            toastText.innerText = message;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        /**
+         * Auto-paste from clipboard into the input field
+         * Returns true if a valid social video URL was pasted
+         */
+        async function autoPasteFromClipboard() {
+            try {
+                // Check if the Clipboard API is available
+                if (!navigator.clipboard || !navigator.clipboard.readText) {
+                    console.log('📋 Clipboard API not available (requires HTTPS or localhost)');
+                    return false;
+                }
+
+                const clipboardText = await navigator.clipboard.readText();
+                
+                if (!clipboardText || clipboardText.trim().length === 0) {
+                    return false;
+                }
+
+                const url = extractUrl(clipboardText);
+                
+                if (!url) {
+                    return false;
+                }
+
+                if (!isSocialVideoUrl(url)) {
+                    // Has a URL but not a social video link
+                    return false;
+                }
+
+                // Don't paste if input already has the same URL
+                if (urlInput.value.trim() === url) {
+                    return false;
+                }
+
+                // Paste the URL into the input
+                urlInput.value = url;
+                
+                // Show confirmation toast
+                const platform = detectPlatform(url);
+                const platformName = platform === 'facebook' ? 'Facebook' : platform === 'instagram' ? 'Instagram' : 'social media';
+                showToast(`📋 ${platformName} link auto-detected!`);
+
+                return true;
+
+            } catch (err) {
+                // Clipboard permission denied or empty — silent fail
+                console.log('📋 Auto-paste skipped:', err.message);
+                return false;
+            }
+        }
+
+        /**
+         * Run auto-paste and optionally trigger download
+         */
+        async function handleAutoPaste(autoDownload = true) {
+            const pasted = await autoPasteFromClipboard();
+            
+            if (pasted && autoDownload) {
+                // Small delay so user sees what happened
+                setTimeout(() => {
+                    fetchVideo();
+                }, 600);
+            }
+            
+            return pasted;
+        }
+
+        // ========== EVENT LISTENERS ==========
+
+        // 1. Auto-paste on page load (with download)
+        window.addEventListener('DOMContentLoaded', () => {
+            // Slight delay to ensure DOM is fully ready
+            setTimeout(() => {
+                handleAutoPaste(true);
+            }, 800);
+        });
+
+        // 2. Auto-paste when page gains focus (user returns from another tab)
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                // User came back to this tab — check clipboard
+                setTimeout(() => {
+                    handleAutoPaste(true);
+                }, 300);
+            }
+        });
+
+        // 3. Auto-paste on window focus
+        window.addEventListener('focus', () => {
+            setTimeout(() => {
+                handleAutoPaste(true);
+            }, 300);
+        });
+
+        // 4. Manual paste event fires instantly
+        urlInput.addEventListener('paste', async (e) => {
+            // Let the browser paste normally first
+            setTimeout(async () => {
+                const url = urlInput.value.trim();
+                if (url && isSocialVideoUrl(url)) {
+                    showToast('✅ Link pasted! Fetching video...');
+                    fetchVideo();
+                }
+            }, 200);
+        });
+
+        // 5. Keyboard shortcut: Ctrl+Shift+V or Cmd+Shift+V forces auto-paste + download
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'V') {
+                e.preventDefault();
+                handleAutoPaste(true);
+            }
+            // Also: just pressing Ctrl+V or Cmd+V on the page triggers check
+            if ((e.ctrlKey || e.metaKey) && e.key === 'v' && document.activeElement !== urlInput) {
+                // User pasted while not focused on input — check after a moment
+                setTimeout(() => {
+                    handleAutoPaste(true);
+                }, 300);
+            }
+        });
+
+        // ========== PLATFORM DETECTION ==========
 
         function detectPlatform(url) {
             const l = url.toLowerCase();
-            if (l.includes('facebook') || l.includes('fb.watch')) return 'facebook';
+            if (l.includes('facebook') || l.includes('fb.watch') || l.includes('fb.com')) return 'facebook';
             if (l.includes('instagram')) return 'instagram';
             return '';
         }
+
+        // ========== STATUS / ERROR HELPERS ==========
 
         function showStatus(text) {
             statusBox.style.display = 'flex';
@@ -929,7 +1140,6 @@
             errorBox.style.display = 'block';
             errorText.innerText = text;
             resultDiv.style.display = 'none';
-            // clear video source so nothing loads
             player.src = '';
             player.removeAttribute('src');
             player.load();
@@ -937,13 +1147,14 @@
         function hideError() {
             errorBox.style.display = 'none';
         }
-
         function hideResult() {
             resultDiv.style.display = 'none';
             player.src = '';
             player.removeAttribute('src');
             player.load();
         }
+
+        // ========== FETCH VIDEO ==========
 
         async function fetchVideo() {
             const url = urlInput.value.trim();
@@ -981,7 +1192,6 @@
                     throw new Error('No downloadable formats found');
                 }
 
-                // Success — show result
                 resultDiv.style.display = 'block';
                 resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
@@ -1008,6 +1218,7 @@
                 });
 
                 hideStatus();
+                showToast('✅ Video ready! Choose quality to download.');
 
             } catch (e) {
                 hideStatus();
@@ -1017,7 +1228,8 @@
             }
         }
 
-        urlInput.addEventListener('paste', () => setTimeout(fetchVideo, 400));
+        // ========== BUTTON HANDLERS ==========
+
         dlBtn.addEventListener('click', fetchVideo);
         urlInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') fetchVideo();
@@ -1032,6 +1244,12 @@
             hideResult();
             hideError();
             hideStatus();
+        }
+
+        // ========== INITIAL AUTO-PASTE ATTEMPT ==========
+        // Also try immediately (some browsers allow it without user gesture on page load)
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            setTimeout(() => handleAutoPaste(true), 500);
         }
     </script>
 </body>
