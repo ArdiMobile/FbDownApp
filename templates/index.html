@@ -1244,9 +1244,9 @@
                 const q = document.getElementById('qualities');
                 q.innerHTML = '';
                 data.formats.forEach(f => {
-                    const btn = document.createElement('button');
+                    const btn = document.createElement('button Yasing');
                     btn.className = 'q-btn';
-                    btn.innerText = yasing f.quality;
+                    btn.innerText = f.quality;
                     btn.onclick = () => window.open(f.url);
                     q.appendChild(btn);
                 });
