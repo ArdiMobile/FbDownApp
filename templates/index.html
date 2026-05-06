@@ -40,6 +40,9 @@
             --border-light: #f1f5f9;
             --ad-bg: #f8fafc;
             --card-bg: #ffffff;
+            --error-bg: #fef2f2;
+            --error-border: #fecaca;
+            --error-text: #dc2626;
             --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
             --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
@@ -74,6 +77,9 @@
             --border-light: #1a1a35;
             --ad-bg: #111128;
             --card-bg: #111128;
+            --error-bg: #1a0f0f;
+            --error-border: #3b1a1a;
+            --error-text: #f87171;
             --shadow-xs: 0 1px 2px rgba(0,0,0,0.3);
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
             --shadow-md: 0 4px 6px rgba(0,0,0,0.4);
@@ -100,7 +106,7 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* ========== NEW TOP BAR ========== */
+        /* ========== TOP BAR ========== */
         .top-bar {
             background: var(--surface);
             border-bottom: 1px solid var(--border);
@@ -114,7 +120,6 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             gap: 16px;
-            flex-wrap: wrap;
         }
         .top-bar .brand {
             font-size: 1.3rem;
@@ -179,41 +184,6 @@
             background: var(--surface-alt);
             color: var(--primary);
             border-color: var(--primary);
-        }
-
-        /* Language switcher - no popup, just clickable buttons */
-        .lang-switcher {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .lang-flag {
-            width: 32px;
-            height: 32px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text-secondary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 700;
-            transition: all 0.2s;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
-        .lang-flag:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        .lang-flag.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            font-weight: 800;
         }
 
         /* ========== HERO ========== */
@@ -357,6 +327,22 @@
             animation: spin 0.7s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ========== ERROR MESSAGE ========== */
+        .error-msg {
+            display: none;
+            max-width: 620px;
+            margin: 16px auto 0;
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error-text);
+            padding: 14px 20px;
+            border-radius: var(--radius-lg);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+            animation: fadeInUp 0.3s ease;
+        }
 
         /* ========== AD SPACE ========== */
         .ad-space {
@@ -759,7 +745,7 @@
 </head>
 <body>
 
-    <!-- ========== NEW TOP BAR (no nav menu, no popup) ========== -->
+    <!-- ========== TOP BAR ========== -->
     <div class="top-bar">
         <a href="#" class="brand">
             <div class="brand-dot"><i class="fas fa-play"></i></div>
@@ -769,13 +755,6 @@
             <span class="tagline-dot"></span> Free HD Video Downloader
         </span>
         <div class="top-actions">
-            <!-- Language flags as clickable buttons (no popup) -->
-            <div class="lang-switcher">
-                <button class="lang-flag active" title="English" onclick="alert('Language: English')">EN</button>
-                <button class="lang-flag" title="Español" onclick="alert('Idioma: Español')">ES</button>
-                <button class="lang-flag" title="Français" onclick="alert('Langue: Français')">FR</button>
-            </div>
-            <!-- Theme toggle -->
             <button class="top-btn" id="themeBtn" title="Toggle dark/light mode">
                 <i class="fas fa-moon"></i>
             </button>
@@ -790,7 +769,6 @@
         <h1>Download Video Content<br><span class="gradient-text">In Seconds.</span></h1>
         <p>The fastest way to save high-quality videos from Facebook and Instagram.</p>
 
-        <!-- Search Box -->
         <div class="search-wrapper">
             <div class="search-box">
                 <input id="url" type="text" placeholder="Paste video link here...">
@@ -802,13 +780,15 @@
                 <span class="spinner"></span>
                 <span id="statusText">Processing...</span>
             </div>
+            <div id="errorBox" class="error-msg">
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+            </div>
         </div>
     </section>
 
-    <!-- Ad Space -->
     <div class="ad-space">📌 ADVERTISEMENT · LEADERBOARD 728×90</div>
 
-    <!-- ========== RESULT ========== -->
+    <!-- ========== RESULT (hidden until successful fetch) ========== -->
     <div class="result" id="result">
         <div class="result-card">
             <div class="video-left">
@@ -841,10 +821,8 @@
         </div>
     </div>
 
-    <!-- Ad Space -->
     <div class="ad-space">📌 ADVERTISEMENT · LEADERBOARD 728×90</div>
 
-    <!-- Platform Icons -->
     <div class="platforms">
         <i class="fab fa-facebook"></i>
         <i class="fab fa-instagram"></i>
@@ -928,6 +906,10 @@
         const dlBtn = document.getElementById('downloadBtn');
         const statusBox = document.getElementById('statusBox');
         const statusText = document.getElementById('statusText');
+        const errorBox = document.getElementById('errorBox');
+        const errorText = document.getElementById('errorText');
+        const resultDiv = document.getElementById('result');
+        const player = document.getElementById('player');
 
         function detectPlatform(url) {
             const l = url.toLowerCase();
@@ -943,25 +925,66 @@
         function hideStatus() {
             statusBox.style.display = 'none';
         }
+        function showError(text) {
+            errorBox.style.display = 'block';
+            errorText.innerText = text;
+            resultDiv.style.display = 'none';
+            // clear video source so nothing loads
+            player.src = '';
+            player.removeAttribute('src');
+            player.load();
+        }
+        function hideError() {
+            errorBox.style.display = 'none';
+        }
+
+        function hideResult() {
+            resultDiv.style.display = 'none';
+            player.src = '';
+            player.removeAttribute('src');
+            player.load();
+        }
 
         async function fetchVideo() {
             const url = urlInput.value.trim();
-            if (!url) return alert('Please enter a video URL');
+            hideError();
+            hideResult();
+
+            if (!url) {
+                showError('Please enter a video URL first.');
+                return;
+            }
+
+            const platform = detectPlatform(url);
+            if (!platform) {
+                showError('Unsupported URL. Please paste a valid Facebook or Instagram video link.');
+                return;
+            }
 
             try {
                 showStatus('Fetching video...');
+
                 const res = await fetch('/download', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ url })
                 });
+
+                if (!res.ok) {
+                    throw new Error('Server returned ' + res.status);
+                }
+
                 showStatus('Processing formats...');
                 const data = await res.json();
 
-                document.getElementById('result').style.display = 'block';
-                document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (!data || !data.formats || data.formats.length === 0) {
+                    throw new Error('No downloadable formats found');
+                }
 
-                const player = document.getElementById('player');
+                // Success — show result
+                resultDiv.style.display = 'block';
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
                 player.src = data.formats[0].url;
                 player.load();
 
@@ -971,9 +994,8 @@
                 document.getElementById('fileSize').innerText = '📦 ' + (data.size || 'Unknown');
 
                 const badge = document.getElementById('platformBadge');
-                const platform = detectPlatform(url);
-                badge.className = 'platform-badge ' + (platform === 'facebook' ? 'badge-facebook' : platform === 'instagram' ? 'badge-instagram' : '');
-                badge.innerText = platform || 'WEB';
+                badge.className = 'platform-badge ' + (platform === 'facebook' ? 'badge-facebook' : 'badge-instagram');
+                badge.innerText = platform;
 
                 const q = document.getElementById('qualities');
                 q.innerHTML = '';
@@ -986,9 +1008,11 @@
                 });
 
                 hideStatus();
+
             } catch (e) {
                 hideStatus();
-                alert('Failed to load video. Please try again.');
+                hideResult();
+                showError('Failed to download. The link may be private, broken, or from an unsupported source.');
                 console.error(e);
             }
         }
@@ -1005,10 +1029,9 @@
         }
         function resetAll() {
             urlInput.value = '';
-            document.getElementById('result').style.display = 'none';
-            const player = document.getElementById('player');
-            player.src = '';
-            player.load();
+            hideResult();
+            hideError();
+            hideStatus();
         }
     </script>
 </body>
