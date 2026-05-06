@@ -7,7 +7,8 @@
 
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<style>:root{
+<style>
+  :root{
   --primary:#009959;
   --yellow:#FEC601;
   --red:#e63946;
@@ -84,7 +85,122 @@ body{
 }
 
 /* ROW */
-.video</style>
+.video-row{
+  display:flex;
+  gap:20px;
+  background:#fff;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .video-row{flex-direction:column;}
+}
+
+/* VIDEO */
+.video-left{
+  flex:1;
+  position:relative;
+}
+
+video{
+  width:100%;
+  max-height:260px;
+  object-fit:cover;
+  border-radius:14px;
+}
+
+.watermark{
+  position:absolute;
+  bottom:8px;
+  right:8px;
+  background:rgba(0,0,0,0.6);
+  color:#fff;
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:12px;
+}
+
+/* RIGHT */
+.video-right{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* TITLE */
+.title-box{
+  display:flex;
+  justify-content:space-between;
+  background:#f9fafb;
+  padding:10px;
+  border-radius:12px;
+  border:1px solid #eee;
+}
+
+/* BADGE */
+.badge{
+  padding:4px 10px;
+  border-radius:20px;
+  color:#fff;
+  font-size:12px;
+}
+
+.facebook{background:#1877f2;}
+.instagram{background:linear-gradient(45deg,#f09433,#dc2743);}
+
+/* INFO */
+.info-box{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.chip{
+  background:#eef2f7;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:12px;
+  border:1px solid #ddd;
+}
+
+/* QUALITY */
+.quality-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.q-btn{
+  padding:8px 12px;
+  border-radius:20px;
+  border:1px solid #ddd;
+  background:#fff;
+  cursor:pointer;
+}
+
+/* BUTTONS */
+.actions{
+  display:flex;
+  gap:10px;
+}
+
+.btn{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:30px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.best{background:linear-gradient(135deg,#009959,#00c46a);color:#fff;}
+.mp3{background:linear-gradient(135deg,#FEC601,#ffdd55);color:#000;}
+.reset{background:linear-gradient(135deg,#e63946,#ff5c5c);color:#fff;}
+</style>
 </head>
 
 <body>
@@ -145,7 +261,8 @@ body{
   </div>
 </div>
 
-<script>const urlInput = document.getElementById('url');
+<script>
+  const urlInput = document.getElementById('url');
 const dlBtn = document.getElementById('downloadBtn');
 const statusBox = document.getElementById('statusBox');
 const statusText = document.getElementById('statusText');
@@ -252,6 +369,7 @@ function downloadBest(){
 function resetAll(){
   urlInput.value='';
   document.getElementById('result').style.display='none';
-}</script>
+}
+</script>
 </body>
 </html>
