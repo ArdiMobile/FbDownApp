@@ -610,7 +610,6 @@ video{
         
         </div>
       </div>
-      
     </div>
   </div>
 <!-- TRUST -->
@@ -719,62 +718,169 @@ video{
         switchTab(tabId);
       });
     });
-    /******************************************
-     * 4. DOWNLOAD AREA SCRIPT (auto-detect, spinner, reset)
-     ******************************************/
-    function detectPlatform(url) {
-      if (!url) return 'unknown';
-      const l = url.toLowerCase();
-      if (l.includes('facebook.com') || l.includes('fb.watch')) return 'facebook';
-      if (l.includes('instagram.com') || l.includes('instagr.am')) return 'instagram';
-      return 'unknown';
-    }
-
-    function startSpin() {
-      dlBtn.innerHTML = '<span class="spinner" style="width:20px;height:20px;border:2px solid white;border-top:2px solid transparent;border-radius:50%;animation:spin 0.7s linear infinite;"></span>';
-    }
-    function stopSpin() {
-      dlBtn.innerHTML = '<i class="fas fa-download"></i>';
-    }
-    // Spinner keyframe
-    const style = document.createElement('style');
-    style.textContent = '@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}';
-    document.head.appendChild(style);
   </script>
-
 <script>
+// ================= THEME =================
 function toggleTheme(){
-  const t=document.body.getAttribute('data-theme');
-  document.body.setAttribute('data-theme', t==='dark'?'light':'dark');
+  const t = document.body.getAttribute('data-theme');
+  document.body.setAttribute('data-theme', t === 'dark' ? 'light' : 'dark');
 }
 
+// ================= GLOBAL =================
+const dlBtn = document.getElementById('downloadBtn');
+
+// ================= PLATFORM DETECTION =================
+function detectPlatform(url) {
+  if (!url) return 'unknown';
+  const l = url.toLowerCase();
+
+  if (l.includes('facebook.com') || l.includes('fb.watch')) return 'facebook';
+  if (l.includes('instagram.com') || l.includes('instagr.am')) return 'instagram';
+
+  return 'unknown';
+}
+
+// ================= SPINNER =================
+function startSpin() {
+  if (!dlBtn) return;
+  dlBtn.disabled = true;
+  dlBtn.innerHTML = `
+    <span class="spinner"
+      style="width:18px;height:18px;border:2px solid white;
+      border-top:2px solid transparent;border-radius:50%;
+      display:inline-block;animation:spin 0.7s linear infinite;">
+    </span> Processing...
+  `;
+}
+
+function stopSpin() {
+  if (!dlBtn) return;
+  dlBtn.disabled = false;
+  dlBtn.innerHTML = '<i class="fas fa-download"></i> Download';
+}
+
+// ================= MAIN FETCH =================
 async function fetchVideo(){
-  const url=document.getElementById('url').value;
+  try {
+    const urlInput = document.getElementById('url');
+    const url = urlInput.value.trim();
 
-  const res=await fetch('/download',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({url})
-  });
+    if(!url){
+      alert('Please enter a video URL');
+      return;
+    }
 
-  const data=await res.json();
+    startSpin();
 
-  document.getElementById('result').style.display='block';
-  document.getElementById('player').src=data.formats[0].url;
-  document.getElementById('title').innerText=data.title;
+    // Detect platform
+    const platform = detectPlatform(url);
+    const badge = document.getElementById('badge');
+    if(badge){
+      badge.innerText = platform.toUpperCase();
+      badge.style.display = 'inline-block';
+    }
 
-  const q=document.getElementById('qualities');
-  q.innerHTML='';
+    const res = await fetch('/download', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ url })
+    });
 
-  data.formats.forEach(f=>{
-    q.innerHTML+=`<button class="q-btn" onclick="window.open('${f.url}')">${f.quality}</button>`;
-  });
+    if(!res.ok) throw new Error('Server error');
+
+    const data = await res.json();
+
+    if(!data || !data.formats || data.formats.length === 0){
+      throw new Error('No formats found');
+    }
+
+    // Show result section
+    document.getElementById('result').style.display = 'block';
+
+    // Video preview
+    const player = document.getElementById('player');
+    player.src = data.formats[0].url;
+
+    // Title
+    document.getElementById('title').innerText = data.title || 'Untitled Video';
+
+    // Info (optional)
+    if(data.views){
+      document.getElementById('views').innerText = data.views + ' views';
+    }
+    if(data.size){
+      document.getElementById('size').innerText = data.size;
+    }
+
+    // Quality buttons
+    const q = document.getElementById('qualities');
+    q.innerHTML = '';
+
+    data.formats.forEach(f => {
+      const btn = document.createElement('button');
+      btn.className = 'q-btn';
+      btn.innerText = f.quality || 'Download';
+
+      btn.onclick = () => {
+        window.open(f.url, '_blank');
+      };
+
+      q.appendChild(btn);
+    });
+
+    stopSpin();
+
+  } catch(err){
+    console.error(err);
+    alert('Failed to load video. Try again.');
+    stopSpin();
+  }
 }
 
+// ================= DOWNLOAD BEST =================
 function downloadBest(){
-  const first=document.querySelector('.q-btn');
-  if(first) first.click();
+  const first = document.querySelector('.q-btn');
+  if(first){
+    first.click();
+  } else {
+    alert('No download available');
+  }
 }
+
+// ================= RESET =================
+function resetAll(){
+  document.getElementById('url').value = '';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('qualities').innerHTML = '';
+
+  const badge = document.getElementById('badge');
+  if(badge){
+    badge.style.display = 'none';
+  }
+}
+
+// ================= AUTO PASTE DETECT =================
+document.getElementById('url').addEventListener('paste', function(){
+  setTimeout(() => {
+    fetchVideo();
+  }, 500);
+});
+
+// ================= OPTIONAL AUTO DETECT ON INPUT =================
+document.getElementById('url').addEventListener('input', function(){
+  const url = this.value;
+  const platform = detectPlatform(url);
+
+  const badge = document.getElementById('badge');
+  if(badge){
+    if(platform !== 'unknown'){
+      badge.innerText = platform.toUpperCase();
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+});
 </script>
 </body>
 </html>
