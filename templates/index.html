@@ -68,7 +68,7 @@
         #result-area { display: none; margin-top: 30px; flex-direction: column; gap: 20px; text-align: center; }
         video { width: 100%; max-width: 400px; border-radius: 10px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .dl-list { display:flex;justify-content:center;gap:50px;margin:10px 0;flex-wrap:wrap;position:relative;z-index:1}
-        .dl-btn { background: #00a86b; color: white; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: 600; display: flex; justify-content: space-between; padding: 15px 25px; }
+        .dl-btn {background: #00a86b; color: white; border: none; padding: 10px 5px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 1rem; }
         }
     </style>
     <style>/* Video Preview Card */
@@ -517,55 +517,6 @@
         <!-- CONTENT + SIDEBAR -->
         <div style="display:flex;gap:24px;align-items:flex-start;">
             <div class="main-content">
-                <!-- TABS -->
-                <div class="tabs-scroll" id="tabBar">
-                    <button class="tab-btn active" onclick="switchTab(event,'tab-home')"><i class="fas fa-home"></i> Home</button>
-                    <button class="tab-btn" onclick="switchTab(event,'tab-how')"><i class="fas fa-download"></i> Steps</button>
-                    <button class="tab-btn" onclick="switchTab(event,'tab-updates')"><i class="fas fa-bell"></i> News</button>
-                    <button class="tab-btn" onclick="switchTab(event,'tab-faq')"><i class="fas fa-question-circle"></i> FAQ</button>
-                    <button class="tab-btn" onclick="switchTab(event,'tab-apps')"><i class="fas fa-th-large"></i> More</button>
-                </div>
-
-                <!-- HOME TAB - Blog Posts -->
-                <div id="tab-home" class="tab-panel active">
-                    <div class="card">
-                        <div class="card-title"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt=""> Latest Articles</div>
-                        <div class="main-content" id="blogPostsContainer"></div>
-                    </div>
-                </div>
-
-                <!-- HOW TO TAB -->
-                <div id="tab-how" class="tab-panel">
-                    <div class="step-item"><div class="step-num">1</div><div class="step-content"><strong>Copy Video Link</strong><p>Open Facebook or Instagram, tap Share → Copy Link</p></div></div>
-                    <div class="step-item"><div class="step-num">2</div><div class="step-content"><strong>Paste in Search Box</strong><p>Tap the input field - link auto-pastes from clipboard</p></div></div>
-                    <div class="step-item"><div class="step-num">3</div><div class="step-content"><strong>Download in HD</strong><p>Choose your quality & save to your device instantly</p></div></div>
-                </div>
-
-                <!-- UPDATES TAB -->
-                <div id="tab-updates" class="tab-panel">
-                    <div class="update-card"><span class="badge new">New</span><h4>Galmee v3.0 Launched</h4><p style="font-size:12px;color:var(--text-secondary);">Fresh design, Instagram support, and faster downloads!</p></div>
-                    <div class="update-card"><span class="badge fix">Fix</span><h4>Speed Boost</h4><p style="font-size:12px;color:var(--text-secondary);">60% faster video processing. Improved error handling.</p></div>
-                </div>
-
-                <!-- FAQ TAB -->
-                <div id="tab-faq" class="tab-panel">
-                    <div class="faq-card" onclick="this.classList.toggle('active')"><div class="faq-question">Is Galmee really free? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes! 100% free. No registration, no hidden fees, unlimited downloads.</div></div>
-                    <div class="faq-card" onclick="this.classList.toggle('active')"><div class="faq-question">Can I download Instagram stories? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes! Stories, reels, and posts are all supported.</div></div>
-                    <div class="faq-card" onclick="this.classList.toggle('active')"><div class="faq-question">What quality is available? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Up to 1080p Full HD. Quality depends on the original upload.</div></div>
-                    <div class="faq-card" onclick="this.classList.toggle('active')"><div class="faq-question">Is it safe to use? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Absolutely. We don't store your data or downloaded videos.</div></div>
-                </div>
-
-                <!-- APPS TAB -->
-                <div id="tab-apps" class="tab-panel">
-                    <div class="apps-grid">
-                        <div class="app-card"><i class="fab fa-instagram" style="color:#E4405F;"></i><span>Instagram</span></div>
-                        <div class="app-card"><i class="fab fa-facebook" style="color:#1877f2;"></i><span>Facebook</span></div>
-                        <div class="app-card"><i class="fab fa-tiktok" style="color:#000;"></i><span>TikTok (Soon)</span></div>
-                        <div class="app-card"><i class="fab fa-youtube" style="color:#FF0000;"></i><span>YouTube (Soon)</span></div>
-                    </div>
-                </div>
-            </div>
-
             <!-- SIDEBAR -->
             <aside class="sidebar" id="homeSidebar">
                 <div class="sidebar-sticky" id="sidebarContent"></div>
