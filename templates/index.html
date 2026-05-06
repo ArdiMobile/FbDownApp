@@ -587,35 +587,9 @@ video{
         switchTab(tabId);
       });
     });
-
-    /******************************************
-     * 3. DARK/LIGHT THEME SCRIPT
-     ******************************************/
-    function applyTheme(mode) {
-      if (mode === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        document.getElementById('themeToggleDesktop').innerHTML = '<i class="fas fa-sun"></i> Light';
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-        document.getElementById('themeToggleDesktop').innerHTML = '<i class="fas fa-moon"></i> Dark';
-      }
-      localStorage.setItem('galmeeTheme', mode);
-    }
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
-      applyTheme(current === 'dark' ? 'light' : 'dark');
-    }
-    document.getElementById('themeToggleDesktop').addEventListener('click', toggleTheme);
-    // Load saved
-    const saved = localStorage.getItem('galmeeTheme') || 'light';
-    applyTheme(saved);
-
     /******************************************
      * 4. DOWNLOAD AREA SCRIPT (auto-detect, spinner, reset)
      ******************************************/
-    const urlInput = document.getElementById('urlInput');
-    const dlBtn = document.getElementById('dlBtn');
-
     function detectPlatform(url) {
       if (!url) return 'unknown';
       const l = url.toLowerCase();
@@ -630,6 +604,17 @@ video{
     function stopSpin() {
       dlBtn.innerHTML = '<i class="fas fa-download"></i>';
     }
+    // Spinner keyframe
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}';
+    document.head.appendChild(style);
+  </script>
+
+<script>
+function toggleTheme(){
+  const t=document.body.getAttribute('data-theme');
+  document.body.setAttribute('data-theme', t==='dark'?'light':'dark');
+}
 
 async function fetchVideo(){
   const url=document.getElementById('url').value;
@@ -654,18 +639,10 @@ async function fetchVideo(){
   });
 }
 
-    function resetResult() {
-      document.getElementById('result').style.display = 'none';
-      document.getElementById('player').src = '';
-      urlInput.value = '';
-      stopSpin();
-    }
-
-    // Spinner keyframe
-    const style = document.createElement('style');
-    style.textContent = '@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}';
-    document.head.appendChild(style);
-  </script>
-
+function downloadBest(){
+  const first=document.querySelector('.q-btn');
+  if(first) first.click();
+}
+</script>
 </body>
 </html>
