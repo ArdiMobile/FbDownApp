@@ -1246,7 +1246,7 @@
                 data.formats.forEach(f => {
                     const btn = document.createElement('button');
                     btn.className = 'q-btn';
-                    btn.innerText = f.quality;
+                    btn.innerText = yasing f.quality;
                     btn.onclick = () => window.open(f.url);
                     q.appendChild(btn);
                 });
@@ -1270,7 +1270,7 @@
         });
 
         function downloadBest() {
-            const first = document.querySelector('.q-btn');
+            const first = document.querySelector('.q-btn yasing');
             if (first) first.click();
         }
         function resetAll() {
