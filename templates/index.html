@@ -3,38 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galmee • Premium Downloader</title>
+<title>Galmee Downloader</title>
 
+<link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-<style>
-:root{
+<style>:root{
   --primary:#009959;
   --yellow:#FEC601;
   --red:#e63946;
-  --dark:#0f172a;
 }
 
 /* BASE */
 body{
   margin:0;
-  font-family:Inter, Arial;
+  font-family:Arial;
   background:#f5f8f6;
 }
 
 /* HERO */
 .hero{
   text-align:center;
-  padding:60px 20px;
-}
-
-.hero h1{
-  font-size:32px;
-  margin-bottom:10px;
-}
-
-.hero p{
-  color:#666;
+  padding:50px 20px;
 }
 
 /* INPUT */
@@ -60,6 +49,31 @@ body{
   color:#fff;
   padding:0 25px;
   font-weight:bold;
+  cursor:pointer;
+}
+
+/* STATUS */
+.status{
+  display:none;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-top:10px;
+  color:#555;
+}
+
+.spinner{
+  width:16px;
+  height:16px;
+  border:2px solid #ccc;
+  border-top:2px solid var(--primary);
+  border-radius:50%;
+  animation:spin 0.7s linear infinite;
+}
+
+@keyframes spin{
+  from{transform:rotate(0)}
+  to{transform:rotate(360deg)}
 }
 
 /* RESULT */
@@ -69,118 +83,8 @@ body{
   display:none;
 }
 
-.video-row{
-  display:flex;
-  flex-wrap:wrap;
-  gap:20px;
-  background:#fff;
-  padding:20px;
-  border-radius:20px;
-}
-
-/* VIDEO */
-.video-left{
-  flex:1;
-  position:relative;
-}
-
-video{
-  width:100%;
-  border-radius:12px;
-}
-
-.watermark{
-  position:absolute;
-  bottom:10px;
-  right:10px;
-  background:rgba(0,0,0,0.7);
-  color:#fff;
-  padding:5px 12px;
-  border-radius:20px;
-  font-size:12px;
-}
-
-/* RIGHT */
-.video-right{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-/* BADGE */
-.badge{
-  padding:4px 12px;
-  border-radius:20px;
-  color:#fff;
-}
-
-.facebook{background:#1877f2;}
-.instagram{background:linear-gradient(45deg,#f09433,#dc2743);}
-
-/* QUALITY */
-.quality-grid{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-}
-
-.q-btn{
-  padding:8px 14px;
-  border-radius:20px;
-  border:1px solid #ddd;
-  cursor:pointer;
-}
-
-/* ACTIONS */
-.actions{
-  display:flex;
-  gap:10px;
-}
-
-.actions button{
-  flex:1;
-  padding:10px;
-  border:none;
-  border-radius:20px;
-  color:#fff;
-}
-
-.best{background:var(--primary);}
-.mp3{background:var(--yellow); color:#000;}
-.reset-btn{background:var(--red);}
-
-/* LOADER OVERLAY */
-.loader{
-  position:fixed;
-  inset:0;
-  background:#000000cc;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  color:#fff;
-  z-index:9999;
-}
-
-.loader.show{display:flex;}
-
-.bar{
-  width:250px;
-  height:6px;
-  background:#333;
-  border-radius:10px;
-  margin-top:10px;
-  overflow:hidden;
-}
-
-.progress{
-  height:100%;
-  width:0%;
-  background:var(--primary);
-  transition:width 0.3s;
-}
-</style>
+/* ROW */
+.video</style>
 </head>
 
 <body>
@@ -192,142 +96,162 @@ video{
 
   <div class="input-box">
     <input id="url" placeholder="Paste video link...">
-    <button id="downloadBtn" onclick="fetchVideo()">
+    <button id="downloadBtn">
       <i class="fas fa-download"></i> Download
     </button>
   </div>
-</div>
 
-<!-- LOADER -->
-<div class="loader" id="loader">
-  <h2>Processing Video...</h2>
-  <div class="bar"><div class="progress" id="progress"></div></div>
+  <!-- STATUS (spinner + text) -->
+  <div id="statusBox" class="status">
+    <span class="spinner"></span>
+    <span id="statusText">Processing...</span>
+  </div>
 </div>
 
 <!-- RESULT -->
 <div class="result" id="result">
   <div class="video-row">
 
+    <!-- LEFT -->
     <div class="video-left">
-      <video id="player" controls playsinline></video>
+      <video id="player" controls playsinline preload="metadata"></video>
       <div class="watermark">GALMEE</div>
     </div>
 
+    <!-- RIGHT -->
     <div class="video-right">
-      <div style="display:flex;justify-content:space-between;">
-        <h3 id="title">Video</h3>
+
+      <div class="title-box">
+        <h3 id="title">Video Title</h3>
         <span id="platformBadge" class="badge"></span>
       </div>
 
-      <div>
-        <span id="viewCount">0 views</span> · 
-        <span id="fileSize">0 MB</span>
+      <div class="info-box">
+        <span id="uploaderName" class="chip">@creator</span>
+        <span id="viewCount" class="chip">0 views</span>
+        <span id="fileSize" class="chip">0 MB</span>
       </div>
 
       <div class="quality-grid" id="qualities"></div>
 
       <div class="actions">
-        <button class="best" onclick="downloadBest()">Best</button>
-        <button class="mp3" onclick="alert('Upgrade to unlock MP3')">MP3</button>
-        <button class="reset-btn" onclick="resetAll()">Reset</button>
+        <button class="btn best" onclick="downloadBest()">Best</button>
+        <button class="btn mp3">MP3</button>
+        <button class="btn reset" onclick="resetAll()">Reset</button>
       </div>
+
     </div>
 
   </div>
 </div>
 
-<script>
-// LOADER
-const loader = document.getElementById('loader');
-const progress = document.getElementById('progress');
-
-function startLoader(){
-  loader.classList.add('show');
-  let p=0;
-  const interval=setInterval(()=>{
-    p+=10;
-    progress.style.width=p+'%';
-    if(p>=90) clearInterval(interval);
-  },200);
-}
-
-function stopLoader(){
-  progress.style.width='100%';
-  setTimeout(()=>{
-    loader.classList.remove('show');
-    progress.style.width='0%';
-  },300);
-}
+<script>const urlInput = document.getElementById('url');
+const dlBtn = document.getElementById('downloadBtn');
+const statusBox = document.getElementById('statusBox');
+const statusText = document.getElementById('statusText');
 
 // PLATFORM
 function detectPlatform(url){
-  const l=url.toLowerCase();
-  if(l.includes('facebook')) return 'facebook';
+  const l = url.toLowerCase();
+  if(l.includes('facebook') || l.includes('fb.watch')) return 'facebook';
   if(l.includes('instagram')) return 'instagram';
   return '';
 }
 
+// STATUS
+function showStatus(text){
+  statusBox.style.display = 'flex';
+  statusText.innerText = text;
+}
+
+function hideStatus(){
+  statusBox.style.display = 'none';
+}
+
 // FETCH
 async function fetchVideo(){
+  const url = urlInput.value.trim();
+  if(!url) return alert('Enter URL');
+
   try{
-    const url=document.getElementById('url').value.trim();
-    if(!url) return alert('Enter URL');
+    showStatus('Fetching video...');
 
-    startLoader();
-
-    const res=await fetch('/download',{
+    const res = await fetch('/download',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({url})
     });
 
-    const data=await res.json();
+    showStatus('Processing formats...');
 
-    document.getElementById('result').style.display='block';
+    const data = await res.json();
 
-    const player=document.getElementById('player');
-    player.src=data.formats[0].url;
+    document.getElementById('result').style.display = 'block';
+
+    // VIDEO
+    const player = document.getElementById('player');
+    player.src = data.formats[0].url;
     player.load();
 
-    document.getElementById('title').innerText=data.title;
-    document.getElementById('viewCount').innerText=data.views || '0 views';
-    document.getElementById('fileSize').innerText=data.size || 'Unknown';
+    // TEXT
+    document.getElementById('title').innerText = data.title || 'Video';
+    document.getElementById('uploaderName').innerText = data.uploader || '@unknown';
+    document.getElementById('viewCount').innerText = (data.views || 0) + ' views';
+    document.getElementById('fileSize').innerText = data.size || 'Unknown';
 
-    const badge=document.getElementById('platformBadge');
-    const platform=detectPlatform(url);
-    badge.className='badge '+platform;
-    badge.innerText=platform.toUpperCase();
+    // BADGE
+    const badge = document.getElementById('platformBadge');
+    const platform = detectPlatform(url);
+    badge.className = 'badge ' + platform;
+    badge.innerText = platform.toUpperCase();
 
-    const q=document.getElementById('qualities');
-    q.innerHTML='';
+    // QUALITY
+    const q = document.getElementById('qualities');
+    q.innerHTML = '';
 
     data.formats.forEach(f=>{
-      const btn=document.createElement('button');
-      btn.className='q-btn';
-      btn.innerText=f.quality;
-      btn.onclick=()=>window.open(f.url);
+      const btn = document.createElement('button');
+      btn.className = 'q-btn';
+      btn.innerText = f.quality;
+      btn.onclick = ()=>window.open(f.url);
       q.appendChild(btn);
     });
 
+    hideStatus();
+
   }catch(e){
-    alert('Error');
-  }finally{
-    setTimeout(stopLoader,500);
+    hideStatus();
+    alert('Failed to load video');
   }
 }
 
+// AUTO PASTE
+urlInput.addEventListener('paste', ()=>{
+  setTimeout(fetchVideo, 500);
+});
+
+// AUTO DETECT
+urlInput.addEventListener('input', ()=>{
+  const url = urlInput.value;
+  if(detectPlatform(url)){
+    // optional auto fetch
+    // fetchVideo();
+  }
+});
+
+// BUTTON
+dlBtn.addEventListener('click', fetchVideo);
+
 // BEST
 function downloadBest(){
-  const first=document.querySelector('.q-btn');
+  const first = document.querySelector('.q-btn');
   if(first) first.click();
 }
 
 // RESET
 function resetAll(){
-  document.getElementById('url').value='';
+  urlInput.value='';
   document.getElementById('result').style.display='none';
-}
-</script>
-
+}</script>
 </body>
 </html>
