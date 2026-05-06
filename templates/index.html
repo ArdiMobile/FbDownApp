@@ -21,10 +21,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
     <style>
        :root {
             --bg: #ffffff;
+            --lgblue: #4267B2
             --surface: #f8fafc;
             --surface-alt: #f1f5f9;
             --text: #0f172a;
@@ -65,6 +67,7 @@
 
         [data-theme="dark"] {
             --bg: #0a0a1a;
+            --lgblue: skyblue
             --surface: #111128;
             --surface-alt: #1a1a35;
             --text: #f1f5f9;
@@ -127,21 +130,25 @@
             -webkit-backdrop-filter: blur(20px);
             gap: 16px;
         }
-        .top-bar .brand {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: var(--text);
+        .top-bar .brand {font-family:'Playfair Display',Georgia,serif;
+        font-style:italic;
+        font-size:26px;
+        font-weight:900;
+        background-clip:text;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
-            letter-spacing: -0.5px;
+            color:forestgreen;
+            gap: 4px;
+            letter-spacing: -0.7px;
             white-space: nowrap;
         }
+        .top-bar .brand img{
+        border: solid forestgreen 2px;border-radius:50%}
         .brand-dot {
             width: 32px;
             height: 32px;
-            background: var(--gradient-brand);
+            background: transparent;
             border-radius: var(--radius-md);
             display: flex;
             align-items: center;
@@ -416,7 +423,7 @@
 
         /* ========== RESULT SECTION ========== */
         .result {
-            max-width: 620px;
+            max-width: 900px;
             margin: 24px auto;
             display: none;
             animation: fadeInUp 0.45s ease;
@@ -455,7 +462,6 @@
             object-fit: contain;
             display: block;
             background: #000;
-            border-radius:10px;
         }
         .video-watermark {
             position: absolute;
@@ -483,12 +489,10 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            background: var(--bg)
             gap: 10px;
         }
         .video-title-row h3 {
             font-size: 1rem;
-            background: var(--bg)
             font-weight: 700;
             color: var(--text);
             line-height: 1.3;
@@ -583,7 +587,7 @@
             background: linear-gradient(135deg, #E84393, #FF6B6B);
             color: white;
         }
-        .btn-buy:hover {
+        .btn-mp3:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(232,67,147,0.25);
         }
@@ -673,8 +677,12 @@
         .footer-col h4 {
             font-size: 0.85rem;
             font-weight: 700;
+            width:100px;
+            background:linear-gradient(135deg, #6C3C 0%, forestgreen 50%, green 100%);
+            padding:6px 6px;
             margin-bottom: 14px;
             color: var(--text);
+            border-radius: 5px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -691,9 +699,23 @@
         .footer-brand {
             font-size: 1.3rem;
             font-weight: 800;
-            margin-bottom: 6px;
+            margin:6px;
             color: var(--text);
             letter-spacing: -0.5px;
+        }
+        .footer-brand span{
+          font-family:'Playfair Display',Georgia,serif;
+        font-style:italic;
+        font-size:18px;
+        font-weight:900;
+        background-clip:text;
+        text-decoration: none;
+            color:forestgreen;
+            white-space: nowrap;
+          margin:10px 14px;
+        }
+      .footer-brand img{
+            margin: -3px -10px;
         }
         .footer-social {
             display: flex;
@@ -722,8 +744,9 @@
         }
         .footer-bottom {
             color: var(--text-dim);
-            font-size: 0.78rem;
+            font-size: 14px;
             padding-top: 20px;
+            font-weight: bold;
             border-top: 1px solid var(--border);
             max-width: 1100px;
             margin: 0 auto;
@@ -774,7 +797,7 @@
                 text-align: left;
             }
             .footer-social {
-                justify-content: center;
+                justify-content: left;
             }
         }
     </style>
@@ -788,9 +811,9 @@
 
     <!-- ========== TOP BAR ========== -->
     <div class="top-bar">
-        <a href="#" class="brand">
-            <div class="brand-dot"><i class="fas fa-play"></i></div>
-            StreamSave
+        <a href="/index.html" class="brand">
+            <div class="brand-dot"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee Facebook and Instagram Video Downloader" style="width:30px;height:30px"></div>
+          Galmee
         </a>
         <span class="tagline">
             <span class="tagline-dot"></span> Free HD Video Downloader
@@ -807,7 +830,7 @@
         <div class="hero-badge">
             <span class="dot"></span> Free & Unlimited Downloads
         </div>
-        <h1>Download Faceboom and Instagram Video Content<br><span class="gradient-text">In Seconds.</span></h1>
+        <h1>Download Facebook and Instagram Videos<br><span class="gradient-text">In Seconds.</span></h1>
         <p>The fastest way to save high-quality videos from Facebook and Instagram.</p>
 
         <div class="search-wrapper">
@@ -846,13 +869,13 @@
                     <span id="viewCount" class="meta-chip">👁 0 views</span>
                     <span id="fileSize" class="meta-chip">📦 0 MB</span>
                 </div>
-                <div class="quality-buttons" id="qualities"></div>
+                yasin
                 <div class="action-buttons">
                     <button class="btn btn-best" onclick="downloadBest()">
-                        <i class="fas fa-star"></i> Best
+                        <i class="fas fa-star"></i> DOWNLOAD
                     </button>
                     <button class="btn btn-buy">
-                        <i class="fas fa-music"></i> MP3
+                        <i class="fas fa-crown"></i> PRO
                     </button>
                     <button class="btn btn-reset" onclick="resetAll()">
                         <i class="fas fa-redo"></i> Reset
@@ -861,13 +884,13 @@
             </div>
         </div>
     </div>
-
+<div class="quality-buttons" id="qualities"></div>
     <div class="ad-space">📌 ADVERTISEMENT · LEADERBOARD 728×90</div>
 
     <div class="platforms">
         <i class="fab fa-facebook"></i>
         <i class="fab fa-instagram"></i>
-        <i class="fab fa-threads"></i>
+        <i class="fab fa-telegram"></i>
     </div>
 
     <!-- ========== FEATURES ========== -->
@@ -893,40 +916,40 @@
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
-                <div class="footer-brand">StreamSave</div>
-                <p style="color:var(--text-dim);font-size:0.88rem;margin-bottom:4px;">Professional tools for content consumers and creators. Save what inspires you.</p>
+                <div class="footer-brand"><img src="https://raw.githubusercontent.com/ArdiMobile/FbDownApp/main/images/Galmee%20icon.png" alt="Galmee Facebook and Instagram Video Downloader" style="width:20px;height:20px"><span>Galmee</span></div>
+                <p style="color:var(--text-dim);font-size:0.88rem;margin-bottom:4px;">Professional tools for HD facebook video downloads. Download what inspires you.</p>
                 <div class="footer-social">
-                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" title="Twitter / X"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
-                    <a href="#" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="fb.com/yasingelma" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="t.me/anayasingg" title="Telegram"><i class="fab fa-telegram"></i></a>
+                    <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="tel:+251943354732" title="Call me"><i class="fab fa-viber"></i></a>
                 </div>
             </div>
             <div class="footer-col">
-                <h4>Tools</h4>
-                <a href="#">Facebook Video Downloader</a>
-                <a href="#">Instagram Reels Saver</a>
-                <a href="#">Story Downloader</a>
-                <a href="#">HD Video Converter</a>
+                <h4>Web Tools</h4>
+                <a href="#">YouTube MP3 Downloader</a>
+                <a href="#">Website Screenshot</a>
+                <a href="#">YT thumbnail downloder</a>
+                <a href="#">Online Video Converter</a>
             </div>
             <div class="footer-col">
-                <h4>Support</h4>
-                <a href="#">Help Center</a>
+                <h4>About Us</h4>
+                <a href="#">About</a>
                 <a href="#">FAQ</a>
                 <a href="#">Contact Us</a>
-                <a href="#">Report Issue</a>
+                <a href="#">Purchase</a>
             </div>
             <div class="footer-col">
                 <h4>Legal</h4>
                 <a href="#">Privacy Policy</a>
                 <a href="#">Terms of Service</a>
-                <a href="#">DMCA</a>
+                <a href="#">Copyright</a>
                 <a href="#">Disclaimer</a>
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; 2026 StreamSave. We are not affiliated with Meta Platforms, Facebook, or Instagram.
+          Copyright &copy; 2026 Galmee online tools. Developed by <a href="page/purchase.html" style="text-decoration:none;color:var(--text)" id ="credit-link"> Yasin Gelma</a>
+        </a>
         </div>
     </footer>
 
